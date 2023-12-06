@@ -1,0 +1,92 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header-row {
+  background-color: rgb(11, 41, 141);
+  padding: 5px;
+  color: white;
+  font-size: 10px;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  flex: 1;
+}
+
+.left-column {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.right-column {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.header-text {
+  font-size: 24px;
+  font-weight: bold;
+}
+  
+.subheader-text {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    font-weight: lighter;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .form-group1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .lInput {
+    padding: 15px;
+    width: 50%;
+    margin: 6px;
+    border: 1px solid hsl(0, 2%, 52%);
+    border-radius: 5px;
+    color: black;
+    background-color: rgb(219, 216, 216);
+    text-align: center;
+  }
+  
+  .signup-text {
+    text-align: center;
+    margin-top: 45px;
+    margin-bottom: 20px;
+  }
+  .button1 {
+    width: 38%; 
+    padding: 15px;
+    background-color: #1271a8;
+    color: white;
+    border: none;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .button2 {
+    width: 38%;
+    padding: 15px;
+    font-size: 18px;
+    background-color: #195688;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }

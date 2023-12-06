@@ -1,0 +1,78 @@
+
+import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, useNavigate } from 'react-router-dom';
+import './login.css';
+import myImage1 from './im4.jpeg';
+
+const Login = () => {
+  const navigate = useNavigate();
+
+  const leftSectionStyle = {
+    backgroundImage: `url(${myImage1})`,
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/home');
+  };
+  const handleLoginClick = () => {
+    navigate('/signUp');
+  };
+  const handleLoginClick2 = () => {
+    navigate('/home');
+  };
+  return (
+    <div className="login-container">
+      <div className="header-row">
+        <h1 className="header-text">HOSPITAL INFORMATION MANAGEMENT SYSTEM</h1>
+      </div>
+      <div className="row"><div className="left-column" style={leftSectionStyle}>
+      </div>
+      <div className="right-column">
+        <div className="header-text">
+          <h2>EYE CLINIC CENTER</h2>
+        </div>
+        <div className="subheader-text">
+          <p className="subheader-text">BASE HOSPITAL TANGALLE</p>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group1">
+            <input
+              type="text"
+              placeholder="Username"
+              id="username"
+              className="lInput"
+            />
+          </div>
+
+          <div className="form-group1">
+            <input
+              type="password"
+              placeholder="Password"
+              id="password"
+              className="lInput"
+            />
+          </div>
+        </form>
+
+        <div >
+        <button type="submit" className="button1" onClick={handleLoginClick2}>
+            Login <FontAwesomeIcon icon={faCircleChevronRight} />
+          </button>
+
+          <p className="signup-text">Don't have an account?</p>
+          
+          <button type="submit" className="button2" onClick={handleLoginClick}>
+            Sign Up <FontAwesomeIcon icon={faCircleChevronRight} />
+          </button>
+
+        </div>
+      </div>
+    </div>
+    </div>
+  );
+};
+
+export default Login;
