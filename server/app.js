@@ -131,8 +131,6 @@ app.delete('/notes/:id', async (req, res) => {
     }
 })
 
-// check commit
-
 app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send('Something broke')
