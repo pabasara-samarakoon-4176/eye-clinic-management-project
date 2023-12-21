@@ -4,17 +4,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
 import myImage1 from './im4.jpeg';
+import axios from 'axios';
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const leftSectionStyle = {
     backgroundImage: `url(${myImage1})`,
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate('/home');
+  const handleSubmit = async () => {
+    
+    try {
+      
+      const response = await axios.post('http://localhost:8080/login', {
+        doctorId : username,
+        password : password
+      });
+
+      console.log(response);
+      
+      if (response.data === 'Success') {
+        navigate('/home');
+      } else {
+        console.log('Login failed')
+      }
+
+    } catch (error) {
+      console.error('Error during login', error);
+    }
   };
   const handleLoginClick = () => {
     navigate('/signUp');
@@ -44,6 +65,8 @@ const Login = () => {
               placeholder="Username"
               id="username"
               className="lInput"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
@@ -53,12 +76,14 @@ const Login = () => {
               placeholder="Password"
               id="password"
               className="lInput"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </form>
 
         <div >
-        <button type="submit" className="button1" onClick={handleLoginClick2}>
+        <button type="submit" className="button1" onClick={handleSubmit}>
             Login <FontAwesomeIcon icon={faCircleChevronRight} />
           </button>
 

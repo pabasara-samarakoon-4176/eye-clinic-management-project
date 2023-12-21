@@ -5,14 +5,9 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import cors from 'cors'
 
-// import {
-//     getNote,
-//     getNotes,
-//     createNote,
-//     updateNote,
-//     deleteNote
-// } from './database.js'
+
 import {
     isModuleNamespaceObject
 } from 'util/types'
@@ -25,6 +20,7 @@ app.use(express.urlencoded({
 }))
 app.use(express.static("public"))
 app.use(cookieParser())
+app.use(cors())
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -33,6 +29,14 @@ const db = mysql.createConnection({
     database: 'eye_clinic'
 }).promise()
 
+db.connect((err) => {
+    if(err) {
+        
+        return console.error('Error connecting to database:', err)
+    }
+    console.log('Database connected successfully')
+})
+
 const secretKey = 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMTc0OTk3MywiaWF0IjoxNzAxNzQ5OTczfQ.4udbW775eD-j9WqJBNzlmAeMx0C0QQEOaAeRgSyjc50'
 
 app.get('/check', async (req, res) => {
@@ -40,37 +44,9 @@ app.get('/check', async (req, res) => {
     const [result] = await db.query("select * from doctor where doctorId = ?", [doctorId])
     res.send(result)
 })
-// app.post('/login', (req, res) => {
 
-//     try {
-//         const sql = "select * from doctor where doctorId = ? and doctorPassword = ?";
-//         db.query(sql, [req.body.doctorId, req.body.doctorPassword], (err, data) => {
-//             if (err) return res.json({
-//                 Message: "Server side error"
-//             })
-//             if (data.length > 0) {
-//                 const doctorId = data[0].doctorId
-//                 const token = jwt.sign({
-//                     doctorId
-//                 }, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c", {
-//                     expiresIn: '1d'
-//                 })
-//                 res.cookie('token', token)
-//                 // return res.json({Status: "Success"})
-//                 return res.send("works")
-//             } else {
-//                 // return res.json({Message: "No records existed"})
-//                 return res.send("not working")
-//             }
-//         })
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).send('Internal Server Error')
-//     }
-
-// })
 app.post("/login", async (req, res) => {
-    // console.log(req.body)
+    
     const { doctorId, password } = req.body;
 
     try {
@@ -80,12 +56,12 @@ app.post("/login", async (req, res) => {
 
         if (password === doctorPassword) {
             res.send("Success")
+            
         } else {
             res.send("Fail")
         }
 
-        // console.log(doctorPassword)
-        // console.log(password)
+        
 
     } catch (error) {
         console.error(error);
@@ -119,57 +95,7 @@ app.post("/register", async (req, res) => {
     }
 })
 
-// app.get("/notes", async (req, res) => {
-//     const notes = await getNotes()
-//     res.send(notes)
-// })
 
-// app.get("/notes/:id", async (req, res) => {
-//     const id = req.params.id;
-//     const note = await getNote(id)
-//     res.send(note)
-// })
-
-// app.post("/create", async (req, res) => {
-//     console.log(req.body)
-//     const {
-//         title,
-//         contents
-//     } = req.body
-//     const newNote = await createNote(title, contents)
-//     const notes = await getNotes()
-//     res.send(notes)
-// })
-
-// app.put('/notes/:id', async (req, res) => {
-//     const id = req.params.id
-//     const {
-//         title,
-//         contents
-//     } = req.body
-
-//     try {
-//         await updateNote(id, title, contents)
-//         const updatedNotes = await getNotes()
-//         res.json(updatedNotes)
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).send('Internal Server Error')
-//     }
-// });
-
-
-// app.delete('/notes/:id', async (req, res) => {
-//     const id = req.params.id
-//     try {
-//         await deleteNote(id)
-//         const updatedNote = await getNotes()
-//         res.send("deleted Successfully")
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).send('Internal Server Error')
-//     }
-// })
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
