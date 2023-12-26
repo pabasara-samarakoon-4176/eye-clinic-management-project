@@ -52,14 +52,17 @@ app.post("/login", async (req, res) => {
     try {
         const [user] = await db.query("SELECT * FROM doctor WHERE doctorId = ?", [doctorId])
         // const [doctorPassword] = await db.query("select doctorPassword from doctor where doctorId = ?", [doctorId])
-        const doctorPassword = user[0].doctorPassword
-        const doctorId = user[0].doctorId
+        const _doctorPassword = user[0].doctorPassword
+        const _doctorId = user[0].doctorId
 
-        if (password === doctorPassword && doctorId === doctorId) {
+        if (password === _doctorPassword && doctorId === _doctorId) {
             res.send("Success")
+            
             
         } else {
             res.send("Fail")
+            console.log(doctorId)
+            console.log(password)
         }
 
         

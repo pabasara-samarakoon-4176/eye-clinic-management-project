@@ -31,7 +31,7 @@ const Login = () => {
         navigate('/home');
       } else if (response.data === 'Fail') {
         alert('login failed')
-      }
+      } 
 
     } catch (error) {
       console.error('Error during login', error);
