@@ -4,16 +4,40 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from 'react-router-dom';
 import './signUp.css';
 import myImage1 from './im4.jpeg';
+import { useState } from "react";
+import axios from "axios";
 
 const SignUp = () => {
+
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [doctorId, setDoctorId] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const navigate = useNavigate();
 
   const leftSectionStyle = {
     backgroundImage: `url(${myImage1})`,
   };
 
-  const handleLoginClick = () => {
-    navigate('/');
+  const handleSignupClick = async () => {
+    try {
+      if (password === confirmPassword) {
+        const response = await axios.post('http://localhost:8080/register', {
+          doctorId : doctorId,
+          doctorFirstname : firstname,
+          doctorLastname : lastname,
+          doctorPassword : password
+        })
+        alert("register success")
+        navigate('/')
+      } else {
+        alert('Confirm Password is not matching')
+      }
+    } catch (error) {
+      console.error('Error: ' + error.message)
+    }
   };
 
   return (
@@ -30,13 +54,26 @@ const SignUp = () => {
         </div>
 
           <div className="form-group">
-            <div className="label">Doctor Name:</div>
+          <div className="label">Firstname:</div>
             <div className="input">
               <input
                 type="text"
-                placeholder="Name with initials"
-                id="doctorName"
+                placeholder="First Name"
+                id="firstname"
                 className="lInput"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+              />
+            </div>
+            <div className="label">Lastname:</div>
+            <div className="input">
+              <input
+                type="text"
+                placeholder="Last name"
+                id="lastname"
+                className="lInput"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
               />
             </div>
           </div>
@@ -48,21 +85,11 @@ const SignUp = () => {
                 placeholder="MBBS.xxxxx"
                 id="doctorID"
                 className="lInput"
+                value={doctorId}
+                onChange={(e) => setDoctorId(e.target.value)}
               />
             </div>
           </div>
-          <div className="form-group">
-            <div className="label">Username:</div>
-            <div className="input">
-              <input
-                type="text"
-                placeholder="Username"
-                id="username"
-                className="lInput"
-              />
-            </div>
-          </div>
-
           <div className="form-group">
             <div className="label">Password:</div>
             <div className="input">
@@ -71,6 +98,8 @@ const SignUp = () => {
                 placeholder="Password"
                 id="password"
                 className="lInput"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -83,12 +112,14 @@ const SignUp = () => {
                 placeholder="Confirm Password"
                 id="confirmPassword"
                 className="lInput"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
           </div>
 
         <div className="signup-text">
-          <button type="submit" className="button" onClick={handleLoginClick}>
+          <button type="submit" className="button" onClick={handleSignupClick}>
             Create an Account <FontAwesomeIcon icon={faCircleChevronRight} />
           </button>
         </div>

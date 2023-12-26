@@ -29,8 +29,8 @@ const Login = () => {
       
       if (response.data === 'Success') {
         navigate('/home');
-      } else {
-        console.log('Login failed')
+      } else if (response.data === 'Fail') {
+        alert('login failed')
       }
 
     } catch (error) {
