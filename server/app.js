@@ -52,17 +52,17 @@ app.post("/login", async (req, res) => {
     try {
         const [user] = await db.query("SELECT * FROM doctor WHERE doctorId = ?", [doctorId])
         // const [doctorPassword] = await db.query("select doctorPassword from doctor where doctorId = ?", [doctorId])
-        const _doctorPassword = user[0].doctorPassword
+        const _doctorPasswordHashed = user[0].doctorPassword
         const _doctorId = user[0].doctorId
 
-        if (password === _doctorPassword && doctorId === _doctorId) {
-            res.send("Success")
-            
-            
+        if (doctorId === _doctorId) {
+            if(await bcrypt.compare(password, _doctorPasswordHashed)) {
+                res.send("Success")
+            } else {
+                res.send("Fail")
+            } 
         } else {
             res.send("Fail")
-            console.log(doctorId)
-            console.log(password)
         }
 
         
@@ -83,12 +83,16 @@ app.post("/register", async (req, res) => {
         doctorPassword
     } = req.body;
 
-    try {
+    const adminId = 'MBBS.12345';
 
+    try {
+        
+        const hashedPassword = await bcrypt.hash(req.body.doctorPassword, 10)
+        
         await db.query(`
-        insert into doctor (doctorId, doctorFirstname, doctorLastname, doctorPassword)
-        values (?, ?, ?, ?)
-        `, [doctorId, doctorFirstname, doctorLastname, doctorPassword])
+        insert into doctor (doctorId, doctorFirstname, doctorLastname, doctorPassword, adminId)
+        values (?, ?, ?, ?, ?)
+        `, [doctorId, doctorFirstname, doctorLastname, hashedPassword, adminId])
         const [newDoctor] = await db.query("select * from doctor where doctorId = ?", [doctorId])
         res.send(newDoctor)
 
