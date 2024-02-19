@@ -30,8 +30,8 @@ const db = mysql.createConnection({
 }).promise()
 
 db.connect((err) => {
-    if(err) {
-        
+    if (err) {
+
         return console.error('Error connecting to database:', err)
     }
     console.log('Database connected successfully')
@@ -46,8 +46,11 @@ app.get('/check', async (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
-    
-    const { doctorId, password } = req.body;
+
+    const {
+        doctorId,
+        password
+    } = req.body;
 
     try {
         const [user] = await db.query("SELECT * FROM doctor WHERE doctorId = ?", [doctorId])
@@ -56,16 +59,16 @@ app.post("/login", async (req, res) => {
         const _doctorId = user[0].doctorId
 
         if (doctorId === _doctorId) {
-            if(await bcrypt.compare(password, _doctorPasswordHashed)) {
+            if (await bcrypt.compare(password, _doctorPasswordHashed)) {
                 res.send("Success")
             } else {
                 res.send("Fail")
-            } 
+            }
         } else {
             res.send("Fail")
         }
 
-        
+
 
     } catch (error) {
         console.error(error);
@@ -86,9 +89,9 @@ app.post("/register", async (req, res) => {
     const adminId = 'MBBS.12345';
 
     try {
-        
+
         const hashedPassword = await bcrypt.hash(req.body.doctorPassword, 10)
-        
+
         await db.query(`
         insert into doctor (doctorId, doctorFirstname, doctorLastname, doctorPassword, adminId)
         values (?, ?, ?, ?, ?)
@@ -103,7 +106,41 @@ app.post("/register", async (req, res) => {
     }
 })
 
+app.post("/addlens/:nurseId", async (req, res) => {
+    const {
+        lensType,
+        manufacturer,
+        surgeryType,
+        model,
+        lensPower,
+        placementLocation,
+        manufactureDate,
+        expiryDate,
+        batchNumber,
+        remarks
+    } = req.body;
 
+    try {
+        const nurseId = req.params.nurseId;
+        const [stkMgr] = await db.query("select * from nurse where nurseId = ?", [nurseId]);
+        const temp = stkMgr[0]
+        
+        res.sendStatus(stkMgr[0].stockMgr)
+        // console.log(temp.stockMgr)
+        console.log(stkMgr[0].stockMgr);
+        // if(stkMgr[0].stockMgr === 1) {
+        //     res.send(stkMgr[0].stockMgr)
+        // } else {
+        //     res.send("not active")
+        // }
+    } catch (error) {
+        console.error(error)
+        res.send(error)
+    }
+
+
+
+})
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
