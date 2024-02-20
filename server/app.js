@@ -106,40 +106,88 @@ app.post("/register", async (req, res) => {
     }
 })
 
+app.get("/viewlens/:nurseId", async (req, res) => {
+    try {
+        const [stock] = await db.query("select * from lens")
+        res.send(stock)
+    } catch (error) {
+
+        res.send(error)
+    }
+})
+
+app.delete("/removelens/:nurseId", async (req, res) => {
+    const {
+        lensId
+    } = req.body
+    const nurseId = req.params.nurseId;
+    const [stkMgr] = await db.query("select * from nurse where nurseId = ?", [nurseId]);
+    try {
+        if (stkMgr[0].stockMgr.toString() === '1') {
+
+            await db.query(`delete from lens where lensId = ?`, [lensId])
+            res.send("deleted")
+        } else {
+            res.send("not allowed")
+        }
+    } catch (error) {
+        console.error(error)
+        res.send(error)
+    }
+})
+
+function dateConverter(dateString) {
+    
+    const date = new Date(dateString);
+
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Month is zero-based
+    const day = String(date.getUTCDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate
+}
+
 app.post("/addlens/:nurseId", async (req, res) => {
     const {
         lensType,
-        manufacturer,
+        manufacturerId,
         surgeryType,
         model,
         lensPower,
         placementLocation,
         manufactureDate,
         expiryDate,
-        batchNumber,
+        batchNo,
         remarks
     } = req.body;
 
     try {
+
+        const adminId = 'MBBS.12345';
         const nurseId = req.params.nurseId;
         const [stkMgr] = await db.query("select * from nurse where nurseId = ?", [nurseId]);
-        const temp = stkMgr[0]
-        
-        res.sendStatus(stkMgr[0].stockMgr)
-        // console.log(temp.stockMgr)
-        console.log(stkMgr[0].stockMgr);
-        // if(stkMgr[0].stockMgr === 1) {
-        //     res.send(stkMgr[0].stockMgr)
-        // } else {
-        //     res.send("not active")
-        // }
+        const formattedExpiryDate = dateConverter(expiryDate)
+        const formattedManufactureDate = dateConverter(manufactureDate)
+
+        if (stkMgr[0].stockMgr.toString() === '1') {
+            const manuId = manufacturerId.toString()
+            const year = Number(formattedManufactureDate.split("-")[0]).toString()
+            const serialNo = Number(batchNo.split("-")[1]).toString()
+            const lensId = `${manuId}-${year}-${serialNo}`;
+            const [newLens] = await db.query(`
+            INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
+            // dateConverter(expiryDate)
+            res.send("active")
+        } else {
+            res.send("not active")
+        }
     } catch (error) {
         console.error(error)
         res.send(error)
     }
-
-
-
 })
 
 app.use((err, req, res, next) => {

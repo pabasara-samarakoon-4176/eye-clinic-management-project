@@ -129,7 +129,8 @@ const SignUp = () => {
         </div>
 
         <div className="signup-text">
-          <button type="submit" className="button" onClick={handleSignupClick}>
+          <button type="submit" className="button"
+            onClick={handleSignupClick}>
             Create an Account <FontAwesomeIcon icon={faCircleChevronRight} />
           </button>
         </div>

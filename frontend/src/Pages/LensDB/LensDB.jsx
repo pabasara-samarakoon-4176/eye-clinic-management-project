@@ -7,17 +7,65 @@ import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "./lensDB.css";
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const LensDB = () => {
-  const [activeButton, setActiveButton] = useState("add");
-  const [expiryDate, setExpiryDate] = useState(null);
 
-  const [enterDate, setEnterDate] = useState(null);
-  const handleButtonClick = (button) => {
-    setActiveButton(button);
+  const navigate = useNavigate();
+
+  const [batchNo, setBatchNo] = useState('');
+  const [lensType, setLensType] = useState('');
+  const [surgeryType, setSurgeryType] = useState('');
+  const [manufacturer, setManufacturer] = useState('');
+  const [model, setModel] = useState('');
+  const [power, setPower] = useState('');
+  const [remarks, setRemarks] = useState('');
+  const [placementLocation, setPlacementLocation] = useState('');
+  const [expiryDate, setExpiryDate] = useState(null);
+  const [manufactureDate, setManufactureDate] = useState(null);
+
+  const [activeButton, setActiveButton] = useState("add");
+
+  function isValidBatchNo(str) {
+    // Define the regular expression
+    const regex = /^[A-Z]{2}-\d{4}$/;
+
+    // Test the string against the regular expression
+    return regex.test(str);
+  }
+
+  const handleSubmitClick = async () => {
+    // setActiveButton(button);
+    const nurseId = 'NR.00000'
+    const manuId = 'AB'
+    try {
+      if (isValidBatchNo(batchNo)) {
+        
+        const response = await axios.post(`http://localhost:8080/addlens/${nurseId}`, {
+          lensType: lensType,
+          manufacturerId: manuId,
+          surgeryType: surgeryType,
+          model: model,
+          lensPower: power,
+          placementLocation: placementLocation,
+          expiryDate: expiryDate,
+          manufactureDate: manufactureDate,
+          batchNo: batchNo,
+          remarks: remarks,
+        })
+        // console.log(response)
+        alert("Success")
+        navigate('/')
+      } else {
+        alert("Invalid batch number")
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
   const handleSearchLensId = (value) => {
-  
+
   };
   return (
     <div>
@@ -30,13 +78,13 @@ const LensDB = () => {
           <div className="left-panel">
             <button
               className={`rounded-button ${activeButton === "add" ? "active" : ""}`}
-              onClick={() => handleButtonClick("add")}
+              onClick={() => handleSubmitClick("add")}
             >
               Add
             </button>
             <button
               className={`rounded-button ${activeButton === "view" ? "active" : ""}`}
-              onClick={() => handleButtonClick("view")}
+              onClick={() => handleSubmitClick("view")}
             >
               View
             </button>
@@ -58,17 +106,21 @@ const LensDB = () => {
                     id="batchNo"
                     className="lInput"
                     placeholder="Type batch number"
+                    value={batchNo}
+                    onChange={(e) => setBatchNo(e.target.value)}
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="lensID" className="label">
-                    Lens ID:
+                  <label htmlFor="lensType" className="label">
+                    Lens Type:
                   </label>
                   <input
                     type="text"
                     id="lensID"
                     className="lInput"
-                    placeholder="Type Lens ID"
+                    placeholder="Type Lens Type"
+                    value={lensType}
+                    onChange={(e) => setLensType(e.target.value)}
                   />
                 </div>
 
@@ -76,7 +128,10 @@ const LensDB = () => {
                   <label htmlFor="surgeryType" className="label">
                     Surgery Type:
                   </label>
-                  <select id="surgeryType" className="lInput">
+                  <select id="surgeryType"
+                    className="lInput"
+                    value={surgeryType}
+                    onChange={(e) => setSurgeryType(e.target.value)}>
                     <option value="cataract">Cataract</option>
                     <option value="glaucoma">Glaucoma</option>
                     <option value="retina">Retina</option>
@@ -87,7 +142,8 @@ const LensDB = () => {
                   <label htmlFor="manufacturer" className="label">
                     Manufacturer:
                   </label>
-                  <select id="manufacturer" className="lInput">
+                  <select id="manufacturer" className="lInput"
+                    value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
                     <option value="manu1">Manufacturer 1</option>
                     <option value="manu2">Manufacturer 2</option>
                     <option value="manu3">Manufacturer 3</option>
@@ -98,7 +154,8 @@ const LensDB = () => {
                   <label htmlFor="model" className="label">
                     Model:
                   </label>
-                  <select id="model" className="lInput">
+                  <select id="model" className="lInput"
+                    value={model} onChange={(e) => setModel(e.target.value)}>
                     <option value="model1">Model 1</option>
                     <option value="model2">Model 2</option>
                     <option value="model3">Model 3</option>
@@ -109,11 +166,14 @@ const LensDB = () => {
                   <label htmlFor="power" className="label">
                     Power:
                   </label>
-                  <select id="power" className="lInput">
-                    <option value="power1">Power 1</option>
-                    <option value="power2">Power 2</option>
-                    <option value="power3">Power 3</option>
-                  </select>
+                  <input
+                    type="text"
+                    id="power"
+                    className="lInput"
+                    placeholder="Power of the lens"
+                    value={power}
+                    onChange={(e) => setPower(e.target.value)}
+                  />
                 </div>
 
                 <div className="form-group">
@@ -124,14 +184,18 @@ const LensDB = () => {
                     id="remarks"
                     className="lInput"
                     placeholder="Type remarks"
+                    value={remarks}
+                    onChange={(e) => setRemarks(e.target.value)}
                   ></textarea>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="placingLocation" className="label">
+                  <label htmlFor="placementLocation" className="label">
                     Placing Location:
                   </label>
-                  <select id="placingLocation" className="lInput">
+                  <select id="placementLocation" className="lInput"
+                    value={placementLocation}
+                    onChange={(e) => setPlacementLocation(e.target.value)}>
                     <option value="location1">Location 1</option>
                     <option value="location2">Location 2</option>
                     <option value="location3">Location 3</option>
@@ -161,32 +225,15 @@ const LensDB = () => {
                   </div>
                 </div>
 
+
                 <div className="form-group">
-                  <label htmlFor="manufacturedDate" className="label">
-                    Manufactured Date:
+                  <label htmlFor="ManufactureDate" className="label">
+                    Manaufactured Date:
                   </label>
                   <div className="date-input">
                     <DatePicker
-                      selected={expiryDate}
-                      onChange={(date) => setExpiryDate(date)}
-                      placeholderText="Select date"
-                      className="lInput"
-                      dateFormat="MM/dd/yyyy"
-                    />
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
-                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="createdDate" className="label">
-                    Data Entered Date:
-                  </label>
-                  <div className="date-input">
-                    <DatePicker
-                      selected={enterDate}
-                      onChange={(date) => setEnterDate(date)}
+                      selected={manufactureDate}
+                      onChange={(date) => setManufactureDate(date)}
                       placeholderText="Select date"
                       className="lInput"
                       dateFormat="MM/dd/yyyy"
@@ -198,7 +245,8 @@ const LensDB = () => {
                   </div>
                 </div>
                 <div className="form-group button-group">
-                  <button type="submit" className="button">
+                  <button type="submit" className="button"
+                    onClick={handleSubmitClick}>
                     Submit
                   </button>
                 </div>
