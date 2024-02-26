@@ -1,5 +1,5 @@
 // LensDB.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,11 +13,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 const LensDB = () => {
 
   const navigate = useNavigate();
+  const [manufacturerOptions, setManufacturerOptions] = useState([]);
 
   const [batchNo, setBatchNo] = useState('');
   const [lensType, setLensType] = useState('');
   const [surgeryType, setSurgeryType] = useState('');
   const [manufacturer, setManufacturer] = useState('');
+  const [manufacturerId, setManufacturerId] = useState('');
   const [model, setModel] = useState('');
   const [power, setPower] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -27,6 +29,19 @@ const LensDB = () => {
 
   const [activeButton, setActiveButton] = useState("add");
 
+  useEffect(() => {
+    const fetchManufacturers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/admin/viewmanufacturers');
+        setManufacturerOptions(response.data);
+      } catch (error) {
+        console.error('Error fetching manufacturers:', error);
+      }
+    };
+
+    fetchManufacturers();
+  }, []);
+
   function isValidBatchNo(str) {
     // Define the regular expression
     const regex = /^[A-Z]{2}-\d{4}$/;
@@ -35,16 +50,17 @@ const LensDB = () => {
     return regex.test(str);
   }
 
-  const handleSubmitClick = async () => {
+  const handleSubmitClick = async (event) => {
+    event.preventDefault();
     // setActiveButton(button);
     const nurseId = 'NR.00000'
     const manuId = 'AB'
     try {
       if (isValidBatchNo(batchNo)) {
-        
+
         const response = await axios.post(`http://localhost:8080/addlens/${nurseId}`, {
           lensType: lensType,
-          manufacturerId: manuId,
+          manufacturerId: manufacturerId,
           surgeryType: surgeryType,
           model: model,
           lensPower: power,
@@ -55,8 +71,8 @@ const LensDB = () => {
           remarks: remarks,
         })
         // console.log(response)
-        alert("Success")
-        navigate('/')
+        alert(manuId)
+        navigate('/home')
       } else {
         alert("Invalid batch number")
       }
@@ -142,12 +158,20 @@ const LensDB = () => {
                   <label htmlFor="manufacturer" className="label">
                     Manufacturer:
                   </label>
-                  <select id="manufacturer" className="lInput"
-                    value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
-                    <option value="manu1">Manufacturer 1</option>
-                    <option value="manu2">Manufacturer 2</option>
-                    <option value="manu3">Manufacturer 3</option>
+                  <select
+                    id="manufacturer"
+                    className="lInput"
+                    value={manufacturer}
+                    onChange={(e) => setManufacturerId(e.target.value)}
+                  >
+                    <option value="">Select a manufacturer</option>
+                    {manufacturerOptions.map((manufacturer) => (
+                      <option key={manufacturer.manuId} value={manufacturer.manuId}>
+                        {manufacturer.manuName}
+                      </option>
+                    ))}
                   </select>
+
                 </div>
 
                 <div className="form-group">

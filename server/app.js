@@ -137,7 +137,7 @@ app.delete("/removelens/:nurseId", async (req, res) => {
 })
 
 function dateConverter(dateString) {
-    
+
     const date = new Date(dateString);
 
     const year = date.getUTCFullYear();
@@ -147,6 +147,80 @@ function dateConverter(dateString) {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate
 }
+
+app.post("/admin/addmanufacturer", async (req, res) => {
+    const {
+        manuId,
+        manuName,
+        address,
+        contactNo,
+        country,
+        adminApproval
+    } = req.body
+    try {
+        await db.query(`insert into manufacturer (manuId, manuName, address, contactNo, country, adminApproval)
+        values (?, ?, ?, ?, ?, ?)`, [manuId, manuName, address, contactNo, country, adminApproval])
+        res.send('Success')
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.delete("/admin/deletemanufacturer", async (req, res) => {
+    const {
+        manuId
+    } = req.body
+    try {
+        await db.query(`delete from manufacturer where manuId = ?`, [manuId])
+        res.send('deleted')
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.get("/admin/viewmanufacturers", async (req, res) => {
+    try {
+        const response = await db.query(`select * from manufacturer`)
+        res.send(response[0])
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.post("/addlens/:nurseId/addmanufacturer", async (req, res) => {
+
+    const nurseId = req.params.nurseId;
+    const [stkMgr] = await db.query("select * from nurse where nurseId = ?", [nurseId]);
+    const [adminKey] = await db.query(`select adminKey from admin`)
+
+    const {
+        manuId,
+        manuName,
+        address,
+        contactNo,
+        country,
+        _adminKey
+    } = req.body
+    try {
+        if (stkMgr[0].stockMgr.toString() === '1') {
+            
+            if (adminKey[0].adminKey.toString() === _adminKey.toString()) {
+                
+                const adminApproval = 1
+                await db.query(`insert into manufacturer (manuId, manuName, address, contactNo, country, adminApproval)
+                values (?, ?, ?, ?, ?, ?)`, [manuId, manuName, address, contactNo, country, adminApproval])
+                
+            } else {
+                res.send("not allowed")
+            }
+        } else {
+            res.send("not active")
+        }
+        
+    } catch (error) {
+        res.send(error)
+    }
+})
 
 app.post("/addlens/:nurseId", async (req, res) => {
     const {
@@ -171,15 +245,14 @@ app.post("/addlens/:nurseId", async (req, res) => {
         const formattedManufactureDate = dateConverter(manufactureDate)
 
         if (stkMgr[0].stockMgr.toString() === '1') {
-            const manuId = manufacturerId.toString()
             const year = Number(formattedManufactureDate.split("-")[0]).toString()
             const serialNo = Number(batchNo.split("-")[1]).toString()
-            const lensId = `${manuId}-${year}-${serialNo}`;
+            const lensId = `${_manuId}-${year}-${serialNo}`;
             const [newLens] = await db.query(`
             INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
-            // dateConverter(expiryDate)
+            console.log(manufacturerId)
             res.send("active")
         } else {
             res.send("not active")
