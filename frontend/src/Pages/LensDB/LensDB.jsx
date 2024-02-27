@@ -14,6 +14,8 @@ const LensDB = () => {
 
   const navigate = useNavigate();
   const [manufacturerOptions, setManufacturerOptions] = useState([]);
+  const [lensData, setLensData] = useState([]);
+  const [manufacturerMap, setManufacturerMap] = useState({});
 
   const [batchNo, setBatchNo] = useState('');
   const [lensType, setLensType] = useState('');
@@ -41,6 +43,36 @@ const LensDB = () => {
 
     fetchManufacturers();
   }, []);
+
+  useEffect(() => {
+    const fetchLensData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/viewlens/NR.00000');
+        setLensData(response.data);
+
+        const uniqueManufacturerIds = [...new Set(response.data.map(lens => lens.manufacturerId))];
+
+        const manufacturerNamesPromises = uniqueManufacturerIds.map(async id => {
+          const manufacturerResponse = await axios.get(`http://localhost:8080/getManufacturer/${id}`);
+          return { id, name: manufacturerResponse.data.manufacturerName };
+        });
+
+        const manufacturerNames = await Promise.all(manufacturerNamesPromises);
+        const manufacturerNameMap = {};
+        manufacturerNames.forEach(manufacturer => {
+          manufacturerNameMap[manufacturer.id] = manufacturer.name;
+        });
+
+        setManufacturerMap(manufacturerNameMap);
+      } catch (error) {
+        console.error('Error fetching lens data:', error);
+      }
+    };
+
+    fetchLensData();
+  }, []);
+
+  
 
   function isValidBatchNo(str) {
     // Define the regular expression
@@ -80,6 +112,12 @@ const LensDB = () => {
       console.log(error)
     }
   };
+  const handleAddClick = () => {
+    setActiveButton("add");
+  }
+  const handleViewClick = () => {
+    setActiveButton("view");
+  }
   const handleSearchLensId = (value) => {
 
   };
@@ -94,13 +132,13 @@ const LensDB = () => {
           <div className="left-panel">
             <button
               className={`rounded-button ${activeButton === "add" ? "active" : ""}`}
-              onClick={() => handleSubmitClick("add")}
+              onClick={handleAddClick}
             >
               Add
             </button>
             <button
               className={`rounded-button ${activeButton === "view" ? "active" : ""}`}
-              onClick={() => handleSubmitClick("view")}
+              onClick={handleViewClick}
             >
               View
             </button>
@@ -148,6 +186,9 @@ const LensDB = () => {
                     className="lInput"
                     value={surgeryType}
                     onChange={(e) => setSurgeryType(e.target.value)}>
+                    <option value="" disabled selected hidden>
+                      Select Surgery Type
+                    </option>
                     <option value="cataract">Cataract</option>
                     <option value="glaucoma">Glaucoma</option>
                     <option value="retina">Retina</option>
@@ -180,6 +221,9 @@ const LensDB = () => {
                   </label>
                   <select id="model" className="lInput"
                     value={model} onChange={(e) => setModel(e.target.value)}>
+                    <option value="" disabled selected hidden>
+                      Select Model
+                    </option>
                     <option value="model1">Model 1</option>
                     <option value="model2">Model 2</option>
                     <option value="model3">Model 3</option>
@@ -220,6 +264,9 @@ const LensDB = () => {
                   <select id="placementLocation" className="lInput"
                     value={placementLocation}
                     onChange={(e) => setPlacementLocation(e.target.value)}>
+                    <option value="" disabled selected hidden>
+                      Select Placement Location
+                    </option>
                     <option value="location1">Location 1</option>
                     <option value="location2">Location 2</option>
                     <option value="location3">Location 3</option>
@@ -299,23 +346,23 @@ const LensDB = () => {
                       <th>Placing Location</th>
 
                       <th>Expiry Date</th>
-                      <th>Manufac Date</th>
+                      <th>Manufactured Date</th>
 
                     </tr>
                   </thead>
                   <tbody>
-                    {Array.from({ length: 7 }).map((_, index) => (
+                    {lensData.map((lens, index) => (
                       <tr key={index}>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td>{lens.lensId}</td>
+                        <td>{lens.batchNo}</td>
+                        <td>{lens.surgeryType}</td>
+                        <td>{manufacturerMap[lens.manufacturerId]}</td>
+                        <td>{lens.model}</td>
+                        <td>{lens.lensPower}</td>
+                        <td>{lens.remarks}</td>
+                        <td>{lens.placementLocation}</td>
+                        <td>{lens.expiryDate}</td>
+                        <td>{lens.manufactureDate}</td>
                       </tr>
                     ))}
                   </tbody>

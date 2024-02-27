@@ -116,6 +116,16 @@ app.get("/viewlens/:nurseId", async (req, res) => {
     }
 })
 
+app.get("/viewmanu/:manuId", async (req, res) => {
+    const manuId = req.params.manuId
+    try {
+        const [manu] = await db.query("select manuName from manufacturer where manuId = ?", [manuId])
+        res.send(manu[0])
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 app.delete("/removelens/:nurseId", async (req, res) => {
     const {
         lensId
@@ -173,6 +183,16 @@ app.delete("/admin/deletemanufacturer", async (req, res) => {
     try {
         await db.query(`delete from manufacturer where manuId = ?`, [manuId])
         res.send('deleted')
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.get("/getManufacturer/:manuId", async (req, res) => {
+    const manuId = req.params.manuId
+    try {
+        const response = await db.query(`select * from manufacturer where manuId = ?`, [manuId])
+        res.send(response)
     } catch (error) {
         res.send(error)
     }
@@ -246,13 +266,13 @@ app.post("/addlens/:nurseId", async (req, res) => {
 
         if (stkMgr[0].stockMgr.toString() === '1') {
             const year = Number(formattedManufactureDate.split("-")[0]).toString()
-            const serialNo = Number(batchNo.split("-")[1]).toString()
-            const lensId = `${_manuId}-${year}-${serialNo}`;
+            const serialNo = (batchNo.split("-")[1]).toString()
+            const lensId = `${manufacturerId}-${year}-${serialNo}`;
             const [newLens] = await db.query(`
             INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
-            console.log(manufacturerId)
+            console.log(lensId)
             res.send("active")
         } else {
             res.send("not active")
