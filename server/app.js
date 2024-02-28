@@ -191,7 +191,17 @@ app.delete("/admin/deletemanufacturer", async (req, res) => {
 app.get("/getManufacturer/:manuId", async (req, res) => {
     const manuId = req.params.manuId
     try {
-        const response = await db.query(`select * from manufacturer where manuId = ?`, [manuId])
+        const [response] = await db.query(`select * from manufacturer where manuId = ?`, [manuId])
+        res.send(response)
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.get("/searchlens/:lensId", async (req, res) => {
+    const lensId = req.params.lensId
+    try {
+        const [response] = await db.query(`select * from lens where lensId = ?`, [lensId])
         res.send(response)
     } catch (error) {
         res.send(error)
