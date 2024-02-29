@@ -18,6 +18,7 @@ const LensDB = () => {
   const [manufacturerMap, setManufacturerMap] = useState({});
   const [searchLensId, setSearchLensId] = useState('');
   const [searchLensData, setSearchLensData] = useState([]);
+  const [searchManufacturerId, setSearchManufacturerId] = useState('');
 
   const [batchNo, setBatchNo] = useState('');
   const [lensType, setLensType] = useState('');
@@ -37,8 +38,8 @@ const LensDB = () => {
     const fetchManufacturers = async () => {
       try {
         const response = await axios.get('http://localhost:8080/admin/viewmanufacturers');
-        setManufacturerOptions(response.data);
-        console.log(manufacturerOptions)
+        setManufacturerOptions(response.data)
+        console.log([manufacturerOptions])
       } catch (error) {
         console.error('Error fetching manufacturers:', error);
       }
@@ -48,12 +49,21 @@ const LensDB = () => {
   }, []);
 
   useEffect(() => {
+    try {
+      setSearchManufacturerId(searchLensData[0][0]?.manufacturerId)
+      console.log(searchManufacturerId)
+    } catch (error) {
+      console.error(error)
+    }
+  })
+
+  useEffect(() => {
     const fetchLensData = async () => {
       try {
         const response = await axios.get('http://localhost:8080/viewlens/NR.00000');
         setLensData(response.data);
         console.log([lensData])
-        
+
       } catch (error) {
         console.error('Error fetching lens data:', error);
       }
@@ -111,16 +121,16 @@ const LensDB = () => {
   const handleSearchLensId = async (value) => {
     try {
       const response = await axios.get(`http://localhost:8080/searchlens/${value}`);
-      
+
       setSearchLensData([response.data]);
-      console.log([searchLensData])
-      
+      console.log(manufacturerOptions[0])
+
     } catch (error) {
       console.error('Error fetching lens data:', error);
-      
+
     }
   };
-  
+
   return (
     <div>
       <header className="header">
@@ -395,55 +405,63 @@ const LensDB = () => {
                       />
                     </button>
                   </div>
-                  <div className="column">
-                    <div className="label-value-pair">
-                      <span className="label">Lens ID:</span>
-                      <span className="valueL">{searchLensData[0][0]?.lensId}</span>
+                  {searchLensData.length > 0 && (
+                    <div className="column">
+                      <div className="label-value-pair">
+                        <span className="label">Lens ID:</span>
+                        <span className="valueL">{searchLensData[0][0]?.lensId}</span>
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Batch No:</span>
+                        <span className="valueL">{searchLensData[0][0]?.batchNo}</span>
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Surgery Type:</span>
+                        <span className="valueL">{searchLensData[0][0]?.surgeryType}</span>
+                      </div>
                     </div>
-                    <div className="label-value-pair">
-                      <span className="label">Batch No:</span>
-                      <span className="valueL">{searchLensData[0][0]?.batchNo}</span>
+                  )}
+                  {searchLensData.length > 0 && (
+                    <div className="column">
+                      <div className="label-value-pair">
+                        <span className="label">Manufacturer:</span>
+                        <span className="valueL">{searchLensData[0][0]?.manufacturerId}</span>
+                        {/* <span className="valueL">{manufacturerMap[searchLensData[0][0]?.manufacturerId]}</span> */}
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Model:</span>
+                        <span className="valueL">{searchLensData[0][0]?.model}</span>
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Power:</span>
+                        <span className="valueL">{searchLensData[0][0]?.lensPower}</span>
+                      </div>
                     </div>
-                    <div className="label-value-pair">
-                      <span className="label">Surgery Type:</span>
-                      <span className="valueL">{searchLensData[0][0]?.surgeryType}</span>
+                  )}
+                  {searchLensData.length > 0 && (
+                    <div className="column">
+                      <div className="label-value-pair">
+                        <span className="label">Placing Location:</span>
+                        <span className="valueL">{searchLensData[0][0]?.placementLocation}</span>
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Expiry Date:</span>
+                        <span className="valueL">{searchLensData[0][0]?.expiryDate}</span>
+                      </div>
+                      <div className="label-value-pair">
+                        <span className="label">Manufacturing Date:</span>
+                        <span className="valueL">{searchLensData[0][0]?.manufactureDate}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="column">
-                    <div className="label-value-pair">
-                      <span className="label">Manufacturer:</span>
-                      <span className="valueL">{searchLensData[0][0]?.manufacturerId}</span>
-                      {/* <span className="valueL">{manufacturerMap[searchLensData[0][0]?.manufacturerId]}</span> */}
+                  )}
+                  {searchLensData.length > 0 && (
+                    <div className="column">
+                      <div className="label-value-pair-R">
+                        <span className="label">Remarks:</span>
+                        <span className="valueR">{searchLensData[0][0]?.remarks}</span>
+                      </div>
                     </div>
-                    <div className="label-value-pair">
-                      <span className="label">Model:</span>
-                      <span className="valueL">{searchLensData[0][0]?.model}</span>
-                    </div>
-                    <div className="label-value-pair">
-                      <span className="label">Power:</span>
-                      <span className="valueL">{searchLensData[0][0]?.lensPower}</span>
-                    </div>
-                  </div>
-                  <div className="column">
-                    <div className="label-value-pair">
-                      <span className="label">Placing Location:</span>
-                      <span className="valueL">{searchLensData[0][0]?.placementLocation}</span>
-                    </div>
-                    <div className="label-value-pair">
-                      <span className="label">Expiry Date:</span>
-                      <span className="valueL">{searchLensData[0][0]?.expiryDate}</span>
-                    </div>
-                    <div className="label-value-pair">
-                      <span className="label">Manufacturing Date:</span>
-                      <span className="valueL">{searchLensData[0][0]?.manufactureDate}</span>
-                    </div>
-                  </div>
-                  <div className="column">
-                    <div className="label-value-pair-R">
-                      <span className="label">Remarks:</span>
-                      <span className="valueR">{searchLensData[0][0]?.remarks}</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
               </div>
