@@ -12,19 +12,23 @@ import {
 import "./patient.css";
 
 const PatientDB = () => {
+
+  
+
   const [activeTab, setActiveTab] = useState("PERSONAL DETAILS");
   const [activeButton, setActiveButton] = useState("add");
   const [birthDate, setExpiryDate] = useState(null);
   const [age, setAge] = useState(null);
 
-  const handleExamHoursChange = (e) => setExamHours(e.target.value);
-  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value);
-  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value);
+  const handleClinicHoursChange = (e) => setClinicHours(e.target.value);
+  const handleClinicMinutesChange = (e) => setClinicMinutes(e.target.value);
+  const handleClinicAMPMChange = (e) => setClinicAMPM(e.target.value);
 
-  const [examDate, setExamDate] = useState(null);
-  const [examHours, setExamHours] = useState(null);
-  const [examMinutes, setExamMinutes] = useState(null);
-  const [examAMPM, setExamAMPM] = useState(null);
+  const [clinicDate, setClinicDate] = useState(null);
+  const [clinicHours, setClinicHours] = useState(null);
+  const [clinicMinutes, setClinicMinutes] = useState(null);
+  const [clinicAMPM, setClinicAMPM] = useState(null);
+  const [clinicConsultantId, setClinicConsultantId] = useState('');
 
   const [examId, setExamId] = useState("");
   const [complaintsRightEye, setComplaintsRightEye] = useState({
@@ -80,6 +84,14 @@ const PatientDB = () => {
     return age;
   };
 
+  const handleSubmitClick = () => {
+    try {
+      alert(clinicHours)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const imageUrl = null;
 
   return (
@@ -133,13 +145,24 @@ const PatientDB = () => {
                       </div>
                       <div className="form-group">
                         <label htmlFor="name" className="label">
-                          Name:
+                          First Name:
                         </label>
                         <input
                           type="text"
                           id="name"
                           className="lInput"
-                          placeholder="Enter name"
+                          placeholder="Enter first name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="name" className="label">
+                          Last Name:
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          className="lInput"
+                          placeholder="Enter last name"
                         />
                       </div>
                       <div className="form-group">
@@ -159,7 +182,7 @@ const PatientDB = () => {
                       </div>
                       <div className="form-group">
                         <label htmlFor="birthday" className="label">
-                          Birthday:
+                          Date of Birth:
                         </label>
                         <div className="date-input1">
                           <DatePicker
@@ -403,6 +426,33 @@ const PatientDB = () => {
                   >
                     View
                   </button>
+
+                  <div className="fixed-navigation-buttons">
+                    <p>
+                      <b>Navigation Menu</b>
+                    </p>
+                    <a href="#clinic-data">
+                      <button className="rounded-button">Clinic Details</button>
+                    </a>
+                    <a href="#patient-complaints">
+                      <button className="rounded-button">
+                        Patient Complaints
+                      </button>
+                    </a>
+                    <a href="#exam-data">
+                      <button className="rounded-button">Exam Details</button>
+                    </a>
+                    <a href="#catarat-details">
+                      <button className="rounded-button">
+                        Catarat Details
+                      </button>
+                    </a>
+                    <a href="#glucoma details">
+                      <button className="rounded-button">
+                        Glucoma Details
+                      </button>
+                    </a>
+                  </div>
                 </div>
                 <div className="right-panel">
                   {activeTab === "MEDICAL DETAILS" && (
@@ -417,483 +467,593 @@ const PatientDB = () => {
                                     <b>MEDICAL DATA</b>
                                   </p>
                                 </div>
+                                <div id="clinic-data">
+                                  <div className="exam-details-section">
+                                    <div className="above-form-and-table">
+                                      <p>
+                                        <b>CLINIC DETAILS</b>
+                                      </p>
+                                    </div>
+                                    <div className="form-group inline-form">
+                                      
 
-                                <div className="form-group inline-form">
-                                  <div className="label-input">
-                                    <label htmlFor="examId" className="label">
-                                      Exam ID:
+                                      <div className="label-input">
+                                        <label
+                                          htmlFor="clinicDate"
+                                          className="label"
+                                        >
+                                          Date:
+                                        </label>
+                                        <div className="date-input">
+                                          <DatePicker
+                                            selected={clinicDate}
+                                            onChange={(date) =>
+                                              setClinicDate(date)
+                                            }
+                                            placeholderText="Select date"
+                                            className="lInput"
+                                            dateFormat="yyyy/MM/dd"
+                                          />
+                                          <FontAwesomeIcon
+                                            icon={faCalendarAlt}
+                                            style={{
+                                              fontSize: "1.5em",
+                                              color: "#6FA1EE",
+                                              marginLeft: "8px",
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="label-input">
+                                        <div className="label-input">
+                                          <label
+                                            htmlFor="examTime"
+                                            className="label"
+                                          >
+                                            Time:
+                                          </label>
+                                          <div className="time-input">
+                                            <select
+                                              id="hours"
+                                              className="lInputt"
+                                              value={clinicHours || ""}
+                                              onChange={(e) =>
+                                                handleClinicHoursChange(e)
+                                              }
+                                            >
+                                              <option value="" disabled>
+                                                --
+                                              </option>
+                                              {hoursOptions.map((hour) => (
+                                                <option key={hour} value={hour}>
+                                                  {hour}
+                                                </option>
+                                              ))}
+                                            </select>
+
+                                            <select
+                                              id="minutes"
+                                              className="lInputt"
+                                              value={clinicMinutes || ""}
+                                              onChange={(e) =>
+                                                handleClinicMinutesChange(e)
+                                              }
+                                            >
+                                              <option value="" disabled>
+                                                --
+                                              </option>
+                                              {minutesOptions.map((minute) => (
+                                                <option
+                                                  key={minute}
+                                                  value={minute}
+                                                >
+                                                  {minute}
+                                                </option>
+                                              ))}
+                                            </select>
+
+                                            <select
+                                              id="ampm"
+                                              className="lInputt"
+                                              value={clinicAMPM || ""}
+                                              onChange={(e) =>
+                                                handleClinicAMPMChange(e)
+                                              }
+                                            >
+                                              <option value="" disabled>
+                                                --
+                                              </option>
+                                              <option value="AM">AM</option>
+                                              <option value="PM">PM</option>
+                                            </select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="form-group inline-form">
+                                      <div className="label-input">
+                                        <label
+                                          htmlFor="docId"
+                                          className="label"
+                                        >
+                                          Consultant Id:
+                                        </label>
+                                        <input
+                                          type="text"
+                                          id="docId"
+                                          className="lInput"
+                                          placeholder="Enter Consultant's Id"
+                                          value={clinicConsultantId}
+                                          onChange={(e) => setClinicConsultantId(e.target.value)}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div id="patient-complaints">
+                                  <div className="exam-details-section">
+                                    <div className="above-form-and-table">
+                                      <p>
+                                        <b>PATIENT COMPLAINTS</b>
+                                      </p>
+                                    </div>
+                                    <div className="complaints-columns">
+                                      <div className="complaints-column">
+                                        <p>
+                                          <b>Right Eye</b>
+                                        </p>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Pain:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Double Vision:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Red Eye:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Poor Vision:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Description:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter More Details"
+                                          />
+                                        </div>
+                                        <div className="form-group button-group">
+                                          <label
+                                            htmlFor="imageUpload"
+                                            className="insert-image-text"
+                                          >
+                                            Upload Left Eye Image
+                                            <FontAwesomeIcon
+                                              icon={faCloudUploadAlt}
+                                              style={{
+                                                fontSize: "1.5em",
+                                                color: "#6FA1EE",
+                                              }}
+                                              className="cloud-icon"
+                                            />
+                                          </label>
+                                          <input
+                                            type="file"
+                                            id="imageUpload"
+                                            style={{ display: "none" }}
+                                            onChange={(e) => {
+                                              const selectedImage =
+                                                e.target.files[0];
+                                              console.log(
+                                                "Selected Image:",
+                                                selectedImage,
+                                              );
+                                            }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="button-img"
+                                            onClick={() =>
+                                              document
+                                                .getElementById("imageUpload")
+                                                .click()
+                                            }
+                                          >
+                                            Upload Image
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div className="complaints-column">
+                                        <p>
+                                          <b>Left Eye</b>
+                                        </p>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Pain:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Double Vision:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Red Eye:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Poor Vision:
+                                          </label>
+                                          <input
+                                            type="checkbox"
+                                            id="rightEyePain"
+                                            className="checkbox-input"
+                                          />
+                                          <input
+                                            type="text"
+                                            className="lInput"
+                                            placeholder="Enter Duration"
+                                          />
+                                        </div>
+
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Description:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter More Details"
+                                          />
+                                        </div>
+                                        <div className="form-group button-group">
+                                          <label
+                                            htmlFor="imageUpload"
+                                            className="insert-image-text"
+                                          >
+                                            Upload Left Eye Image
+                                            <FontAwesomeIcon
+                                              icon={faCloudUploadAlt}
+                                              style={{
+                                                fontSize: "1.5em",
+                                                color: "#6FA1EE",
+                                              }}
+                                              className="cloud-icon"
+                                            />
+                                          </label>
+                                          <input
+                                            type="file"
+                                            id="imageUpload"
+                                            style={{ display: "none" }}
+                                            onChange={(e) => {
+                                              const selectedImage =
+                                                e.target.files[0];
+                                              console.log(
+                                                "Selected Image:",
+                                                selectedImage,
+                                              );
+                                            }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="button-img"
+                                            onClick={() =>
+                                              document
+                                                .getElementById("imageUpload")
+                                                .click()
+                                            }
+                                          >
+                                            Upload Image
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <label htmlFor="alergy">
+                                      Alergies Details:
                                     </label>
                                     <input
                                       type="text"
-                                      id="examId"
+                                      id="alergy"
                                       className="lInput"
-                                      placeholder="Enter Exam ID"
+                                      placeholder="Enter Alegies"
                                     />
-                                  </div>
-
-                                  <div className="label-input">
-                                    <label htmlFor="examDate" className="label">
-                                      Date:
-                                    </label>
-                                    <div className="date-input">
-                                      <DatePicker
-                                        selected={examDate}
-                                        onChange={(date) => setExamDate(date)}
-                                        placeholderText="Select date"
-                                        className="lInput"
-                                        dateFormat="yyyy/MM/dd"
-                                      />
-                                      <FontAwesomeIcon
-                                        icon={faCalendarAlt}
-                                        style={{
-                                          fontSize: "1.5em",
-                                          color: "#6FA1EE",
-                                          marginLeft: "8px",
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="label-input">
-                                    <div className="label-input">
-                                      <label
-                                        htmlFor="examTime"
-                                        className="label"
-                                      >
-                                        Time:
+                                    <div>
+                                      <label htmlFor="medipast">
+                                        Medical History:
                                       </label>
-                                      <div className="time-input">
-                                        <select
-                                          id="hours"
-                                          className="lInputt"
-                                          value={examHours || ""}
-                                          onChange={(e) =>
-                                            handleExamHoursChange(e)
-                                          }
-                                        >
-                                          <option value="" disabled>
-                                            --
-                                          </option>
-                                          {hoursOptions.map((hour) => (
-                                            <option key={hour} value={hour}>
-                                              {hour}
-                                            </option>
-                                          ))}
-                                        </select>
-
-                                        <select
-                                          id="minutes"
-                                          className="lInputt"
-                                          value={examMinutes || ""}
-                                          onChange={(e) =>
-                                            handleExamMinutesChange(e)
-                                          }
-                                        >
-                                          <option value="" disabled>
-                                            --
-                                          </option>
-                                          {minutesOptions.map((minute) => (
-                                            <option key={minute} value={minute}>
-                                              {minute}
-                                            </option>
-                                          ))}
-                                        </select>
-
-                                        <select
-                                          id="ampm"
-                                          className="lInputt"
-                                          value={examAMPM || ""}
-                                          onChange={(e) =>
-                                            handleExamAMPMChange(e)
-                                          }
-                                        >
-                                          <option value="" disabled>
-                                            --
-                                          </option>
-                                          <option value="AM">AM</option>
-                                          <option value="PM">PM</option>
-                                        </select>
-                                      </div>
+                                      <input
+                                        type="text"
+                                        id="medipast"
+                                        className="lInput"
+                                        placeholder="Enter Past Medical History"
+                                      />
                                     </div>
                                   </div>
                                 </div>
-                                <div className="exam-details-section">
-                                  <div className="above-form-and-table">
-                                    <p>
-                                      <b>EXAM DETAILS</b>
-                                    </p>
-                                  </div>
-                                  <div className="exam-details-columns">
-                                    <div className="exam-details-column">
+                                <div id="exam-data">
+                                  <div className="exam-details-section">
+                                    <div className="above-form-and-table">
                                       <p>
-                                        <b>Right Eye</b>
+                                        <b>EXAM DETAILS</b>
                                       </p>
-                                      <div className="form-group">
-                                        <label htmlFor="leftEyeParameter1">
-                                          AC:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="leftEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="leftEyeParameter2">
-                                          Lids:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="leftEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Conjuitive:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Iris:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Vitreous:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Cornea:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
                                     </div>
-                                    <div className="exam-details-column">
-                                      <p>
-                                        <b>Left Eye</b>
-                                      </p>
-                                      <div className="form-group">
-                                        <label htmlFor="leftEyeParameter1">
-                                          AC:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="leftEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="leftEyeParameter2">
-                                          Lids:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="leftEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Conjuitive:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Iris:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Vitreous:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 1"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Cornea:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter Parameter 2"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                    <div className="exam-details-columns">
+                                      <div className="exam-details-column">
+                                        <p>
+                                          <b>Right Eye</b>
+                                        </p>
 
-                                <div className="exam-details-section">
-                                  <div className="above-form-and-table">
-                                    <p>
-                                      <b>PATIENT COMPLAINTS</b>
-                                    </p>
-                                  </div>
-                                  <div className="complaints-columns">
-                                    <div className="complaints-column">
-                                      <p>
-                                        <b>Right Eye</b>
-                                      </p>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Pain:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Double Vision:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Red Eye:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Poor Vision:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Alergies:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Alegies"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Description:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter More Details"
-                                        />
-                                      </div>
-                                      <div className="form-group button-group">
-                                        <label
-                                          htmlFor="imageUpload"
-                                          className="insert-image-text"
-                                        >
-                                          Upload Left Eye Image
-                                          <FontAwesomeIcon
-                                            icon={faCloudUploadAlt}
-                                            style={{
-                                              fontSize: "1.5em",
-                                              color: "#6FA1EE",
-                                            }}
-                                            className="cloud-icon"
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter2">
+                                            Lids:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
                                           />
-                                        </label>
-                                        <input
-                                          type="file"
-                                          id="imageUpload"
-                                          style={{ display: "none" }}
-                                          onChange={(e) => {
-                                            const selectedImage =
-                                              e.target.files[0];
-                                            console.log(
-                                              "Selected Image:",
-                                              selectedImage,
-                                            );
-                                          }}
-                                        />
-                                        <button
-                                          type="button"
-                                          className="button-img"
-                                          onClick={() =>
-                                            document
-                                              .getElementById("imageUpload")
-                                              .click()
-                                          }
-                                        >
-                                          Upload Image
-                                        </button>
-                                      </div>
-                                    </div>
-                                    <div className="complaints-column">
-                                      <p>
-                                        <b>Left Eye</b>
-                                      </p>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Pain:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Double Vision:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Red Eye:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Poor Vision:
-                                        </label>
-                                        <input
-                                          type="checkbox"
-                                          id="rightEyePain"
-                                          className="checkbox-input"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter1">
-                                          Alergies:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter1"
-                                          className="lInput"
-                                          placeholder="Enter Alegies"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label htmlFor="rightEyeParameter2">
-                                          Description:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id="rightEyeParameter2"
-                                          className="lInput"
-                                          placeholder="Enter More Details"
-                                        />
-                                      </div>
-                                      <div className="form-group button-group">
-                                        <label
-                                          htmlFor="imageUpload"
-                                          className="insert-image-text"
-                                        >
-                                          Upload Left Eye Image
-                                          <FontAwesomeIcon
-                                            icon={faCloudUploadAlt}
-                                            style={{
-                                              fontSize: "1.5em",
-                                              color: "#6FA1EE",
-                                            }}
-                                            className="cloud-icon"
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Conjuitive:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
                                           />
-                                        </label>
-                                        <input
-                                          type="file"
-                                          id="imageUpload"
-                                          style={{ display: "none" }}
-                                          onChange={(e) => {
-                                            const selectedImage =
-                                              e.target.files[0];
-                                            console.log(
-                                              "Selected Image:",
-                                              selectedImage,
-                                            );
-                                          }}
-                                        />
-                                        <button
-                                          type="button"
-                                          className="button-img"
-                                          onClick={() =>
-                                            document
-                                              .getElementById("imageUpload")
-                                              .click()
-                                          }
-                                        >
-                                          Upload Image
-                                        </button>
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter1">
+                                            AC:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Iris:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Vitreous:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Cornea:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter2">
+                                            Retina:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="exam-details-column">
+                                        <p>
+                                          <b>Left Eye</b>
+                                        </p>
+
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter2">
+                                            Lids:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Conjuitive:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter1">
+                                            AC:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Iris:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter1">
+                                            Vitreous:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter1"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="rightEyeParameter2">
+                                            Cornea:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="rightEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <label htmlFor="leftEyeParameter2">
+                                            Retina:
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="leftEyeParameter2"
+                                            className="lInput"
+                                            placeholder="Enter Details"
+                                          />
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+                                <div id="catarat-details">
+                                  <div className="exam-details-section">
+                                    <div className="above-form-and-table">
+                                      <p>
+                                        <b>CATARAT DETAILS</b>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
 
+                                <div id="glucoma-details">
+                                  <div className="exam-details-section">
+                                    <div className="above-form-and-table">
+                                      <p>
+                                        <b>GLUCOMA DETAILS</b>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
                                 <div className="form-group button-group">
-                                  <button type="submit" className="button">
+                                  <button type="submit" className="button"
+                                  onClick={handleSubmitClick}>
                                     Submit
                                   </button>
                                 </div>
@@ -939,235 +1099,276 @@ const PatientDB = () => {
                               </button>
                             </div>
                           </div>
-                          {/* Display summarized medical details */}
-                          <div className="label-value-pair">
-                            <span className="label">Exam ID:</span>
-                            <span className="value"></span>
-                          </div>
-                          <div className="label-value-pair">
-                            <span className="label">Date:</span>
-                            <span className="value">
-                              {/* Render summarized right eye complaints here */}
-                            </span>
-                          </div>
-                          <div className="label-value-pair">
-                            <span className="label">Time:</span>
-                            <span className="value">
-                            </span>
-                          </div>
-
-                          <div className="label-value-pair">
-                            <span className="label">Right Eye Complaints:</span>
-                            <span className="value">
-                            </span>
-                          </div>
-
-                          <div className="label-value-pair">
-                            <span className="label">Left Eye Complaints:</span>
-                            <span className="value">
-                            </span>
-                          </div>
-                          <div className="label-value-pair">
-                            <span className="label">Alergies:</span>
-                            <span className="value">
-                            </span>
-                          </div>
-
-                          <div className="label-value-pair">
-                            <span className="label">Description:</span>
-                            <span className="value">
-                            </span>
-                          </div>
-                          <div className="exam-details-section">
-                            <div className="above-form-and-table">
-                              <p>
-                                <b>EXAM DETAILS</b>
-                              </p>
-                            </div>
-                            <div className="exam-details-columns">
-                              <div className="exam-details-column">
+                          <div id="clinic-data">
+                            <div className="exam-details-section">
+                              <div className="above-form-and-table">
                                 <p>
-                                  <b>Right Eye</b>
+                                  <b>CLINIC DETAILS</b>
                                 </p>
+                              </div>
+                              <div className="label-value-pair">
+                                <span className="label">Exam ID:</span>
+                                <span className="value"></span>
+                              </div>
+                              <div className="label-value-pair">
+                                <span className="label">Date:</span>
+                                <span className="value">
+                                </span>
+                              </div>
+                              <div className="label-value-pair">
+                                <span className="label">Time:</span>
+                                <span className="value"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="patient-complaints">
+                            <div className="exam-details-section">
+                              <div className="above-form-and-table">
+                                <p>
+                                  <b>PATIENT COMPLAINTS</b>
+                                </p>
+                              </div>
+                              <div className="label-value-pair">
+                                <span className="label">
+                                  Right Eye Complaints:
+                                </span>
+                                <span className="value"></span>
+                              </div>
 
-                                <div className="label-value-pair eye-image-section">
-                                  <span className="label">
-                                    Right Eye Image:
-                                  </span>
-                                  <div className="eye-image-container">
-                                    {imageUrl ? (
-                                      <img
-                                        src={imageUrl}
-                                        alt="Right Eye"
-                                        className="eye-image"
-                                      />
-                                    ) : (
-                                      <div className="eye-icon">
-                                        <FontAwesomeIcon
-                                          icon={faEye}
-                                          size="4x"
-                                          color="#6FA1EE"
+                              <div className="label-value-pair">
+                                <span className="label">
+                                  Left Eye Complaints:
+                                </span>
+                                <span className="value"></span>
+                              </div>
+                              <div className="label-value-pair">
+                                <span className="label">Alergies:</span>
+                                <span className="value"></span>
+                              </div>
+
+                              <div className="label-value-pair">
+                                <span className="label">Description:</span>
+                                <span className="value"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="exam-data">
+                            <div className="exam-details-section">
+                              <div className="above-form-and-table">
+                                <p>
+                                  <b>EXAM DETAILS</b>
+                                </p>
+                              </div>
+                              <div className="exam-details-columns">
+                                <div className="exam-details-column">
+                                  <p>
+                                    <b>Right Eye</b>
+                                  </p>
+
+                                  <div className="label-value-pair eye-image-section">
+                                    <span className="label">
+                                      Right Eye Image:
+                                    </span>
+                                    <div className="eye-image-container">
+                                      {imageUrl ? (
+                                        <img
+                                          src={imageUrl}
+                                          alt="Right Eye"
+                                          className="eye-image"
                                         />
-                                      </div>
-                                    )}
+                                      ) : (
+                                        <div className="eye-icon">
+                                          <FontAwesomeIcon
+                                            icon={faEye}
+                                            size="4x"
+                                            color="#6FA1EE"
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div className="form-group">
+                                    <label htmlFor="leftEyeParameter2">
+                                      Lids:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="leftEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter1">
+                                      Conjuitive:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="leftEyeParameter1">
+                                      AC:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="leftEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter2">
+                                      Iris:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter1">
+                                      Vitreous:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter2">
+                                      Cornea:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
                                   </div>
                                 </div>
-                                <div className="form-group">
-                                  <label htmlFor="leftEyeParameter1">AC:</label>
-                                  <input
-                                    type="text"
-                                    id="leftEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="leftEyeParameter2">
-                                    Lids:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="leftEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter1">
-                                    Conjuitive:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter2">
-                                    Iris:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter1">
-                                    Vitreous:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter2">
-                                    Cornea:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
+                                <div className="exam-details-column">
+                                  <p>
+                                    <b>Left Eye</b>
+                                  </p>
+
+                                  <div className="label-value-pair eye-image-section">
+                                    <span className="label">
+                                      Right Eye Image:
+                                    </span>
+                                    <div className="eye-image-container">
+                                      {imageUrl ? (
+                                        <img
+                                          src={imageUrl}
+                                          alt="Right Eye"
+                                          className="eye-image"
+                                        />
+                                      ) : (
+                                        <div className="eye-icon">
+                                          <FontAwesomeIcon
+                                            icon={faEye}
+                                            size="4x"
+                                            color="#6FA1EE"
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div className="form-group">
+                                    <label htmlFor="leftEyeParameter2">
+                                      Lids:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="leftEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter1">
+                                      Conjuitive:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="leftEyeParameter1">
+                                      AC:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="leftEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter2">
+                                      Iris:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter1">
+                                      Vitreous:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter1"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label htmlFor="rightEyeParameter2">
+                                      Cornea:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="rightEyeParameter2"
+                                      className="lInput"
+                                      placeholder="Enter Parameter 2"
+                                    />
+                                  </div>
                                 </div>
                               </div>
-                              <div className="exam-details-column">
+                            </div>
+                          </div>
+                          <div id="catarat-details">
+                            <div className="exam-details-section">
+                              <div className="above-form-and-table">
                                 <p>
-                                  <b>Left Eye</b>
+                                  <b>CATARAT DETAILS</b>
                                 </p>
+                              </div>
+                            </div>
+                          </div>
 
-                                <div className="label-value-pair eye-image-section">
-                                  <span className="label">
-                                    Right Eye Image:
-                                  </span>
-                                  <div className="eye-image-container">
-                                    {imageUrl ? (
-                                      <img
-                                        src={imageUrl}
-                                        alt="Right Eye"
-                                        className="eye-image"
-                                      />
-                                    ) : (
-                                      <div className="eye-icon">
-                                        <FontAwesomeIcon
-                                          icon={faEye}
-                                          size="4x"
-                                          color="#6FA1EE"
-                                        />
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="leftEyeParameter1">AC:</label>
-                                  <input
-                                    type="text"
-                                    id="leftEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="leftEyeParameter2">
-                                    Lids:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="leftEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter1">
-                                    Conjuitive:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter2">
-                                    Iris:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter1">
-                                    Vitreous:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter1"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 1"
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="rightEyeParameter2">
-                                    Cornea:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    id="rightEyeParameter2"
-                                    className="lInput"
-                                    placeholder="Enter Parameter 2"
-                                  />
-                                </div>
+                          <div id="glucoma-details">
+                            <div className="exam-details-section">
+                              <div className="above-form-and-table">
+                                <p>
+                                  <b>GLUCOMA DETAILS</b>
+                                </p>
                               </div>
                             </div>
                           </div>

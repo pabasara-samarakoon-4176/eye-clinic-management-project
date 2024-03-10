@@ -1,446 +1,478 @@
-
 .extra-blue-bar {
-    height: 40px;
-    padding: 5px;
-    background-color: #6FA1EE;
-  }
-  
-  .content-container {
-    margin-top: 30px;
-  }
-  
-  .above-form-and-table {
-    margin-left: 30px;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .container {
-    display: flex;
-  }
-  
-  .left-panel {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-  
-  .rounded-button {
-    background-color: #6FA1EE;
-    color: white;
-    padding: 15px;
-    width: 80%;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 10px;
-    border-radius: 0 10px 10px 0;
-  }
-  
-  .rounded-button:hover {
-    background-color: #052D6A;
-  }
-  
-  .rounded-button:active {
-    background-color: #052D6A;
-  }
-  
-  .right-panel {
-    flex: 3;
-    width: 300px;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .label {
-    padding: 15px;
-    margin-right: 30px;
-  }
-  
-  .lInput {
-    padding: 15px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    width: 60%;
-    cursor: pointer;
-    z-index: 1;
-    font-size: 14px;
-  }
-  
-  .sex-options {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-  }
-  
-  .sex-options label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0;
-    margin-left: 25px;
-  }
-  
-  .sex-options input {
-    margin-right: 5px;
-  }
-  
-  .date-input1 {
-    display: flex;
-    width: 60%;
-  }
-  
-  .date-input1 .react-datepicker-wrapper,
-  .date-input1 .react-datepicker__input-container {
-    width: 100%;
-    position: relative;
-    z-index: 9999;
-  }
-  
-  .date-input1 .react-datepicker__input-container input {
-    width: calc(100% - 30px);
-    padding-right: 30px;
-  }
-  
-  #your-unique-portal-id {
-    z-index: 9999;
-  }
-  
-  .form-group.button-group {
-    display: flex;
-    flex-direction: row;
-    align-items: end;
-    margin-top: 50px;
-  }
-  
-  .button {
-    width: 30%;
-  }
-  
-  .tab-button {
-    background-color: #6FA1EE;
-    color: white;
-    padding: 15px;
-    border: none;
-    cursor: pointer;
-    width: 50%;
-    border-radius: 10px;
-    margin-right: 0;
-  }
-  
-  .tab-button:hover {
-    background-color: #052D6A;
-  }
-  
-  .tab-button.active {
-    background-color: #052D6A;
-  }
-  
-  .insert-image-text {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    cursor: pointer;
-  }
-  
-  .cloud-icon {
-    margin-left: 5px;
-  }
-  
-  .button-img {
-    width: 15%;
-    margin-left: 10px;
-    height: 40px;
-    background-color: #0f2d5a;
-    border-radius: 5px;
-    color: #ddd;
-  }
-  
-  .columns-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .column {
-    flex: 1;
-    padding: 10px;
-    margin-right:-10px;
-  }
-  
-  .image-container {
-    margin-top: 5px;
-  }
-  
-  .user-image {
-    border-radius: 50%;
-    width: 250px;
-    height: 250px;
-  }
-  
-  .user-icon {
-    border-radius: 50%;
-    width: 250px;
-    height: 250px;
-    background-color: lightgray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  
-  .value2 {
-    width: 70%;
-    padding: 25px;
-    height: auto;
-    background-color: rgb(196, 193, 193);
-    border-radius: 5px;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 15px;
-  }
-  .value {
-    width: 50%;
-    padding: 25px;
-    height: auto;
-    background-color: rgb(196, 193, 193);
-    border-radius: 5px;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 15px;
-  }
-  
-  
-  .search-section1 {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-  }
-  
-  .search-section label {
-    margin-right: 10px;
-  }
-  
-  .search-input {
-    display: flex;
-    align-items: center;
-    width: 50%;
-  }
-  
-  .search-input input {
-    margin-right: 10px;
-  }
-  
-  .search-icon {
-    background-color: #b5cbec;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    padding: 8px;
-    color: white;
-  }
-  
-  .search-icon:hover {
-    background-color: #052D6A;
-  }
-  
-  .form-group.inline-form {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .form-group.inline-form .label-input {
-    flex: 1;
-    margin-right: 20px;
-  }
-  
-  .form-group.inline-form .label-input:last-child {
-    margin-right: 0;
-  }
-  
-  .form-group.inline-form .time-input {
-    display: flex;
-    align-items: center;
-  }
-  
-  .form-group.inline-form .time-input select {
-    margin-right: 10px;
-    width: 20%;
-  }
-  
-  .exam-details-section {
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .exam-details-columns {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .exam-details-column {
-    flex: 1;
-  }
-  
-  .exam-details-column p {
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .form-group.label-value-pair {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .form-group label {
-    padding:
-  
-   25px;
-    margin-right: 10px;
-    width: 20%;
-  }
-  
-  .form-group.input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .form-group.input-group label {
-    flex: 1;
-  }
-  
-  .form-group.input-group input {
-    width: 70%;
-  }
-  
-  .eye-image-container {
-    width: 200px;
-    height: 200px;
-    border: 2px solid #6FA1EE;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .eye-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  
-  .eye-icon {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .lInput {
-    color: #000;
-  }
-  
-  .form-group.inline-form .time-input select.lInputt {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    width: 100%;
-    background-color: #ccc;
-    box-sizing: border-box;
-    cursor: pointer;
-    font-size: 14px;
-    outline: none;
-  }
-  
-  .form-group.inline-form .time-input select.lInput option:checked {
-    background-color: #6FA1EE;
-    color: white;
-  }
-  
-  .form-group.inline-form .time-input select.lInput:hover,
-  .form-group.inline-form .time-input select.lInput:active {
-    background-color: #e0e0e0;
-  }
-  
-  .form-group.inline-form .time-input select#ampm {
-    margin-right: 0;
-  }
-  
-  .checkbox-input {
-    margin-top: 5px;
-    margin-left: -5px;
-  }
-  
-  .patient-complaints-section {
-    background-color: #f0f0f0;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    margin-top: 20px;
-  }
-  
-  .complaints-columns {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .complaints-column {
-    flex: 1;
-  }
-  
-  .label {
-    font-weight: bold;
-   
-  }
-  .column.second-column {
-    flex: 1;
-    margin-left: -50px;
-  }
-  
-  .label-value-pair-P {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    width: calc(100% - 10px); /* 33.33% width with some margin between items */
-  }
-  
-  .labelP {
-    font-weight: bold;
-    padding: 5px;
-    width: 80px; /* Adjust the width as needed */
-  }
-  
-  .valueP {
-    width: 70%; /* Adjust the width as needed */
-    padding: 5px;
-    height: 100%;
-    background-color: rgb(196, 193, 193);
-    border-radius: 5px;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 15px;
-  }
-  
+  height: 40px;
+  padding: 5px;
+  background-color: #6FA1EE;
+}
+
+.content-container {
+  margin-top: 30px;
+}
+
+.above-form-and-table {
+  margin-left: 30px;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.container {
+  display: flex;
+}
+
+
+.rounded-button {
+  background-color: #6FA1EE;
+  color: white;
+  padding: 15px;
+  width: 80%;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 0 10px 10px 0;
+}
+
+.rounded-button:hover {
+  background-color: #052D6A;
+}
+
+.rounded-button:active {
+  background-color: #052D6A;
+}
+
+.right-panel {
+  flex: 3;
+  width: 300px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  padding: 15px;
+  margin-right: 30px;
+}
+
+.lInput {
+  padding: 15px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 60%;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 14px;
+}
+
+.sex-options {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.sex-options label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  margin-left: 25px;
+}
+
+.sex-options input {
+  margin-right: 5px;
+}
+
+.date-input1 {
+  display: flex;
+  width: 60%;
+}
+
+.date-input1 .react-datepicker-wrapper,
+.date-input1 .react-datepicker__input-container {
+  width: 100%;
+  position: relative;
+  z-index: 9999;
+}
+
+.date-input1 .react-datepicker__input-container input {
+  width: calc(100% - 30px);
+  padding-right: 30px;
+}
+
+#your-unique-portal-id {
+  z-index: 9999;
+}
+
+.form-group.button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  margin-top: 50px;
+}
+
+.button {
+  width: 30%;
+}
+
+.tab-button {
+  background-color: #6FA1EE;
+  color: white;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  border-radius: 10px;
+  margin-right: 0;
+}
+
+.tab-button:hover {
+  background-color: #052D6A;
+}
+
+.tab-button.active {
+  background-color: #052D6A;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center buttons horizontally */
+}
+
+.fixed-navigation-buttons {
+  position: fixed;
+ margin-top: 10%;
+ margin-left: 40px; 
+ border: 1px solid rgb(173, 172, 172);
+ border-radius: 10px;
+ padding: 10px;
+ margin-right: 40px;
+  /* Adjust z-index as needed */
+}
+
+
+
+.tab-button2 {
+  background-color: #6FA1EE;
+  color: white;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  width: 20%;
+  border-radius: 10px;
+  margin-right: 0;
+}
+
+.tab-button2:hover {
+  background-color: #052D6A;
+}
+
+.tab-button2.active {
+  background-color: #052D6A;
+}
+.insert-image-text {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.cloud-icon {
+  margin-left: 5px;
+}
+
+.button-img {
+  width: 15%;
+  margin-left: 10px;
+  height: 40px;
+  background-color: #0f2d5a;
+  border-radius: 5px;
+  color: #ddd;
+}
+
+.columns-container {
+  display: flex;
+  align-items: center;
+}
+
+.column {
+  flex: 1;
+  padding: 10px;
+  margin-right:-10px;
+}
+
+.image-container {
+  margin-top: 5px;
+}
+
+.user-image {
+  border-radius: 50%;
+  width: 250px;
+  height: 250px;
+}
+
+.user-icon {
+  border-radius: 50%;
+  width: 250px;
+  height: 250px;
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.value2 {
+  width: 70%;
+  padding: 25px;
+  height: auto;
+  background-color: rgb(196, 193, 193);
+  border-radius: 5px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 15px;
+}
+.value {
+  width: 50%;
+  padding: 25px;
+  height: auto;
+  background-color: rgb(196, 193, 193);
+  border-radius: 5px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 15px;
+}
+
+
+.search-section1 {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.search-section label {
+  margin-right: 10px;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.search-input input {
+  margin-right: 10px;
+}
+
+.search-icon {
+  background-color: #b5cbec;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 8px;
+  color: white;
+}
+
+.search-icon:hover {
+  background-color: #052D6A;
+}
+
+.form-group.inline-form {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-group.inline-form .label-input {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.form-group.inline-form .label-input:last-child {
+  margin-right: 0;
+}
+
+.form-group.inline-form .time-input {
+  display: flex;
+  align-items: center;
+}
+
+.form-group.inline-form .time-input select {
+  margin-right: 10px;
+  width: 20%;
+}
+
+.exam-details-section {
+  border: 1px solid rgb(173, 172, 172);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.exam-details-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.exam-details-column {
+  flex: 1;
+}
+
+.exam-details-column p {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.form-group.label-value-pair {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.form-group label {
+  padding:
+
+ 25px;
+  margin-right: 10px;
+  width: 20%;
+}
+
+.form-group.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-group.input-group label {
+  flex: 1;
+}
+
+.form-group.input-group input {
+  width: 70%;
+}
+
+.eye-image-container {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #6FA1EE;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.eye-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.eye-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lInput {
+  color: #000;
+}
+
+.form-group.inline-form .time-input select.lInputt {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  background-color: #ccc;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+}
+
+.form-group.inline-form .time-input select.lInput option:checked {
+  background-color: #6FA1EE;
+  color: white;
+}
+
+.form-group.inline-form .time-input select.lInput:hover,
+.form-group.inline-form .time-input select.lInput:active {
+  background-color: #e0e0e0;
+}
+
+.form-group.inline-form .time-input select#ampm {
+  margin-right: 0;
+}
+
+.checkbox-input {
+  margin-top: 5px;
+  margin-left: -5px;
+  transform: scale(2);
+  margin-right: 5px;
+}
+
+.patient-complaints-section {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+
+.complaints-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.complaints-column {
+  flex: 1;
+}
+
+.label {
+  font-weight: bold;
+ 
+}
+.column.second-column {
+  flex: 1;
+  margin-left: -50px;
+}
+
+.label-value-pair-P {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 10px); /* 33.33% width with some margin between items */
+}
+
+.labelP {
+  font-weight: bold;
+  padding: 5px;
+  width: 80px; /* Adjust the width as needed */
+}
+
+.valueP {
+  width: 70%; /* Adjust the width as needed */
+  padding: 5px;
+  height: 100%;
+  background-color: rgb(196, 193, 193);
+  border-radius: 5px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 15px;
+}

@@ -103,7 +103,7 @@ const LensDB = () => {
           remarks: remarks,
         })
         // console.log(response)
-        alert(manuId)
+        alert("Successfully added")
         navigate('/home')
       } else {
         alert("Invalid batch number")
@@ -244,14 +244,26 @@ const LensDB = () => {
                   <label htmlFor="power" className="label">
                     Power:
                   </label>
-                  <input
-                    type="text"
-                    id="power"
-                    className="lInput"
-                    placeholder="Power of the lens"
-                    value={power}
-                    onChange={(e) => setPower(e.target.value)}
-                  />
+                  <select id="power" className="lInput"
+                    value={power} onChange={(e) => setPower(e.target.value)} >
+                    <option value="" disabled selected hidden>
+                      Select Lens Power
+                    </option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    {Array.from({ length: 41 }, (_, index) => (
+                      <option key={index} value={(index + 20) / 2}>
+                        {(index + 20) / 2}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="form-group">
@@ -336,48 +348,6 @@ const LensDB = () => {
 
             {activeButton === "view" && (
               <div>
-                <div className="above-form-and-table">
-                  <p>
-                    <b>LENS DATA SUMMARIZED</b>
-                  </p>
-                </div>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Lens ID</th>
-                      <th>Batch No</th>
-
-                      <th>Surgery Type</th>
-                      <th>Manufacturer</th>
-
-                      <th>Model</th>
-                      <th>Power</th>
-                      <th>Remarks</th>
-                      <th>Placing Location</th>
-
-                      <th>Expiry Date</th>
-                      <th>Manufactured Date</th>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lensData.map((lens, index) => (
-                      <tr key={index}>
-                        <td>{lens.lensId}</td>
-                        <td>{lens.batchNo}</td>
-                        <td>{lens.surgeryType}</td>
-                        <td>{lens.manufacturerId}</td>
-                        {/* <td>{manufacturerMap[lens.manufacturerId]}</td> */}
-                        <td>{lens.model}</td>
-                        <td>{lens.lensPower}</td>
-                        <td>{lens.remarks}</td>
-                        <td>{lens.placementLocation}</td>
-                        <td>{lens.expiryDate}</td>
-                        <td>{lens.manufactureDate}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
                 {/* Search section for LensID */}
                 <div className="search-section">
                   <div className="search-header">
@@ -463,6 +433,49 @@ const LensDB = () => {
                     </div>
                   )}
                 </div>
+                <div className="above-form-and-table">
+                  <p>
+                    <b>LENS DATA SUMMARIZED</b>
+                  </p>
+                </div>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Lens ID</th>
+                      <th>Batch No</th>
+
+                      <th>Surgery Type</th>
+                      <th>Manufacturer</th>
+
+                      <th>Model</th>
+                      <th>Power</th>
+                      <th>Remarks</th>
+                      <th>Placing Location</th>
+
+                      <th>Expiry Date</th>
+                      <th>Manufactured Date</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lensData.map((lens, index) => (
+                      <tr key={index}>
+                        <td>{lens.lensId}</td>
+                        <td>{lens.batchNo}</td>
+                        <td>{lens.surgeryType}</td>
+                        <td>{lens.manufacturerId}</td>
+                        {/* <td>{manufacturerMap[lens.manufacturerId]}</td> */}
+                        <td>{lens.model}</td>
+                        <td>{lens.lensPower}</td>
+                        <td>{lens.remarks}</td>
+                        <td>{lens.placementLocation}</td>
+                        <td>{lens.expiryDate}</td>
+                        <td>{lens.manufactureDate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
 
               </div>
             )}
@@ -475,3 +488,4 @@ const LensDB = () => {
 };
 
 export default LensDB;
+
