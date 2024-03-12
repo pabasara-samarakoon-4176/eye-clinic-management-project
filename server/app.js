@@ -282,7 +282,7 @@ app.post("/addlens/:nurseId", async (req, res) => {
             INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
-            console.log(lensId)
+            console.log("Successfully added lens")
             res.send("active")
         } else {
             res.send("not active")
@@ -290,6 +290,34 @@ app.post("/addlens/:nurseId", async (req, res) => {
     } catch (error) {
         console.error(error)
         res.send(error)
+    }
+})
+
+app.post("/addpatient/:doctorId", async (req, res) => {
+    const {
+        patientFirstname, 
+        patientLastname,
+        patientGender,
+        patientDOB,
+        patientIdNIC,
+        patientPhoneNumber,
+        patientAddress,
+        patientDescription,
+        patientImage
+    } = req.body
+
+    const doctorInChargeId = req.params.doctorId
+    const admittedNurse = 'NR.00000'
+
+    try {
+        const [newPatient] = await db.query(`
+        insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [patientIdNIC, patientFirstname, patientLastname, patientDOB, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImage])
+        console.log(newPatient)
+        res.send("Successfully inserted patient")
+    } catch (error) {
+        console.log(error)
     }
 })
 
