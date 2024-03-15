@@ -7,6 +7,9 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import cors from 'cors'
 
+import multer from 'multer';
+
+
 
 import {
     isModuleNamespaceObject
@@ -233,20 +236,20 @@ app.post("/addlens/:nurseId/addmanufacturer", async (req, res) => {
     } = req.body
     try {
         if (stkMgr[0].stockMgr.toString() === '1') {
-            
+
             if (adminKey[0].adminKey.toString() === _adminKey.toString()) {
-                
+
                 const adminApproval = 1
                 await db.query(`insert into manufacturer (manuId, manuName, address, contactNo, country, adminApproval)
                 values (?, ?, ?, ?, ?, ?)`, [manuId, manuName, address, contactNo, country, adminApproval])
-                
+
             } else {
                 res.send("not allowed")
             }
         } else {
             res.send("not active")
         }
-        
+
     } catch (error) {
         res.send(error)
     }
@@ -295,7 +298,7 @@ app.post("/addlens/:nurseId", async (req, res) => {
 
 app.post("/addpatient/:doctorId", async (req, res) => {
     const {
-        patientFirstname, 
+        patientFirstname,
         patientLastname,
         patientGender,
         patientDOB,
@@ -303,8 +306,15 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         patientPhoneNumber,
         patientAddress,
         patientDescription,
-        patientImage
+        patientImagePath
+        
     } = req.body
+
+    const date = new Date(patientDOB);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
 
     const doctorInChargeId = req.params.doctorId
     const admittedNurse = 'NR.00000'
@@ -313,11 +323,68 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         const [newPatient] = await db.query(`
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientIdNIC, patientFirstname, patientLastname, patientDOB, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImage])
-        console.log(newPatient)
+        `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
+        
         res.send("Successfully inserted patient")
     } catch (error) {
-        console.log(error)
+        console.log(`${error.message}`)
+    }
+})
+
+
+
+app.post("/addclinic/:doctorId", async (req, res) => {
+    const {
+        clinicDate,
+        clinicHours,
+        clinicMinutes,
+        clinicAMPM,
+        clinicConsultantId,
+        patientId
+    } = req.body
+
+    try {
+        // date format modification
+        const date = new Date(clinicDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
+
+        // doctorId serial number
+        const extractedPart = clinicConsultantId.split('.')[1];
+
+        // clinicId generation
+        const clinicId = `CL-${extractedPart}-${patientId}`;
+
+        // time format modification
+        let hours = Number(clinicHours);
+        if (clinicAMPM === "PM" && hours !== 12) {
+            hours += 12;
+        }
+        if (clinicAMPM === "AM" && hours === 12) {
+            hours = 0;
+        }
+        const formattedTime = `${String(hours).padStart(2, "0")}:${clinicMinutes}:00`;
+
+        const [newClinic] = await db.query(`
+        insert into clinic (clinicId, clinicDate, clinicTime, consultantId, patientId)
+        values (?, ?, ?, ?, ?)
+        `, [clinicId, formattedDate, formattedTime, clinicConsultantId, patientId])
+
+        res.send("Successfully inserted clinic information for patient")
+    } catch (error) {
+        console.log(`${error.message}`)
+        res.send(error)
+    }
+})
+
+app.get("/admin/viewdoctors", async (req, res) => {
+    try {
+        const response = await db.query(`select * from doctor`)
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
     }
 })
 

@@ -20,6 +20,8 @@ import GlucomaDetailsView from "./MedicalDetails/View/GlucomaDetails";
 
 const PatientDB = () => {
 
+  const [patientId, setPatientId] = useState('')
+
   const [activeTab, setActiveTab] = useState("PERSONAL DETAILS");
   const [activeButton, setActiveButton] = useState("add");
 
@@ -88,7 +90,7 @@ const PatientDB = () => {
                   
                   {/* Add personal details */}
                   {activeButton === "add" && (
-                    <PatientPersonalDetailsAdd/>
+                    <PatientPersonalDetailsAdd patientId={patientId} setPatientId={setPatientId}/>
                   )}
 
                   {/* View patient details */}
@@ -165,7 +167,7 @@ const PatientDB = () => {
                                   </p>
                                 </div>
                                 <div id="clinic-data">
-                                  <ClinicDetails/>
+                                  <ClinicDetails patientId={patientId}/>
                                 </div>
                                 <div id="patient-complaints">
                                   <PatientComplaints/>

@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
 
-const PatientComplaints = () => {
+const PatientComplaints = ({patientId}) => {
     // Patient Complaints
     // Right Eye
     const [rightPainBool, setRightPainBool] = useState(false)

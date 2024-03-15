@@ -10,19 +10,21 @@ import {
     faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import "./patient.css";
+import axios from "axios";
 
-const PatientPersonalDetailsAdd = () => {
+const PatientPersonalDetailsAdd = ({patientId, setPatientId}) => {
 
     const [patientFirstname, setPatientFirstname] = useState('');
     const [patientLastname, setPatientLastname] = useState('');
     const [gender, setGender] = useState('');
     const [birthDate, setExpiryDate] = useState(null);
     const [age, setAge] = useState(null);
-    const [patientId, setPatientId] = useState('');
+    
     const [contactNo, setContactNo] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
     const [patientImage, setPatientImage] = useState(null);
+    const [patientImagePath, setPatientImagePath] = useState(null)
 
     const calculateAge = (birthDate) => {
         const today = new Date();
@@ -43,6 +45,31 @@ const PatientPersonalDetailsAdd = () => {
     const handleImageChange = (e) => {
         const selectedImage = e.target.files[0]
         setPatientImage(selectedImage)
+        setPatientImagePath(URL.createObjectURL(selectedImage))
+    }
+
+    const handleAddPatient = async (event) => {
+        event.preventDefault();
+
+        const doctorId = 'MBBS.00000'
+
+        try {
+            const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
+                patientFirstname : patientFirstname,
+                patientLastname : patientLastname,
+                patientGender : gender,
+                patientDOB : birthDate,
+                patientIdNIC : patientId,
+                patientPhoneNumber : contactNo,
+                patientAddress : address,
+                patientDescription : description,
+                patientImagePath : patientImagePath
+            })
+            alert(patientImage)
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     return (
@@ -156,7 +183,7 @@ const PatientPersonalDetailsAdd = () => {
                         id="patientId"
                         className="lInput"
                         placeholder="Enter NIC number"
-                        value={patientId}
+                        
                         onChange={(e) => setPatientId(e.target.value)}
                     />
                 </div>
@@ -233,7 +260,13 @@ const PatientPersonalDetailsAdd = () => {
                         </div>
                     )}
                 </div>
-
+                <div className="form-group button-group">
+                <button type="submit" className="button"
+                    onClick={handleAddPatient}
+                    >
+                    Add Patient
+                </button>
+            </div>
 
             </form>
         </div>
