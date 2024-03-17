@@ -65,7 +65,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId}) => {
                 patientDescription : description,
                 patientImagePath : patientImagePath
             })
-            alert(patientImage)
+            alert("Successfully added patient")
         } catch (error) {
             console.log(error)
         }

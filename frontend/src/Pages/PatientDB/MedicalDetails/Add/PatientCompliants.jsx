@@ -10,8 +10,9 @@ import {
     faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
+import axios from "axios";
 
-const PatientComplaints = () => {
+const PatientComplaints = ({patientId}) => {
     // Patient Complaints
     // Right Eye
     const [rightPainBool, setRightPainBool] = useState(false)
@@ -24,6 +25,7 @@ const PatientComplaints = () => {
     const [rightpoorVision, setRightpoorVision] = useState('')
     const [rightDescription, setRightDescription] = useState('')
     const [rightEyeImage, setRightEyeImage] = useState(null)
+    const [rightEyeImagePath, setRightEyeImagePath] = useState(null)
 
     // Left Eye
     const [leftPainBool, setLeftPainBool] = useState(false)
@@ -36,11 +38,71 @@ const PatientComplaints = () => {
     const [leftpoorVision, setLeftpoorVision] = useState('')
     const [leftDescription, setLeftDescription] = useState('')
     const [leftEyeImage, setLeftEyeImage] = useState(null)
+    const [leftEyeImagePath, setLeftEyeImagePath] = useState(null)
 
     const [allergies, setAllergies] = useState('')
     const [medicalHistory, setMedicalHistory] = useState('')
 
+    const handleRightEyeImageChange = (e) => {
+        const selectedImage = e.target.files[0]
+        setRightEyeImage(selectedImage)
+        setRightEyeImagePath(URL.createObjectURL(selectedImage))
+    }
 
+    const handleLeftEyeImageChange = (e) => {
+        const selectedImage = e.target.files[0]
+        setLeftEyeImage(selectedImage)
+        setLeftEyeImagePath(URL.createObjectURL(selectedImage))
+    }
+
+    const handleAddPatientComplaintSubmit = async (event) => {
+        event.preventDefault()
+
+        const doctorId = 'MBBS.00000'
+
+        try {
+
+            const formData = new FormData();
+        
+        // Append right eye data to formData
+        formData.append('rightPainBool', rightPainBool);
+        formData.append('rightPain', rightPain);
+        formData.append('rightDoubleVisionBool', rightDoubleVisionBool);
+        formData.append('rightDoubleVision', rightDoubleVision);
+        formData.append('rightRedeyeBool', rightRedeyeBool);
+        formData.append('rightRedeye', rightRedeye);
+        formData.append('rightPoorVisionBool', rightPoorVisionBool);
+        formData.append('rightPoorVision', rightpoorVision);
+        formData.append('rightDescription', rightDescription);
+        formData.append('rightEyeImage', rightEyeImagePath);
+
+        // Append left eye data to formData
+        formData.append('leftPainBool', leftPainBool);
+        formData.append('leftPain', leftPain);
+        formData.append('leftDoubleVisionBool', leftDoubleVisionBool);
+        formData.append('leftDoubleVision', leftDoubleVision);
+        formData.append('leftRedeyeBool', leftRedeyeBool);
+        formData.append('leftRedeye', leftRedeye);
+        formData.append('leftPoorVisionBool', leftPoorVisionBool);
+        formData.append('leftPoorVision', leftpoorVision);
+        formData.append('leftDescription', leftDescription);
+        formData.append('leftEyeImage', leftEyeImagePath);
+
+        // Append allergies and medicalHistory
+        formData.append('allergies', allergies);
+        formData.append('medicalHistory', medicalHistory);
+
+        // Append patientId
+        formData.append('patientId', patientId);
+
+        const response = await axios.post(`http://localhost:8080/addpatientcomplaint/${doctorId}`, formData);
+
+        console.log(response.data);
+        
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className="exam-details-section">
@@ -172,7 +234,7 @@ const PatientComplaints = () => {
                             id="imageUpload"
                             style={{ display: "none" }}
 
-                            onChange={(e) => setRightEyeImage(e.target.files[0])}
+                            onChange={handleRightEyeImageChange}
                         />
                         <button
                             type="button"
@@ -314,7 +376,7 @@ const PatientComplaints = () => {
                             type="file"
                             id="imageUpload"
                             style={{ display: "none" }}
-                            onChange={(e) => setLeftEyeImage(e.target.files[0])}
+                            onChange={handleLeftEyeImageChange}
                         />
                         <button
                             type="button"
@@ -359,6 +421,12 @@ const PatientComplaints = () => {
                     value={medicalHistory}
                     onChange={(e) => setMedicalHistory(e.target.value)}
                 />
+            </div>
+            <div className="form-group button-group">
+                <button type="submit" className="button" onClick={handleAddPatientComplaintSubmit}
+                    >
+                    Add Patient Complaint
+                </button>
             </div>
         </div>
     )
