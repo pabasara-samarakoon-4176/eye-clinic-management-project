@@ -48,16 +48,16 @@ const ClinicDetailsView = ({patientId}) => {
             </div>
             <div className="label-value-pair">
                 <span className="label">Consultant ID:</span>
-                <span className="value">{searchClinicDetails[0][0]?.consultantId}</span>
+                <span className="value"></span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Date:</span>
-                <span className="value">{searchClinicDetails[0][0]?.clinicDate}
+                <span className="value">
                 </span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Time:</span>
-                <span className="value">{searchClinicDetails[0][0]?.clinicTime}</span>
+                <span className="value"></span>
             </div>
         </div>
     )

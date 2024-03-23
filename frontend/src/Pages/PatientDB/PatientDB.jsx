@@ -22,6 +22,8 @@ const PatientDB = () => {
 
   const [patientId, setPatientId] = useState('')
 
+ 
+
   const [activeTab, setActiveTab] = useState("PERSONAL DETAILS");
   const [activeButton, setActiveButton] = useState("add");
 
@@ -235,7 +237,7 @@ const PatientDB = () => {
                             <ClinicDetailsView patientId={patientId}/>
                           </div>
                           <div id="patient-complaints">
-                            <PatientComplaintsView/>
+                            <PatientComplaintsView patientId={patientId}/>
                           </div>
                           <div id="exam-data">
                             <ExamDetailsView/>
