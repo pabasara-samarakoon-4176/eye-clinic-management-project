@@ -2,9 +2,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faEye,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const ExamDetailsView = () => {
-    const imageUrl = null;
+const ExamDetailsView = ({patientId}) => {
+
+    const [searchExaminationData, setSearchExaminationData] = useState([])
+
+    useEffect(() => {
+        const fetchExaminationData = async (value) => {
+            try {
+                const response = await axios.get(`http://localhost:8080/searcheyeexamination/${value}`)
+                setSearchExaminationData([response.data])
+                console.log(searchExaminationData)
+            } catch (error) {
+                console.log(`${error.message}`)
+            }
+        }
+        if(patientId) {
+            fetchExaminationData(patientId)
+        }
+    }, [patientId])
+    
     return (
         <div className="exam-details-section">
             <div className="above-form-and-table">
@@ -24,67 +43,37 @@ const ExamDetailsView = () => {
                         <label htmlFor="leftEyeParameter2">
                             Lids:
                         </label>
-                        <input
-                            type="text"
-                            id="leftEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightLids}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter1">
                             Conjuitive:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightConjuitive}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="leftEyeParameter1">
                             AC:
                         </label>
-                        <input
-                            type="text"
-                            id="leftEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightAC}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter2">
                             Iris:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightIris}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter1">
-                            Vitreous:
+                            Vitereous:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightVitereous}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter2">
                             Cornea:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.rightCornea}</span>
                     </div>
                 </div>
                 <div className="exam-details-column">
@@ -98,67 +87,37 @@ const ExamDetailsView = () => {
                         <label htmlFor="leftEyeParameter2">
                             Lids:
                         </label>
-                        <input
-                            type="text"
-                            id="leftEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftLids}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter1">
                             Conjuitive:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftConjuitive}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="leftEyeParameter1">
                             AC:
                         </label>
-                        <input
-                            type="text"
-                            id="leftEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftAC}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter2">
                             Iris:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftIris}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter1">
-                            Vitreous:
+                            Vitereous:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter1"
-                            className="lInput"
-                            placeholder="Enter Parameter 1"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftVitereous}</span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="rightEyeParameter2">
                             Cornea:
                         </label>
-                        <input
-                            type="text"
-                            id="rightEyeParameter2"
-                            className="lInput"
-                            placeholder="Enter Parameter 2"
-                        />
+                        <span className="value">{searchExaminationData[0]?.[0]?.leftCornea}</span>
                     </div>
                 </div>
             </div>

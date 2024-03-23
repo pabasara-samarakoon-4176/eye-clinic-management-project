@@ -240,7 +240,7 @@ const PatientDB = () => {
                             <PatientComplaintsView patientId={patientId}/>
                           </div>
                           <div id="exam-data">
-                            <ExamDetailsView/>
+                            <ExamDetailsView patientId={patientId}/>
                           </div>
                           <div id="catarat-details">
                             <CataratDetailsView/>
