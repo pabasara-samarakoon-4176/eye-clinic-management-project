@@ -242,6 +242,16 @@ app.get("/searcheyeexamination/:patientId", async (req, res) => {
     }
 })
 
+app.get("/searchpatient/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const response = await db.query(`select * from patient where patientId = ?`, [patientId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
 app.post("/addlens/:nurseId/addmanufacturer", async (req, res) => {
 
     const nurseId = req.params.nurseId;
