@@ -5,22 +5,48 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const PatientComplaintsView = ({patientId}) => {
+const PatientComplaintsView = ({ patientId }) => {
     const imageUrl = null;
 
-    const[searchPatientComplaints, setSearchPatientComplaints] = useState([])
+    const [searchPatientComplaints, setSearchPatientComplaints] = useState([])
+
+    const [rightEyeImageUrl, setRightEyeImageUrl] = useState(null)
+    const [leftEyeImageUrl, setLeftEyeImageUrl] = useState(null)
 
     useEffect(() => {
         const fetchPatientComplaintData = async (value) => {
             try {
                 const response = await axios.get(`http://localhost:8080/searchpatientcomplaints/${value}`)
+
                 setSearchPatientComplaints([response.data])
-                console.log(searchPatientComplaints)
+                const rightEyeImage = searchPatientComplaints[0]?.[0]?.rightEyeImage
+                const leftEyeImage = searchPatientComplaints[0]?.[0]?.leftEyeImage
+
+                if (rightEyeImage) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(new Blob([Uint8Array.from(rightEyeImage.data)]));
+                    reader.onloadend = () => {
+                        setRightEyeImageUrl(reader.result);
+                    };
+                }
+
+                if (leftEyeImage) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(new Blob([Uint8Array.from(leftEyeImage.data)]));
+                    reader.onloadend = () => {
+                        setLeftEyeImageUrl(reader.result);
+                    };
+                }
+
+                console.log(`rightImage: ${rightEyeImageUrl}`)
+                console.log(`leftImage: ${leftEyeImageUrl}`)
             } catch (error) {
                 console.error(`${error.message}`)
             }
         }
-        fetchPatientComplaintData(patientId)
+        if (patientId) {
+            fetchPatientComplaintData(patientId);
+        }
     }, [patientId])
 
     return (
@@ -35,19 +61,11 @@ const PatientComplaintsView = ({patientId}) => {
                     Right Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {imageUrl ? (
-                        <img
-                            src={imageUrl}
-                            alt="Right Eye"
-                            className="eye-image"
-                        />
+                    {rightEyeImageUrl ? (
+                        <img src={rightEyeImageUrl} alt="Right Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
-                            <FontAwesomeIcon
-                                icon={faEye}
-                                size="4x"
-                                color="#6FA1EE"
-                            />
+                            <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
                         </div>
                     )}
                 </div>
@@ -57,19 +75,11 @@ const PatientComplaintsView = ({patientId}) => {
                     Left Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {imageUrl ? (
-                        <img
-                            src={imageUrl}
-                            alt="Right Eye"
-                            className="eye-image"
-                        />
+                    {leftEyeImageUrl ? (
+                        <img src={leftEyeImageUrl} alt="Left Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
-                            <FontAwesomeIcon
-                                icon={faEye}
-                                size="4x"
-                                color="#6FA1EE"
-                            />
+                            <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
                         </div>
                     )}
                 </div>
@@ -78,23 +88,23 @@ const PatientComplaintsView = ({patientId}) => {
                 <span className="label">
                     Right Eye Description:
                 </span>
-                <span className="value"></span>
+                <span className="value">{searchPatientComplaints[0]?.[0]?.rightDescription}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">
                     Left Eye Description:
                 </span>
-                <span className="value"></span>
+                <span className="value">{searchPatientComplaints[0]?.[0]?.leftDescription}</span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Alergies:</span>
-                <span className="value"></span>
+                <span className="value">{searchPatientComplaints[0]?.[0]?.allergies}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">Medical History:</span>
-                <span className="value"></span>
+                <span className="value">{searchPatientComplaints[0]?.[0]?.medicalHistory}</span>
             </div>
         </div>
     )
