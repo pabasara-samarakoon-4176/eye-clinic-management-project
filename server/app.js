@@ -220,6 +220,16 @@ app.get("/admin/viewmanufacturers", async (req, res) => {
     }
 })
 
+app.get("/searchclinicdetails/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const response = await db.query(`select * from clinic where patientId = ?`, [patientId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
 app.post("/addlens/:nurseId/addmanufacturer", async (req, res) => {
 
     const nurseId = req.params.nurseId;

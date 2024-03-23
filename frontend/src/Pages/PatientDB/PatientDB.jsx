@@ -29,8 +29,8 @@ const PatientDB = () => {
     setActiveTab(tab);
   };
 
-  const handleSearch = (searchValue) => {
-    console.log("Search value:", searchValue);
+  const handleSearchPatientId = (value) => {
+    console.log(value)
   };
 
   const handleButtonClick = (button) => {
@@ -214,12 +214,12 @@ const PatientDB = () => {
                                 id="searchPatientId"
                                 className="lInput"
                                 placeholder="Enter Patient ID"
-                                onChange={(e) => handleSearch(e.target.value)}
+                                onChange={(e) => setPatientId(e.target.value)}
                               />
                               <button
                                 type="button"
                                 className="search-icon"
-                                onClick={() => handleSearch()}
+                                onClick={() => handleSearchPatientId(patientId)}
                               >
                                 <FontAwesomeIcon
                                   icon={faSearch}
@@ -232,7 +232,7 @@ const PatientDB = () => {
                             </div>
                           </div>
                           <div id="clinic-data">
-                            <ClinicDetailsView/>
+                            <ClinicDetailsView patientId={patientId}/>
                           </div>
                           <div id="patient-complaints">
                             <PatientComplaintsView/>
