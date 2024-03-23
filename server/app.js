@@ -388,6 +388,7 @@ app.get("/admin/viewdoctors", async (req, res) => {
     }
 })
 
+
 app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
     const {
         patientId,
@@ -457,6 +458,7 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         ])
         res.send("Successfully created the patient comaplaint")
     } catch (error) {
+        
         console.log(`${error.message}`)
     }
 })

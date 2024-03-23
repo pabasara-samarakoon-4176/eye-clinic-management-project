@@ -21,6 +21,11 @@ const ExamDetails = () => {
     const [leftVitereous, setLeftVitereous] = useState('')
     const [leftCornea, setLeftCornea] = useState('')
     const [leftRetina, setLeftRetina] = useState('')
+
+    const handleAddEyeExamDetails = () => {
+        
+    }
+
     return (
         <div className="exam-details-section">
             <div className="above-form-and-table">
@@ -221,6 +226,12 @@ const ExamDetails = () => {
                             value={leftRetina}
                             onChange={(e) => setLeftRetina(e.target.value)}
                         />
+                    </div>
+                    <div className="form-group button-group">
+                        <button type="submit" className="button" onClick={handleAddEyeExamDetails}
+                        >
+                            Add Patient Complaint
+                        </button>
                     </div>
                 </div>
             </div>
