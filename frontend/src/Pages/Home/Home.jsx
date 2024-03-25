@@ -25,7 +25,7 @@ const Home = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 1500,
+    autoplaySpeed: 1000,
   };
 
   const handleButtonClick = (path) => {
@@ -41,7 +41,7 @@ const Home = () => {
 
       <div className="main-content">
         <div className="left-column">
-        <h2 className='text1'>EYE CLINIC CENTER</h2>   
+        <h2 className='text1'>EYE UNIT</h2>   
         <h2 className='text2'>BASE HOSPITAL TANGALLE</h2>   
         
         <p className='paragraph'>
@@ -78,13 +78,15 @@ const Home = () => {
           <div className="button-name">Appointment Handling</div>
         </button>
 
-        <button onClick={() => handleButtonClick('/analyticsDB')}>
-          <FontAwesomeIcon icon={faChartBar} style={{ fontSize: '1.5em' }} />
-          <div className="button-name">Analytics</div>
-        </button>
+       
         
       </div>
+      <footer className="footer">
+        <p>&copy; 2024 Tangalle Base Hospital</p>
+      </footer>
+
     </div>
+    
   );
 }
 export default Home;
