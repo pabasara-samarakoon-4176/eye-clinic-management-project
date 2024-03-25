@@ -24,15 +24,15 @@ const PatientPersonalDetailsView = () => {
         try {
             const response = await axios.get(`http://localhost:8080/searchpatient/${searchPatientId}`)
             setSearchPatient([response.data])
-            console.log(searchPatient)
+            console.log(`patient blob: ${patientImage}`)
             const patientImage = searchPatient[0]?.[0]?.patient_image
-            if (patientImage) {
-                const reader = new FileReader();
-                reader.readAsDataURL(new Blob([Uint8Array.from(patientImage.data)]));
-                reader.onloadend = () => {
-                    setPatientImageUrl(reader.result);
-                };
-            }
+            // if (patientImage) {
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(new Blob([Uint8Array.from(patientImage.data)]));
+            //     reader.onloadend = () => {
+            //         setPatientImageUrl(reader.result);
+            //     };
+            // }
 
         } catch (error) {
             console.log(`${error.message}`)
