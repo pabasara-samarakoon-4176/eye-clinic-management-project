@@ -329,7 +329,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         patientAddress,
         patientDescription,
         patientImagePath
-        
+
     } = req.body
 
     const date = new Date(patientDOB);
@@ -346,7 +346,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
-        
+
         res.send("Successfully inserted patient")
     } catch (error) {
         console.log(`${error.message}`)
@@ -445,12 +445,63 @@ app.post("/addexamdetails/:doctorId", async (req, res) => {
             rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina ) values (
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
-            rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina]
+                rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina
+            ]
         )
         res.send("Successfully added eye examination details")
     } catch (error) {
         console.log(error)
     }
+})
+
+app.post("/addsurgery/:doctorId", async (req, res) => {
+    const {
+        patientId,
+        surgeryDate,
+        surgeryTime,
+        lensId,
+        description,
+        docReport,
+
+        examId,
+        compId,
+        recordId
+
+    } = req.body
+
+    const extractedPart = doctorId.split('.')[1]
+    const surgeryId = `SG-${extractedPart}-${patientId}`
+
+    const pending = true
+    const nurseId = 'NR.00000'
+
+    try {
+
+        const [newSurgery] = await db.query(`
+        insert into surgery (
+            surgeryId,
+            surgeryDate,
+            surgeryTime,
+            pending,
+            patientId,
+            examId,
+            compId,
+            recordId, 
+            nurseId,
+            lensId,
+            doctorId,
+            description,
+            docReport
+        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, recordId, nurseId, lensId, doctorId, description, docReport
+        ])
+        res.send("Successfully added the surgery")
+
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+
 })
 
 app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
@@ -513,7 +564,7 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
             medicalHistory,
             patientId
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientComplaintId, 
+        `, [patientComplaintId,
             rightPainBool, rightDoubleVisionBool, rightRedeyeBool, rightPoorVisionBool,
             rightPain, rightDoubleVision, rightRedeye, rightPoorVision, rightDescription, rightEyeImagePath,
             leftPainBool, leftDoubleVisionBool, leftRedeyeBool, leftPoorVisionBool,
@@ -522,7 +573,7 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         ])
         res.send("Successfully created the patient comaplaint")
     } catch (error) {
-        
+
         console.log(`${error.message}`)
     }
 })
