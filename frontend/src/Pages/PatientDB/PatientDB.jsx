@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useNavigate } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,6 +19,8 @@ import CataratDetailsView from "./MedicalDetails/View/CataractDetails";
 import GlucomaDetailsView from "./MedicalDetails/View/GlucomaDetails";
 
 const PatientDB = () => {
+
+  // const navigate = useNavigate();
 
   const [patientId, setPatientId] = useState('')
   const [value, setValue] = useState('')
@@ -42,7 +44,8 @@ const PatientDB = () => {
 
   const handleSubmitClick = () => {
     try {
-      alert("test")
+      alert("Successfully submitted patient information")
+      // navigate('/home')
     } catch (error) {
       console.log(error)
     }
