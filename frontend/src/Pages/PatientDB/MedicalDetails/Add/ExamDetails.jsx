@@ -400,7 +400,7 @@ const ExamDetails = ({ patientId }) => {
             <div className="form-group button-group">
                 <button type="submit" className="button" onClick={handleAddEyeExamDetails}
                 >
-                    Add Patient Complaint
+                    Add Examination Details
                 </button>
             </div>
         </div>
