@@ -10,8 +10,8 @@ const PatientComplaintsView = ({ patientId }) => {
 
     const [searchPatientComplaints, setSearchPatientComplaints] = useState([])
 
-    const [rightEyeImageUrl, setRightEyeImageUrl] = useState(null)
-    const [leftEyeImageUrl, setLeftEyeImageUrl] = useState(null)
+    const [rightEyeImageUrl, setRightEyeImageUrl] = useState('')
+    const [leftEyeImageUrl, setLeftEyeImageUrl] = useState('')
 
     useEffect(() => {
         const fetchPatientComplaintData = async (value) => {
