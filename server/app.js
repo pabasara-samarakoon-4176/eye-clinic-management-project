@@ -7,14 +7,6 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import cors from 'cors'
 
-import multer from 'multer';
-
-
-
-import {
-    isModuleNamespaceObject
-} from 'util/types'
-
 const app = express()
 
 app.use(express.json())
@@ -229,6 +221,18 @@ app.get("/searchclinicdetails/:patientId", async (req, res) => {
         console.log(`${error.message}`)
     }
 })
+
+app.get("/searchpatientcomplaints/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const response = await db.query(`select * from patientComplaint where patientId = ?`, [patientId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
+
 
 app.post("/addlens/:nurseId/addmanufacturer", async (req, res) => {
 
