@@ -388,6 +388,48 @@ app.get("/admin/viewdoctors", async (req, res) => {
     }
 })
 
+app.post("/addexamdetails/:doctorId", async (req, res) => {
+    const {
+        examDate,
+        examTime,
+        patientId,
+        // Right eye
+        rightLids,
+        rightConjuitive,
+        rightAC,
+        rightIris,
+        rightVitereous,
+        rightCornea,
+        rightRetina,
+        // left eye
+        leftLids,
+        leftConjuitive,
+        leftAC,
+        leftIris,
+        leftVitereous,
+        leftCornea,
+        leftRetina
+    } = req.body
+
+    const doctorId = req.params.doctorId
+    // examId generation
+    const extractedPart = doctorId.split('.')[1]
+    const examId = `EXM-${extractedPart}-${patientId}`
+
+    try {
+        const [newExamination] = await db.query(`
+        insert into examination (
+            examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
+            rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina ) values (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
+            rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina]
+        )
+        res.send("Successfully added eye examination details")
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
     const {
