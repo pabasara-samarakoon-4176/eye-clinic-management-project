@@ -388,6 +388,81 @@ app.get("/admin/viewdoctors", async (req, res) => {
     }
 })
 
+
+app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
+    const {
+        patientId,
+        // Right eye
+        rightPainBool,
+        rightPain,
+        rightDoubleVisionBool,
+        rightDoubleVision,
+        rightRedeyeBool,
+        rightRedeye,
+        rightPoorVisionBool,
+        rightPoorVision,
+        rightDescription,
+        rightEyeImagePath,
+        // Left eye
+        leftPainBool,
+        leftPain,
+        leftDoubleVisionBool,
+        leftDoubleVision,
+        leftRedeyeBool,
+        leftRedeye,
+        leftPoorVisionBool,
+        leftPoorVision,
+        leftDescription,
+        leftEyeImagePath,
+
+        allergies,
+        medicalHistory
+    } = req.body
+
+    const patientComplaintId = `PC-${patientId}`
+
+    try {
+        const [newPatientComplaint] = await db.query(`
+        INSERT INTO patientComplaint (
+            patientComplaintId,
+            rightPainBool,
+            rightDoubleVisionBool,
+            rightRedeyeBool,
+            rightPoorVisionBool,
+            rightPain,
+            rightDoubleVision,
+            rightRedeye,
+            rightPoorVision,
+            rightDescription,
+            rightEyeImage,
+            leftPainBool,
+            leftDoubleVisionBool,
+            leftRedeyeBool,
+            leftPoorVisionBool,
+            leftPain,
+            leftDoubleVision,
+            leftRedeye,
+            leftPoorVision,
+            leftDescription,
+            leftEyeImage,
+            allergies,
+            medicalHistory,
+            patientId
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [patientComplaintId, 
+            rightPainBool, rightDoubleVisionBool, rightRedeyeBool, rightPoorVisionBool,
+            rightPain, rightDoubleVision, rightRedeye, rightPoorVision, rightDescription, rightEyeImagePath,
+            leftPainBool, leftDoubleVisionBool, leftRedeyeBool, leftPoorVisionBool,
+            leftPain, leftDoubleVision, leftRedeye, leftPoorVision, leftDescription, leftEyeImagePath,
+            allergies, medicalHistory, patientId
+        ])
+        res.send("Successfully created the patient comaplaint")
+    } catch (error) {
+        
+        console.log(`${error.message}`)
+    }
+})
+
 app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send('Something broke')
