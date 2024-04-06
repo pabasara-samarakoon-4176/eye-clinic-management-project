@@ -7,13 +7,13 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 
-const ClinicDetailsView = ({patientId}) => {
+const ClinicDetailsView = ({ patientId }) => {
 
     const [searchClinicDetails, setSearchClinicDetails] = useState([])
 
     useEffect(() => {
         const fetchClinicData = async (value) => {
-        
+
             try {
                 const response = await axios.get(`http://localhost:8080/searchclinicdetails/${value}`)
                 setSearchClinicDetails([response.data])
@@ -23,10 +23,14 @@ const ClinicDetailsView = ({patientId}) => {
             }
         }
         if (patientId) {
-            fetchClinicData(patientId);
+            fetchClinicData(patientId)
         }
     }, [patientId])
 
+    const formatDate = (dateString) => {
+        const dateParts = dateString.split("T")[0].split("-")
+        return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+    }
 
     return (
         <div className="exam-details-section">
@@ -37,16 +41,16 @@ const ClinicDetailsView = ({patientId}) => {
             </div>
             <div className="label-value-pair">
                 <span className="label">Consultant ID:</span>
-                <span className="value">{searchClinicDetails[0]?.[0]?.consultantId}</span>
+                <span className="value">{searchClinicDetails[0]?.consultantId}</span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Date:</span>
-                <span className="value">{searchClinicDetails[0]?.[0]?.clinicDate}</span>
-                
+                <span className="value">{searchClinicDetails[0]?.clinicDate}</span>
+
             </div>
             <div className="label-value-pair">
                 <span className="label">Time:</span>
-                <span className="value">{searchClinicDetails[0]?.[0]?.clinicTime}</span>
+                <span className="value">{searchClinicDetails[0]?.clinicTime}</span>
             </div>
         </div>
     )

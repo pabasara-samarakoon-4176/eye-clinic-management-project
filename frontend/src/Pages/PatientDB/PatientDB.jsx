@@ -21,6 +21,7 @@ import GlucomaDetailsView from "./MedicalDetails/View/GlucomaDetails";
 const PatientDB = () => {
 
   const [patientId, setPatientId] = useState('')
+  const [value, setValue] = useState('')
 
   const [activeTab, setActiveTab] = useState("PERSONAL DETAILS");
   const [activeButton, setActiveButton] = useState("add");
@@ -30,6 +31,7 @@ const PatientDB = () => {
   };
 
   const handleSearchPatientId = (value) => {
+    setPatientId(value)
     console.log(value)
   };
 
@@ -214,12 +216,12 @@ const PatientDB = () => {
                                 id="searchPatientId"
                                 className="lInput"
                                 placeholder="Enter Patient ID"
-                                onChange={(e) => setPatientId(e.target.value)}
+                                onChange={(e) => setValue(e.target.value)}
                               />
                               <button
                                 type="button"
                                 className="search-icon"
-                                onClick={() => handleSearchPatientId(patientId)}
+                                onClick={() => handleSearchPatientId(value)}
                               >
                                 <FontAwesomeIcon
                                   icon={faSearch}
