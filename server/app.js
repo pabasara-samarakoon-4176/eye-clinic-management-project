@@ -462,12 +462,12 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         lensId,
         description,
         docReport,
-
         examId,
-        compId,
-        recordId
+        compId
 
     } = req.body
+
+    const doctorId = req.params.doctorId
 
     const extractedPart = doctorId.split('.')[1]
     const surgeryId = `SG-${extractedPart}-${patientId}`
@@ -485,16 +485,15 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
             pending,
             patientId,
             examId,
-            compId,
-            recordId, 
+            compId, 
             nurseId,
             lensId,
             doctorId,
             description,
             docReport
-        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, recordId, nurseId, lensId, doctorId, description, docReport
+            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, nurseId, lensId, doctorId, description, docReport
         ])
         res.send("Successfully added the surgery")
 
