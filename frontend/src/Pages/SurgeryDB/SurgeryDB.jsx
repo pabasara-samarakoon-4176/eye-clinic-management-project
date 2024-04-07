@@ -1,6 +1,6 @@
-// LensDB.jsx
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,6 +23,7 @@ const LensDB = () => {
   const [examHours, setExamHours] = useState(null);
   const [examMinutes, setExamMinutes] = useState(null);
   const [examAMPM, setExamAMPM] = useState(null);
+  const [activeTab, setActiveTab] = useState(""); // Define setActiveTab
   const handleButtonClick = (button) => {
     setActiveButton(button);
   };
@@ -37,6 +38,15 @@ const LensDB = () => {
   const eyeImages = null;
   const handleSearch = (searchValue) => {
     console.log("Search value:", searchValue);
+  };
+  
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
+  // Function to handle "See Details" button click
+  const handleSeeDetails = () => {
+    // Navigate to patient details route
+    navigate("/patientDB");
+    setActiveTab("MEDICAL DETAILS");
   };
   return (
     <div>
@@ -153,7 +163,19 @@ const LensDB = () => {
                     AM/PM
                   </div>
                 </div>
-
+                <div className="form-group">
+                  <label htmlFor="description" className="label">
+                   Lens:
+                  </label>
+                  <select id="surgeryType" className="lInput">
+                    <option value="" disabled selected hidden>
+                      Select Surgery Type
+                    </option>
+                    <option value="Lens1">Lens 1 | Power 1</option>
+                    <option value="Lens2">Lens 2 | Power 2</option>
+                    <option value="Lens3">Lens 3 | Power 3</option>
+                  </select>
+                </div>
                 <div className="form-group">
                   <label htmlFor="description" className="label">
                     Description:
@@ -166,93 +188,15 @@ const LensDB = () => {
                 </div>
 
                 <div className="form-group button-group">
-                  <label htmlFor="imageUpload" className="insert-image-text">
-                    Upload Medical Report
-                    <FontAwesomeIcon
-                      icon={faCloudUploadAlt}
-                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
-                      className="cloud-icon"
-                    />
-                  </label>
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const selectedImage = e.target.files[0];
-                      console.log("Selected Image:", selectedImage);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="button-img"
-                    onClick={() =>
-                      document.getElementById("imageUpload").click()
-                    }
-                  >
-                    Upload Document
-                  </button>
+                  <p>Please create a patient record before making an appointment. Make sure to add medical and personal details of patient</p>
+                    
                 </div>
+                
                 <div className="form-group button-group">
-                  <label htmlFor="imageUpload" className="insert-image-text">
-                    Medical Images
-                    <FontAwesomeIcon
-                      icon={faCloudUploadAlt}
-                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
-                      className="cloud-icon"
-                    />
-                  </label>
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const selectedImage = e.target.files[0];
-                      console.log("Selected Image:", selectedImage);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="button-img"
-                    onClick={() =>
-                      document.getElementById("imageUpload").click()
-                    }
-                  >
-                    Upload Image (Medical Images)
-                  </button>
-                </div>
-                <div className="form-group button-group">
-                  <label htmlFor="imageUpload" className="insert-image-text">
-                    Patient's Image
-                    <FontAwesomeIcon
-                      icon={faCloudUploadAlt}
-                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
-                      className="cloud-icon"
-                    />
-                  </label>
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const selectedImage = e.target.files[0];
-                      console.log("Selected Image:", selectedImage);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="button-img"
-                    onClick={() =>
-                      document.getElementById("imageUpload").click()
-                    }
-                  >
-                    Upload Patient's Image
-                  </button>
-                </div>
-                <div className="form-group button-group">
-                  <button type="submit" className="button">
-                    Submit
-                  </button>
+                 
+                  <button className="button" onClick={handleSeeDetails}>
+        Patient Details Add or View
+      </button>
                 </div>
               </form>
             )}
@@ -327,6 +271,10 @@ const LensDB = () => {
                           <span className="labelP">Surgery Time:</span>
                           <span className="valueP"></span>
                         </div>
+                        <div className="label-value-pair-P">
+                          <span className="labelP">Lens:</span>
+                          <span className="valueP"></span>
+                        </div>
                       </div>
                     </>
                   )}
@@ -337,25 +285,16 @@ const LensDB = () => {
                   <span className="value2"></span>
                 </div>
                 <div className="form-group button-group">
-                  <label htmlFor="imageUpload" className="insert-image-text">
-                    <b>Download Medical Report</b>
-                    <FontAwesomeIcon
-                      icon={faCloudDownloadAlt}
-                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
-                      className="cloud-icon"
-                    />
-                  </label>
-
-                  <button
-                    type="button"
-                    className="button-img"
-                    onClick={() => {
-                      alert("Downloading your medical report...");
-                    }}
-                  >
-                    Download Document
-                  </button>
+                  <p>If need to look on Medical Details and Personal Detils , Click below button </p>
                 </div>
+                
+                <div className="form-group button-group">
+                 
+                  <button className="button" onClick={handleSeeDetails}>
+        Patient Details  View
+      </button>
+                </div>
+                
                 <div className="form-group button-group">
                   <span>
                     <h4>Uploaded Eye Images : </h4>
@@ -383,6 +322,26 @@ const LensDB = () => {
                       </div>
                     </div>
                   )}
+                </div>
+                <div className="form-group button-group">
+                  <label htmlFor="imageUpload" className="insert-image-text">
+                    <b>Download Medical Report</b>
+                    <FontAwesomeIcon
+                      icon={faCloudDownloadAlt}
+                      style={{ fontSize: "1.5em", color: "#6FA1EE" }}
+                      className="cloud-icon"
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    className="button-img"
+                    onClick={() => {
+                      alert("Downloading your medical report...");
+                    }}
+                  >
+                    Download Document
+                  </button>
                 </div>
               </div>
             )}
