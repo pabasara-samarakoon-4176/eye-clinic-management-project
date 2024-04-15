@@ -16,14 +16,17 @@ import axios from 'axios';
 import "./surgeryDB.css";
 
 const LensDB = () => {
-  const handleExamHoursChange = (e) => setExamHours(e.target.value);
-  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value);
-  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value);
+  const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
+  const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
+  const handleSurgeryAMPMChange = (e) => setSurgeryAMPM(e.target.value);
+
   const [activeButton, setActiveButton] = useState("add");
-  const [examDate, setExamDate] = useState(null);
-  const [examHours, setExamHours] = useState(null);
-  const [examMinutes, setExamMinutes] = useState(null);
-  const [examAMPM, setExamAMPM] = useState(null);
+
+  const [surgeryDate, setSurgeryDate] = useState(null);
+  const [surgeryHours, setSurgeryHours] = useState(null);
+  const [surgeryMinutes, setSurgeryMinutes] = useState(null);
+  const [surgeryAMPM, setSurgeryAMPM] = useState(null);
+
   const [activeTab, setActiveTab] = useState(""); // Define setActiveTab
 
   const [patient, setPatient] = useState('')
@@ -33,6 +36,9 @@ const LensDB = () => {
   const [lens, setLens] = useState('')
   const [lensId, setLensId] = useState('')
   const [lensOptions, setLensOptions] = useState([])
+
+  const [description, setDescription] = useState('')
+  const [docReport, setDocReport] = useState('')
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
@@ -51,7 +57,7 @@ const LensDB = () => {
       try {
         const response = await axios.get(`http://localhost:8080/viewpatients/${value}`)
         setPatientOptions(response.data)
-        console.log(patientOptions) 
+        console.log(patientOptions)
       } catch (error) {
         console.log(error)
       }
@@ -88,6 +94,27 @@ const LensDB = () => {
     navigate("/patientDB");
     setActiveTab("MEDICAL DETAILS");
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const doctorId = 'MBBS.00000'
+    try {
+      const response = await axios.post(`http://localhost:8080/addsurgery/${doctorId}`, {
+        surgeryDate: surgeryDate,
+        surgeryHours: surgeryHours,
+        surgeryMinutes: surgeryMinutes,
+        surgeryAMPM: surgeryAMPM,
+        patientId: patientId,
+        lensId: lensId,
+        description: description,
+        docReport: docReport
+      })
+      alert("Successfully added the surgery record")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       <header className="header">
@@ -138,8 +165,8 @@ const LensDB = () => {
                   </label>
                   <div className="date-input">
                     <DatePicker
-                      selected={examDate}
-                      onChange={(date) => setExamDate(date)}
+                      selected={surgeryDate}
+                      onChange={(date) => setSurgeryDate(date)}
                       placeholderText="Select Date"
                       className="lInput"
                       dateFormat="yyyy/MM/dd"
@@ -162,8 +189,8 @@ const LensDB = () => {
                     <select
                       id="hours"
                       className="lInputt"
-                      value={examHours || ""}
-                      onChange={(e) => handleExamHoursChange(e)}
+                      value={surgeryHours || ""}
+                      onChange={(e) => handleSurgeryHoursChange(e)}
                     >
                       <option value="" disabled>
                         --
@@ -178,8 +205,8 @@ const LensDB = () => {
                     <select
                       id="minutes"
                       className="lInputt"
-                      value={examMinutes || ""}
-                      onChange={(e) => handleExamMinutesChange(e)}
+                      value={surgeryMinutes || ""}
+                      onChange={(e) => handleSurgeryMinutesChange(e)}
                     >
                       <option value="" disabled>
                         --
@@ -194,8 +221,8 @@ const LensDB = () => {
                     <select
                       id="ampm"
                       className="lInputt"
-                      value={examAMPM || ""}
-                      onChange={(e) => handleExamAMPMChange(e)}
+                      value={surgeryAMPM || ""}
+                      onChange={(e) => handleSurgeryAMPMChange(e)}
                     >
                       <option value="" disabled>
                         --
@@ -238,8 +265,8 @@ const LensDB = () => {
 
                 <div className="form-group button-group">
 
-                  <button className="button" onClick={handleSeeDetails}>
-                    Patient Details Add or View
+                  <button className="button" onClick={handleSubmit}>
+                    Submit
                   </button>
                 </div>
               </form>

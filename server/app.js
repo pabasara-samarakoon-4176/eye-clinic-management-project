@@ -498,7 +498,9 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
     const {
         patientId,
         surgeryDate,
-        surgeryTime,
+        surgeryHours,
+        surgeryMinutes,
+        surgeryAMPM,
         lensId,
         description,
         docReport
@@ -511,6 +513,23 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
 
     const pending = true
     const nurseId = 'NR.00000'
+
+    // date format modification
+    const date = new Date(surgeryDate)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    const formattedDate = `${year}-${month}-${day}`
+
+    // time format modification
+    let hours = Number(surgeryHours);
+    if (surgeryAMPM === "PM" && hours !== 12) {
+        hours += 12;
+    }
+    if (surgeryAMPM === "AM" && hours === 12) {
+        hours = 0;
+    }
+    const formattedTime = `${String(hours).padStart(2, "0")}:${surgeryMinutes}:00`;
 
     try {
 
@@ -533,13 +552,13 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
             docReport
         ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId[0][0].examId, compId[0][0].patientComplaintId, nurseId, lensId, doctorId, description, docReport
+            surgeryId, formattedDate, formattedTime, pending, patientId, examId[0][0].examId, compId[0][0].patientComplaintId, nurseId, lensId, doctorId, description, docReport
         ])
-        
+
         res.send("Successfully inserted the surgery record")
-        
+
     } catch (error) {
-        console.log(`${error.message}`)
+        console.error(error)
     }
 
 })
