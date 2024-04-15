@@ -483,6 +483,17 @@ app.get("/admin/viewexamdetails/:patientId", async (req, res) => {
     }
 })
 
+app.get("/admin/viewexamId/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const response = await db.query(`select examId from examination where patientId = ?`, [patientId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
+
 app.post("/addsurgery/:doctorId", async (req, res) => {
     const {
         patientId,
@@ -490,12 +501,8 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         surgeryTime,
         lensId,
         description,
-        docReport,
-        compId
-
+        docReport
     } = req.body
-
-    const examId = await db.query(`select examId from examination where patientId = ?`, [patientId])
 
     const doctorId = req.params.doctorId
 
@@ -507,26 +514,30 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
 
     try {
 
-        // const [newSurgery] = await db.query(`
-        // insert into surgery (
-        //     surgeryId,
-        //     surgeryDate,
-        //     surgeryTime,
-        //     pending,
-        //     patientId,
-        //     examId,
-        //     compId, 
-        //     nurseId,
-        //     lensId,
-        //     doctorId,
-        //     description,
-        //     docReport
-        // ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        // `, [
-        //     surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, nurseId, lensId, doctorId, description, docReport
-        // ])
-        res.send(`examId = ${examId}`)
+        const examId = await db.query(`select examId from examination where patientId = ?`, [patientId])
+        const compId = await db.query(`select patientComplaintId from patientComplaint where patientId = ?`, [patientId])
 
+        const [newSurgery] = await db.query(`
+        insert into surgery (
+            surgeryId,
+            surgeryDate,
+            surgeryTime,
+            pending,
+            patientId,
+            examId,
+            compId, 
+            nurseId,
+            lensId,
+            doctorId,
+            description,
+            docReport
+        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId[0][0].examId, compId[0][0].patientComplaintId, nurseId, lensId, doctorId, description, docReport
+        ])
+        
+        res.send("Successfully inserted the surgery record")
+        
     } catch (error) {
         console.log(`${error.message}`)
     }
