@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +11,7 @@ import {
   faCloudDownloadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 
 import "./surgeryDB.css";
 
@@ -24,6 +25,15 @@ const LensDB = () => {
   const [examMinutes, setExamMinutes] = useState(null);
   const [examAMPM, setExamAMPM] = useState(null);
   const [activeTab, setActiveTab] = useState(""); // Define setActiveTab
+
+  const [patient, setPatient] = useState('')
+  const [patientId, setPatientId] = useState('')
+  const [patientOptions, setPatientOptions] = useState([])
+
+  const [lens, setLens] = useState('')
+  const [lensId, setLensId] = useState('')
+  const [lensOptions, setLensOptions] = useState([])
+
   const handleButtonClick = (button) => {
     setActiveButton(button);
   };
@@ -34,12 +44,42 @@ const LensDB = () => {
     index.toString().padStart(2, "0"),
   );
 
+  const doctorId = 'MBBS.00000'
+
+  useEffect(() => {
+    const fetchPatients = async (value) => {
+      try {
+        const response = await axios.get(`http://localhost:8080/viewpatients/${value}`)
+        setPatientOptions(response.data)
+        console.log(patientOptions) 
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    if (doctorId) {
+      fetchPatients(doctorId)
+    }
+  }, [doctorId])
+
+  useEffect(() => {
+    const fetchLens = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/admin/viewlens`)
+        setLensOptions(response.data)
+        console.log(lensOptions)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchLens()
+  }, [])
+
   const imageUrl = null;
   const eyeImages = null;
   const handleSearch = (searchValue) => {
     console.log("Search value:", searchValue);
   };
-  
+
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   // Function to handle "See Details" button click
@@ -82,12 +122,15 @@ const LensDB = () => {
                   <label htmlFor="patientID" className="label">
                     Patient ID:
                   </label>
-                  <input
-                    type="text"
-                    id="patientID"
-                    className="lInput"
-                    placeholder="Enter Patient ID"
-                  />
+                  <select id="patientId" className="lInput"
+                    value={patient} onChange={(e) => setPatientId(e.target.value)}>
+                    <option value="">Select the patient</option>
+                    {patientOptions.map((patient) => (
+                      <option key={patient.patientId} value={patient.patientId}>
+                        {patient.patientId}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label htmlFor="date" className="label">
@@ -164,16 +207,17 @@ const LensDB = () => {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="description" className="label">
-                   Lens:
+                  <label htmlFor="patientID" className="label">
+                    Lens ID:
                   </label>
-                  <select id="surgeryType" className="lInput">
-                    <option value="" disabled selected hidden>
-                      Select Surgery Type
-                    </option>
-                    <option value="Lens1">Lens 1 | Power 1</option>
-                    <option value="Lens2">Lens 2 | Power 2</option>
-                    <option value="Lens3">Lens 3 | Power 3</option>
+                  <select id="patientId" className="lInput"
+                    value={lens} onChange={(e) => setLensId(e.target.value)}>
+                    <option value="">Select the lens</option>
+                    {lensOptions.map((lens) => (
+                      <option key={lens.lensId} value={lens.lensId}>
+                        {lens.lensId}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group">
@@ -189,14 +233,14 @@ const LensDB = () => {
 
                 <div className="form-group button-group">
                   <p>Please create a patient record before making an appointment. Make sure to add medical and personal details of patient</p>
-                    
+
                 </div>
-                
+
                 <div className="form-group button-group">
-                 
+
                   <button className="button" onClick={handleSeeDetails}>
-        Patient Details Add or View
-      </button>
+                    Patient Details Add or View
+                  </button>
                 </div>
               </form>
             )}
@@ -287,14 +331,14 @@ const LensDB = () => {
                 <div className="form-group button-group">
                   <p>If need to look on Medical Details and Personal Detils , Click below button </p>
                 </div>
-                
+
                 <div className="form-group button-group">
-                 
+
                   <button className="button" onClick={handleSeeDetails}>
-        Patient Details  View
-      </button>
+                    Patient Details  View
+                  </button>
                 </div>
-                
+
                 <div className="form-group button-group">
                   <span>
                     <h4>Uploaded Eye Images : </h4>

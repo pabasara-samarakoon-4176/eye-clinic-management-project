@@ -410,6 +410,25 @@ app.get("/admin/viewdoctors", async (req, res) => {
     }
 })
 
+app.get("/viewpatients/:doctorId", async (req, res) => {
+    const doctorId = req.params.doctorId
+    try {
+        const response = await db.query(`select * from patient where doctorInChargeId = ?`, [doctorId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
+app.get("/admin/viewlens", async (req, res) => {
+    try {
+        const response = await db.query(`select * from lens`)
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
+    }
+})
+
 app.post("/addexamdetails/:doctorId", async (req, res) => {
     const {
         examDate,
@@ -450,7 +469,17 @@ app.post("/addexamdetails/:doctorId", async (req, res) => {
         )
         res.send("Successfully added eye examination details")
     } catch (error) {
-        console.log(error)
+        console.log(`${error.message}`)
+    }
+})
+
+app.get("/admin/viewexamdetails/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const response = await db.query(`select * from examination where patientId = ?`, [patientId])
+        res.send(response[0])
+    } catch (error) {
+        console.log(`${error.message}`)
     }
 })
 
@@ -462,10 +491,11 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         lensId,
         description,
         docReport,
-        examId,
         compId
 
     } = req.body
+
+    const examId = await db.query(`select examId from examination where patientId = ?`, [patientId])
 
     const doctorId = req.params.doctorId
 
@@ -477,25 +507,25 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
 
     try {
 
-        const [newSurgery] = await db.query(`
-        insert into surgery (
-            surgeryId,
-            surgeryDate,
-            surgeryTime,
-            pending,
-            patientId,
-            examId,
-            compId, 
-            nurseId,
-            lensId,
-            doctorId,
-            description,
-            docReport
-        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [
-            surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, nurseId, lensId, doctorId, description, docReport
-        ])
-        res.send("Successfully added the surgery")
+        // const [newSurgery] = await db.query(`
+        // insert into surgery (
+        //     surgeryId,
+        //     surgeryDate,
+        //     surgeryTime,
+        //     pending,
+        //     patientId,
+        //     examId,
+        //     compId, 
+        //     nurseId,
+        //     lensId,
+        //     doctorId,
+        //     description,
+        //     docReport
+        // ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        // `, [
+        //     surgeryId, surgeryDate, surgeryTime, pending, patientId, examId, compId, nurseId, lensId, doctorId, description, docReport
+        // ])
+        res.send(`examId = ${examId}`)
 
     } catch (error) {
         console.log(`${error.message}`)
