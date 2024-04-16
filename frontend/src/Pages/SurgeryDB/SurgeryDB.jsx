@@ -37,8 +37,7 @@ const LensDB = () => {
   const [lens, setLens] = useState('')
   const [lensId, setLensId] = useState('')
   const [lensOptions, setLensOptions] = useState([])
-
-  
+ 
   const [activeButton, setActiveButton] = useState("add")
 
   const [searchPatientId, setSearchPatientId] = useState('')
@@ -47,6 +46,9 @@ const LensDB = () => {
   const [loading, setLoading] = useState(false)
 
   const [imageUrl, setImageUrl] = useState(null);
+
+  const [description, setDescription] = useState('')
+  const [docReport, setDocReport] = useState('')
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
