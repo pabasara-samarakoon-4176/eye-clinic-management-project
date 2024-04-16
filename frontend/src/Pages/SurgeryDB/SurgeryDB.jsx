@@ -63,6 +63,34 @@ const LensDB = () => {
     index.toString().padStart(2, "0"),
   )
 
+  useEffect(() => {
+    const fetchPatients = async (value) => {
+      try {
+        const response = await axios.get(`http://localhost:8080/viewpatients/${value}`)
+        setPatientOptions(response.data)
+        console.log(patientOptions)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    if (doctorId) {
+      fetchPatients(doctorId)
+    }
+  }, [doctorId])
+
+  useEffect(() => {
+    const fetchLens = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/admin/viewlens`)
+        setLensOptions(response.data)
+        console.log(lensOptions)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchLens()
+  }, [])
+
   const handleDownload = async () => {
     setLoading(true)
     try {
