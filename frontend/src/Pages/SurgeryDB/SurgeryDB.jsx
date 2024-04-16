@@ -110,6 +110,27 @@ const LensDB = () => {
     return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
   }
 
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const doctorId = 'MBBS.00000'
+    try {
+      const response = await axios.post(`http://localhost:8080/addsurgery/${doctorId}`, {
+        surgeryDate: surgeryDate,
+        surgeryHours: surgeryHours,
+        surgeryMinutes: surgeryMinutes,
+        surgeryAMPM: surgeryAMPM,
+        patientId: patientId,
+        lensId: lensId,
+        description: description,
+        docReport: docReport
+      })
+      alert("Successfully added the surgery record")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <div>
       <header className="header">
