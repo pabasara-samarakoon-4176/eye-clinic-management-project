@@ -11,6 +11,7 @@ import {
   faCloudDownloadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 
 import "./surgeryDB.css";
 
@@ -25,6 +26,7 @@ const LensDB = () => {
   const [examAMPM, setExamAMPM] = useState(null);
 
   const [searchPatientId, setSearchPatientId] = useState('')
+  const [searchSurgeryDetails, setSearchSurgeryDetails] = useState([])
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
@@ -38,9 +40,30 @@ const LensDB = () => {
 
   const imageUrl = null;
   const eyeImages = null;
-  const handleSearchClick = () => {
-    console.log(searchPatientId)
-  };
+  const handleSearchClick = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/admin/viewappointmentdetails/${searchPatientId}`)
+      // setSearchPatient([response.data])
+      // console.log(`patient blob: ${patientImage}`)
+      // const patientImage = searchPatient[0]?.[0]?.patient_image
+      // if (patientImage) {
+      //     const reader = new FileReader();
+      //     reader.readAsDataURL(new Blob([Uint8Array.from(patientImage.data)]));
+      //     reader.onloadend = () => {
+      //         setPatientImageUrl(reader.result);
+      //     };
+      // }
+      setSearchSurgeryDetails(response.data)
+      console.log(searchSurgeryDetails)
+
+    } catch (error) {
+      console.log(`${error.message}`)
+    }
+  }
+  const formatDate = (dateString) => {
+    const dateParts = dateString.split("T")[0].split("-")
+    return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+}
   return (
     <div>
       <header className="header">
@@ -319,26 +342,26 @@ const LensDB = () => {
                       <div className="column second-column">
                         <div className="label-value-pair-P">
                           <span className="labelP">Patient Firstname:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.patientFirstname}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                           <span className="labelP">Patient Lastname:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.patientLastname}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                           <span className="labelP">Patient Contact No.:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.patientContactNo}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Date:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.surgeryDate}</span>
                         </div>
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Time:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.surgeryTime}</span>
                         </div>
                       </div>
                     </>
@@ -347,7 +370,7 @@ const LensDB = () => {
 
                 <div className="label-value-pair">
                   <span className="label">Description:</span>
-                  <span className="value2"></span>
+                  <span className="value2">{searchSurgeryDetails?.description}</span>
                 </div>
                 <div className="form-group button-group">
                   <label htmlFor="imageUpload" className="insert-image-text">
