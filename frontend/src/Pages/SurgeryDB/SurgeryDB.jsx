@@ -30,6 +30,8 @@ const LensDB = () => {
 
   const [loading, setLoading] = useState(false)
 
+  const [imageUrl, setImageUrl] = useState(null);
+
   const handleButtonClick = (button) => {
     setActiveButton(button);
   }
@@ -46,7 +48,7 @@ const LensDB = () => {
       const response = await axios.get(`http://localhost:8080/admin/generatereport/${searchPatientId}`, {
         responseType: 'blob'
       })
-      const blob = new Blob([response.data], {type: 'application/pdf'})
+      const blob = new Blob([response.data], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -56,38 +58,40 @@ const LensDB = () => {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
     } catch (error) {
-      console.error(error)
+      if (error.response.status === 404) {
+        alert("Patient not found");
+      } else {
+        console.error(`${error.message}`);
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  const imageUrl = null;
-  const eyeImages = null;
   const handleSearchClick = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/admin/viewappointmentdetails/${searchPatientId}`)
-      // setSearchPatient([response.data])
-      // console.log(`patient blob: ${patientImage}`)
-      // const patientImage = searchPatient[0]?.[0]?.patient_image
-      // if (patientImage) {
-      //     const reader = new FileReader();
-      //     reader.readAsDataURL(new Blob([Uint8Array.from(patientImage.data)]));
-      //     reader.onloadend = () => {
-      //         setPatientImageUrl(reader.result);
-      //     };
-      // }
       setSearchSurgeryDetails(response.data)
-      console.log(searchSurgeryDetails)
+      console.log(searchSurgeryDetails?.patientImage)
+      const patientImage = searchSurgeryDetails?.patientImage
+      const imageDataUrl = `data:image/jpeg;base64,${btoa(String.fromCharCode.apply(null, patientImage.data))}`
+      setImageUrl(imageDataUrl)
+      console.log(imageDataUrl)
 
     } catch (error) {
-      console.log(`${error.message}`)
+      if (error.response && error.response.status === 404) {
+        alert("Patient not found");
+      } else {
+        console.error(`${error.message}`);
+      }
     }
   }
+
   const formatDate = (dateString) => {
     const dateParts = dateString.split("T")[0].split("-")
     return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
   }
+
   return (
     <div>
       <header className="header">
@@ -415,34 +419,7 @@ const LensDB = () => {
                     {loading ? 'Downloading...' : 'Download Report'}
                   </button>
                 </div>
-                <div className="form-group button-group">
-                  <span>
-                    <h4>Uploaded Eye Images : </h4>
-                  </span>
-                  {eyeImages === null ? (
-                    <span>
-                      <h4 className="eye-text"> No Uploaded Eye Images</h4>
-                    </span>
-                  ) : (
-                    // Render the uploaded eye images if eyeImages is not null
-                    <div className="eye-images-section">
-                      <h2>Uploaded Eye Images</h2>
-                      <div className="columns-container">
-                        {eyeImages.map((image, index) => (
-                          <div className="column" key={index}>
-                            <div className="eye-image-container">
-                              <img
-                                src={image}
-                                alt={`Eye ${index}`}
-                                className="eye-image"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+
               </div>
             )}
           </div>

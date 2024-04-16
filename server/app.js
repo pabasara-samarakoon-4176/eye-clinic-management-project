@@ -416,17 +416,22 @@ app.get("/admin/viewdoctors", async (req, res) => {
 app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
     const patientId = req.params.patientId
     try {
-        const patientRes = await db.query(`select patientFirstName, patientLastName, phoneNumber from patient where patientId = ?`, [patientId])
+        const patientRes = await db.query(`select patientFirstName, patientLastName, phoneNumber, patient_image from patient where patientId = ?`, [patientId])
         const surgeryRes = await db.query(`select * from surgery where patientId = ?`, [patientId])
-        const appointmentDetails = {
-            patientFirstname: patientRes[0][0].patientFirstName,
-            patientLastname: patientRes[0][0].patientLastName,
-            patientContactNo: patientRes[0][0].phoneNumber,
-            surgeryDate: surgeryRes[0][0].surgeryDate,
-            surgeryTime: surgeryRes[0][0].surgeryTime,
-            description: surgeryRes[0][0].description
+        if (patientRes[0][0] && surgeryRes[0][0]) {
+            const appointmentDetails = {
+                patientFirstname: patientRes[0][0].patientFirstName,
+                patientLastname: patientRes[0][0].patientLastName,
+                patientContactNo: patientRes[0][0].phoneNumber,
+                patientImage: patientRes[0][0].patient_image,
+                surgeryDate: surgeryRes[0][0].surgeryDate,
+                surgeryTime: surgeryRes[0][0].surgeryTime,
+                description: surgeryRes[0][0].description
+            }
+            res.send(appointmentDetails)
+        } else {
+            res.status(404).send({ error: "Patient appointment details not found" });
         }
-        res.send(appointmentDetails)
     } catch (error) {
         console.log(error)
     }
