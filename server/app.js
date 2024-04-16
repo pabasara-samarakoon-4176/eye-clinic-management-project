@@ -6,8 +6,11 @@ import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import cors from 'cors'
+import pdfkit from 'pdfkit'
+import fs from 'fs'
 
 const app = express()
+const currentDirectory = process.cwd()
 
 app.use(express.json())
 app.use(express.urlencoded({
@@ -329,7 +332,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         patientAddress,
         patientDescription,
         patientImagePath
-        
+
     } = req.body
 
     const date = new Date(patientDOB);
@@ -346,7 +349,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
-        
+
         res.send("Successfully inserted patient")
     } catch (error) {
         console.log(`${error.message}`)
@@ -429,6 +432,119 @@ app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
     }
 })
 
+app.get('/admin/generatereport/:patientId', async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const patientRes = await db.query(`select * from patient where patientId = ?`, [patientId])
+        const examRes = await db.query(`select * from examination where patientId = ?`, [patientId])
+        const compRes = await db.query(`select * from patientComplaint where patientId = ?`, [patientId])
+        const surgeryRes = await db.query(`select * from surgery where patientId = ?`, [patientId])
+        const reportDetails = {
+            patientId: patientId,
+            patientFirstname: patientRes[0][0].patientFirstname,
+            patientLastname: patientRes[0][0].patientLastname,
+            patientDOB: patientRes[0][0].dateOfBirth,
+            patientGender: patientRes[0][0].gender,
+            patientImage: patientRes[0][0].patient_image,
+            patientContactNo: patientRes[0][0].phoneNumber,
+            examId: examRes[0][0].examId,
+            examDate: examRes[0][0].examDate,
+            examTime: examRes[0][0].examTime,
+            rightLids: examRes[0][0].rightLids,
+            rightConjuitive: examRes[0][0].rightConjuitive,
+            rightAC: examRes[0][0].rightAC,
+            rightIris: examRes[0][0].rightIris,
+            rightVitereous: examRes[0][0].rightVitereous,
+            rightCornea: examRes[0][0].rightCornea,
+            rightRetina: examRes[0][0].rightRetina,
+            leftLids: examRes[0][0].leftLids,
+            leftConjuitive: examRes[0][0].leftConjuitive,
+            leftAC: examRes[0][0].leftAC,
+            leftIris: examRes[0][0].leftIris,
+            leftVitereous: examRes[0][0].leftVitereous,
+            leftCornea: examRes[0][0].leftCornea,
+            leftRetina: examRes[0][0].leftRetina,
+            allergies: compRes[0][0].allergies,
+            medicalHistory: compRes[0][0].medicalHistory,
+            rightEyeImage: compRes[0][0].rightEyeImage,
+            leftEyeImage: compRes[0][0].leftEyeImage,
+            surgeryId: surgeryRes[0][0].surgeryId,
+            surgeryDate: surgeryRes[0][0].surgeryDate,
+            surgeryTime: surgeryRes[0][0].surgeryTime,
+            surgeryDoctor: surgeryRes[0][0].doctorId,
+            surgeryLens: surgeryRes[0][0].lensId,
+            description: surgeryRes[0][0].description
+        }
+        // res.send(reportDetails)
+
+        const report = new pdfkit()
+        report.info.Title = 'Medical Report'
+
+        report.fontSize(20);
+        report.text('Medical Report', {
+            align: 'center'
+        });
+        report.moveDown();
+        report.fontSize(14);
+        report.text('Patient Details', {})
+        report.moveDown();
+        report.fontSize(12).text(`Patient ID: ${reportDetails.patientId}`).moveDown()
+        report.fontSize(12).text(`Patient Name: ${reportDetails.patientFirstname} ${reportDetails.patientLastname}`).moveDown()
+        report.fontSize(12).text(`Date of Birth: ${reportDetails.patientDOB}`).moveDown()
+        report.fontSize(12).text(`Gender: ${reportDetails.patientGender}`).moveDown()
+        report.fontSize(12).text(`Phone Number: ${reportDetails.patientContactNo}`).moveDown()
+        // report.fontSize(12).text(`Patient Image: ${reportDetails.patient_image}`).moveDown()
+
+        report.fontSize(14);
+        report.text('Eye Exam Details', {})
+        report.moveDown();
+        report.fontSize(12).text(`Eye Exam ID: ${reportDetails.examId}`).moveDown()
+        report.fontSize(12).text(`Conducted Date: ${reportDetails.examDate} ${reportDetails.patientLastname}`).moveDown()
+        report.fontSize(12).text(`Conducted Time: ${reportDetails.examTime}`).moveDown()
+        report.fontSize(12).text(`Right Lids: ${reportDetails.rightLids}`).moveDown()
+        report.fontSize(12).text(`Right Conjuitive: ${reportDetails.rightConjuitive}`).moveDown()
+        report.fontSize(12).text(`Right AC: ${reportDetails.rightAC}`).moveDown()
+        report.fontSize(12).text(`Right Iris: ${reportDetails.rightIris}`).moveDown()
+        report.fontSize(12).text(`Right Vitereous: ${reportDetails.rightVitereous}`).moveDown()
+        report.fontSize(12).text(`Right Cornea: ${reportDetails.rightCornea}`).moveDown()
+        report.fontSize(12).text(`Right Retina: ${reportDetails.rightRetina}`).moveDown()
+        // report.fontSize(12).text(`Patient Image: ${reportDetails.rightEyeImage}`).moveDown()
+
+        report.fontSize(12).text(`Left Lids: ${reportDetails.leftLids}`).moveDown()
+        report.fontSize(12).text(`Left Conjuitive: ${reportDetails.leftConjuitive}`).moveDown()
+        report.fontSize(12).text(`Left AC: ${reportDetails.leftAC}`).moveDown()
+        report.fontSize(12).text(`Left Iris: ${reportDetails.leftIris}`).moveDown()
+        report.fontSize(12).text(`Left Vitereous: ${reportDetails.leftVitereous}`).moveDown()
+        report.fontSize(12).text(`Left Cornea: ${reportDetails.leftCornea}`).moveDown()
+        report.fontSize(12).text(`Left Retina: ${reportDetails.leftRetina}`).moveDown()
+        // report.fontSize(12).text(`Patient Image: ${reportDetails.leftEyeImage}`).moveDown()
+
+        report.fontSize(12).text(`Allergies: ${reportDetails.allergies}`).moveDown()
+        report.fontSize(12).text(`Medical History: ${reportDetails.medicalHistory}`).moveDown()
+
+        report.fontSize(14);
+        report.text('Surgery Details', {})
+        report.moveDown();
+        report.fontSize(12).text(`Surgery Id: ${reportDetails.surgeryId}`).moveDown()
+        report.fontSize(12).text(`Date: ${reportDetails.surgeryDate}`).moveDown()
+        report.fontSize(12).text(`Time: ${reportDetails.surgeryTime}`).moveDown()
+        report.fontSize(12).text(`Doctor Id: ${reportDetails.surgeryDoctor}`).moveDown()
+        report.fontSize(12).text(`Lens Id: ${reportDetails.surgeryLens}`).moveDown()
+        report.fontSize(12).text(`description: ${reportDetails.description}`).moveDown()
+
+        const filePath = `patient_report_${patientId}.pdf`
+        report.pipe(fs.createWriteStream(filePath))
+        report.end()
+
+        res.sendFile(filePath, {
+            root: currentDirectory
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 app.post("/addexamdetails/:doctorId", async (req, res) => {
     const {
         examDate,
@@ -464,7 +580,8 @@ app.post("/addexamdetails/:doctorId", async (req, res) => {
             rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina ) values (
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
-            rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina]
+                rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina
+            ]
         )
         res.send("Successfully added eye examination details")
     } catch (error) {
@@ -532,7 +649,7 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
             medicalHistory,
             patientId
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientComplaintId, 
+        `, [patientComplaintId,
             rightPainBool, rightDoubleVisionBool, rightRedeyeBool, rightPoorVisionBool,
             rightPain, rightDoubleVision, rightRedeye, rightPoorVision, rightDescription, rightEyeImagePath,
             leftPainBool, leftDoubleVisionBool, leftRedeyeBool, leftPoorVisionBool,
@@ -541,7 +658,7 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         ])
         res.send("Successfully created the patient comaplaint")
     } catch (error) {
-        
+
         console.log(`${error.message}`)
     }
 })

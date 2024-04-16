@@ -1,42 +1,66 @@
 // LensDB.jsx
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCloudUploadAlt,
   faUser,
   faSearch,
   faEye,
   faCloudDownloadAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
+} from "@fortawesome/free-solid-svg-icons"
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons"
+import axios from 'axios'
 
-import "./surgeryDB.css";
+import "./surgeryDB.css"
 
 const LensDB = () => {
-  const handleExamHoursChange = (e) => setExamHours(e.target.value);
-  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value);
-  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value);
-  const [activeButton, setActiveButton] = useState("add");
-  const [examDate, setExamDate] = useState(null);
-  const [examHours, setExamHours] = useState(null);
-  const [examMinutes, setExamMinutes] = useState(null);
-  const [examAMPM, setExamAMPM] = useState(null);
+  const handleExamHoursChange = (e) => setExamHours(e.target.value)
+  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value)
+  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value)
+  const [activeButton, setActiveButton] = useState("add")
+  const [examDate, setExamDate] = useState(null)
+  const [examHours, setExamHours] = useState(null)
+  const [examMinutes, setExamMinutes] = useState(null)
+  const [examAMPM, setExamAMPM] = useState(null)
 
   const [searchPatientId, setSearchPatientId] = useState('')
   const [searchSurgeryDetails, setSearchSurgeryDetails] = useState([])
 
+  const [loading, setLoading] = useState(false)
+
   const handleButtonClick = (button) => {
     setActiveButton(button);
-  };
+  }
   const hoursOptions = Array.from({ length: 12 }, (_, index) =>
     (index + 1).toString(),
-  );
+  )
   const minutesOptions = Array.from({ length: 60 }, (_, index) =>
     index.toString().padStart(2, "0"),
-  );
+  )
+
+  const handleDownload = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`http://localhost:8080/admin/generatereport/${searchPatientId}`, {
+        responseType: 'blob'
+      })
+      const blob = new Blob([response.data], {type: 'application/pdf'})
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `patient_report_${searchPatientId}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const imageUrl = null;
   const eyeImages = null;
@@ -63,7 +87,7 @@ const LensDB = () => {
   const formatDate = (dateString) => {
     const dateParts = dateString.split("T")[0].split("-")
     return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
-}
+  }
   return (
     <div>
       <header className="header">
@@ -385,11 +409,10 @@ const LensDB = () => {
                   <button
                     type="button"
                     className="button-img"
-                    onClick={() => {
-                      alert("Downloading your medical report...");
-                    }}
+                    onClick={handleDownload}
+                    disabled={loading}
                   >
-                    Download Document
+                    {loading ? 'Downloading...' : 'Download Report'}
                   </button>
                 </div>
                 <div className="form-group button-group">
