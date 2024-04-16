@@ -23,6 +23,9 @@ const LensDB = () => {
   const [examHours, setExamHours] = useState(null);
   const [examMinutes, setExamMinutes] = useState(null);
   const [examAMPM, setExamAMPM] = useState(null);
+
+  const [searchPatientId, setSearchPatientId] = useState('')
+
   const handleButtonClick = (button) => {
     setActiveButton(button);
   };
@@ -35,8 +38,8 @@ const LensDB = () => {
 
   const imageUrl = null;
   const eyeImages = null;
-  const handleSearch = (searchValue) => {
-    console.log("Search value:", searchValue);
+  const handleSearchClick = () => {
+    console.log(searchPatientId)
   };
   return (
     <div>
@@ -271,13 +274,13 @@ const LensDB = () => {
                       id="searchPatientId"
                       className="lInput"
                       placeholder="Enter Patient ID"
-                      onChange={(e) => handleSearch(e.target.value)}
+                      onChange={(e) => setSearchPatientId(e.target.value)}
                     />
 
                     <button
                       type="button"
                       className="search-icon"
-                      onClick={() => handleSearch()}
+                      onClick={() => handleSearchClick()}
                     >
                       <FontAwesomeIcon
                         icon={faSearch}
@@ -315,7 +318,17 @@ const LensDB = () => {
 
                       <div className="column second-column">
                         <div className="label-value-pair-P">
-                          <span className="labelP">Patient ID:</span>
+                          <span className="labelP">Patient Firstname:</span>
+                          <span className="valueP"></span>
+                        </div>
+
+                        <div className="label-value-pair-P">
+                          <span className="labelP">Patient Lastname:</span>
+                          <span className="valueP"></span>
+                        </div>
+
+                        <div className="label-value-pair-P">
+                          <span className="labelP">Patient Contact No.:</span>
                           <span className="valueP"></span>
                         </div>
 

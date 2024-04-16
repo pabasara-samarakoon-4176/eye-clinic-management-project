@@ -410,6 +410,25 @@ app.get("/admin/viewdoctors", async (req, res) => {
     }
 })
 
+app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
+    const patientId = req.params.patientId
+    try {
+        const patientRes = await db.query(`select patientFirstName, patientLastName, phoneNumber from patient where patientId = ?`, [patientId])
+        const surgeryRes = await db.query(`select * from surgery where patientId = ?`, [patientId])
+        const appointmentDetails = {
+            patientFirstname: patientRes[0][0].patientFirstName,
+            patientLastname: patientRes[0][0].patientLastName,
+            patientContactNo: patientRes[0][0].phoneNumber,
+            surgeryDate: surgeryRes[0][0].surgeryDate,
+            surgeryTime: surgeryRes[0][0].surgeryTime,
+            description: surgeryRes[0][0].description
+        }
+        res.send(appointmentDetails)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 app.post("/addexamdetails/:doctorId", async (req, res) => {
     const {
         examDate,
