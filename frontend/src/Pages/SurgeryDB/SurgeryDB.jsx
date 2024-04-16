@@ -156,6 +156,7 @@ const LensDB = () => {
         docReport: docReport
       })
       alert("Successfully added the surgery record")
+      navigate(`/${doctorId}/home`)
     } catch (error) {
       console.log(error)
     }
