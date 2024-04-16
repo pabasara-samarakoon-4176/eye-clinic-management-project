@@ -9,110 +9,87 @@ import {
   faSearch,
   faEye,
   faCloudDownloadAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
+} from "@fortawesome/free-solid-svg-icons"
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons"
+import axios from 'axios'
 
-import "./surgeryDB.css";
+import "./surgeryDB.css"
 
 const LensDB = () => {
-  const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
-  const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
-  const handleSurgeryAMPMChange = (e) => setSurgeryAMPM(e.target.value);
+  const handleExamHoursChange = (e) => setExamHours(e.target.value)
+  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value)
+  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value)
+  const [activeButton, setActiveButton] = useState("add")
+  const [examDate, setExamDate] = useState(null)
+  const [examHours, setExamHours] = useState(null)
+  const [examMinutes, setExamMinutes] = useState(null)
+  const [examAMPM, setExamAMPM] = useState(null)
 
-  const [activeButton, setActiveButton] = useState("add");
+  const [searchPatientId, setSearchPatientId] = useState('')
+  const [searchSurgeryDetails, setSearchSurgeryDetails] = useState([])
 
-  const [surgeryDate, setSurgeryDate] = useState(null);
-  const [surgeryHours, setSurgeryHours] = useState(null);
-  const [surgeryMinutes, setSurgeryMinutes] = useState(null);
-  const [surgeryAMPM, setSurgeryAMPM] = useState(null);
+  const [loading, setLoading] = useState(false)
 
-  const [activeTab, setActiveTab] = useState(""); // Define setActiveTab
-
-  const [patient, setPatient] = useState('')
-  const [patientId, setPatientId] = useState('')
-  const [patientOptions, setPatientOptions] = useState([])
-
-  const [lens, setLens] = useState('')
-  const [lensId, setLensId] = useState('')
-  const [lensOptions, setLensOptions] = useState([])
-
-  const [description, setDescription] = useState('')
-  const [docReport, setDocReport] = useState('')
+  const [imageUrl, setImageUrl] = useState(null);
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
-  };
+  }
   const hoursOptions = Array.from({ length: 12 }, (_, index) =>
     (index + 1).toString(),
-  );
+  )
   const minutesOptions = Array.from({ length: 60 }, (_, index) =>
     index.toString().padStart(2, "0"),
-  );
+  )
 
-  const doctorId = 'MBBS.00000'
-
-  useEffect(() => {
-    const fetchPatients = async (value) => {
-      try {
-        const response = await axios.get(`http://localhost:8080/viewpatients/${value}`)
-        setPatientOptions(response.data)
-        console.log(patientOptions)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if (doctorId) {
-      fetchPatients(doctorId)
-    }
-  }, [doctorId])
-
-  useEffect(() => {
-    const fetchLens = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/admin/viewlens`)
-        setLensOptions(response.data)
-        console.log(lensOptions)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchLens()
-  }, [])
-
-  const imageUrl = null;
-  const eyeImages = null;
-  const handleSearch = (searchValue) => {
-    console.log("Search value:", searchValue);
-  };
-
-  const navigate = useNavigate(); // Initialize useNavigate hook
-
-  // Function to handle "See Details" button click
-  const handleSeeDetails = () => {
-    // Navigate to patient details route
-    navigate("/patientDB");
-    setActiveTab("MEDICAL DETAILS");
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const doctorId = 'MBBS.00000'
+  const handleDownload = async () => {
+    setLoading(true)
     try {
-      const response = await axios.post(`http://localhost:8080/addsurgery/${doctorId}`, {
-        surgeryDate: surgeryDate,
-        surgeryHours: surgeryHours,
-        surgeryMinutes: surgeryMinutes,
-        surgeryAMPM: surgeryAMPM,
-        patientId: patientId,
-        lensId: lensId,
-        description: description,
-        docReport: docReport
+      const response = await axios.get(`http://localhost:8080/admin/generatereport/${searchPatientId}`, {
+        responseType: 'blob'
       })
-      alert("Successfully added the surgery record")
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `patient_report_${searchPatientId}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
     } catch (error) {
-      console.log(error)
+      if (error.response.status === 404) {
+        alert("Patient not found");
+      } else {
+        console.error(`${error.message}`);
+      }
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const handleSearchClick = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/admin/viewappointmentdetails/${searchPatientId}`)
+      setSearchSurgeryDetails(response.data)
+      console.log(searchSurgeryDetails?.patientImage)
+      const patientImage = searchSurgeryDetails?.patientImage
+      const imageDataUrl = `data:image/jpeg;base64,${btoa(String.fromCharCode.apply(null, patientImage.data))}`
+      setImageUrl(imageDataUrl)
+      console.log(imageDataUrl)
+
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        alert("Patient not found");
+      } else {
+        console.error(`${error.message}`);
+      }
+    }
+  }
+
+  const formatDate = (dateString) => {
+    const dateParts = dateString.split("T")[0].split("-")
+    return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
   }
 
   return (
@@ -286,13 +263,13 @@ const LensDB = () => {
                       id="searchPatientId"
                       className="lInput"
                       placeholder="Enter Patient ID"
-                      onChange={(e) => handleSearch(e.target.value)}
+                      onChange={(e) => setSearchPatientId(e.target.value)}
                     />
 
                     <button
                       type="button"
                       className="search-icon"
-                      onClick={() => handleSearch()}
+                      onClick={() => handleSearchClick()}
                     >
                       <FontAwesomeIcon
                         icon={faSearch}
@@ -330,17 +307,27 @@ const LensDB = () => {
 
                       <div className="column second-column">
                         <div className="label-value-pair-P">
-                          <span className="labelP">Patient ID:</span>
-                          <span className="valueP"></span>
+                          <span className="labelP">Patient Firstname:</span>
+                          <span className="valueP">{searchSurgeryDetails?.patientFirstname}</span>
+                        </div>
+
+                        <div className="label-value-pair-P">
+                          <span className="labelP">Patient Lastname:</span>
+                          <span className="valueP">{searchSurgeryDetails?.patientLastname}</span>
+                        </div>
+
+                        <div className="label-value-pair-P">
+                          <span className="labelP">Patient Contact No.:</span>
+                          <span className="valueP">{searchSurgeryDetails?.patientContactNo}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Date:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.surgeryDate}</span>
                         </div>
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Time:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.surgeryTime}</span>
                         </div>
                         <div className="label-value-pair-P">
                           <span className="labelP">Lens:</span>
@@ -353,46 +340,7 @@ const LensDB = () => {
 
                 <div className="label-value-pair">
                   <span className="label">Description:</span>
-                  <span className="value2"></span>
-                </div>
-                <div className="form-group button-group">
-                  <p>If need to look on Medical Details and Personal Detils , Click below button </p>
-                </div>
-
-                <div className="form-group button-group">
-
-                  <button className="button" onClick={handleSeeDetails}>
-                    Patient Details  View
-                  </button>
-                </div>
-
-                <div className="form-group button-group">
-                  <span>
-                    <h4>Uploaded Eye Images : </h4>
-                  </span>
-                  {eyeImages === null ? (
-                    <span>
-                      <h4 className="eye-text"> No Uploaded Eye Images</h4>
-                    </span>
-                  ) : (
-                    // Render the uploaded eye images if eyeImages is not null
-                    <div className="eye-images-section">
-                      <h2>Uploaded Eye Images</h2>
-                      <div className="columns-container">
-                        {eyeImages.map((image, index) => (
-                          <div className="column" key={index}>
-                            <div className="eye-image-container">
-                              <img
-                                src={image}
-                                alt={`Eye ${index}`}
-                                className="eye-image"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <span className="value2">{searchSurgeryDetails?.description}</span>
                 </div>
                 <div className="form-group button-group">
                   <label htmlFor="imageUpload" className="insert-image-text">
@@ -407,13 +355,16 @@ const LensDB = () => {
                   <button
                     type="button"
                     className="button-img"
-                    onClick={() => {
-                      alert("Downloading your medical report...");
-                    }}
+                    onClick={handleDownload}
+                    disabled={loading}
                   >
-                    Download Document
-                  </button>
+                    {loading ? 'Downloading...' : 'Download Report'}
+                    </button>
+                  <p>If need to look on Medical Details and Personal Detils , Click below button </p>
                 </div>
+
+                
+
               </div>
             )}
           </div>
