@@ -16,14 +16,30 @@ import axios from 'axios'
 import "./surgeryDB.css"
 
 const LensDB = () => {
-  const handleExamHoursChange = (e) => setExamHours(e.target.value)
-  const handleExamMinutesChange = (e) => setExamMinutes(e.target.value)
-  const handleExamAMPMChange = (e) => setExamAMPM(e.target.value)
+
+  const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
+  const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
+  const handleSurgeryAMPMChange = (e) => setSurgeryAMPM(e.target.value);
+
+  
+
+  const [surgeryDate, setSurgeryDate] = useState(null);
+  const [surgeryHours, setSurgeryHours] = useState(null);
+  const [surgeryMinutes, setSurgeryMinutes] = useState(null);
+  const [surgeryAMPM, setSurgeryAMPM] = useState(null);
+
+  const [activeTab, setActiveTab] = useState(""); // Define setActiveTab
+
+  const [patient, setPatient] = useState('')
+  const [patientId, setPatientId] = useState('')
+  const [patientOptions, setPatientOptions] = useState([])
+
+  const [lens, setLens] = useState('')
+  const [lensId, setLensId] = useState('')
+  const [lensOptions, setLensOptions] = useState([])
+
+  
   const [activeButton, setActiveButton] = useState("add")
-  const [examDate, setExamDate] = useState(null)
-  const [examHours, setExamHours] = useState(null)
-  const [examMinutes, setExamMinutes] = useState(null)
-  const [examAMPM, setExamAMPM] = useState(null)
 
   const [searchPatientId, setSearchPatientId] = useState('')
   const [searchSurgeryDetails, setSearchSurgeryDetails] = useState([])
