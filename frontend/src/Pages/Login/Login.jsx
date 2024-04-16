@@ -36,11 +36,12 @@ const Login = () => {
 
         console.log(response);
 
-        if (response.data === 'Success') {
-          navigate('/home');
-        } else if (response.data === 'Fail') {
+        if (response.data.status === 'Success') {
+          navigate(`/${response.data.doctorId}/home`);
+      } else if (response.data === 'Fail') {
           alert('login failed')
-        }
+      }
+        
       } else {
         alert('login failed');
       }
@@ -50,10 +51,10 @@ const Login = () => {
     } catch (error) {
       console.error('Error during login', error);
     }
-  };
+  }
   const handleLoginClick = () => {
     navigate('/signUp');
-  };
+  }
   const handleLoginClick2 = () => {
     navigate('/home');
   };

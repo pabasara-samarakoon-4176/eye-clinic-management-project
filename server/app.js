@@ -58,7 +58,7 @@ app.post("/login", async (req, res) => {
 
         if (doctorId === _doctorId) {
             if (await bcrypt.compare(password, _doctorPasswordHashed)) {
-                res.send("Success")
+                res.send({status: 'Success', doctorId: _doctorId})
             } else {
                 res.send("Fail")
             }

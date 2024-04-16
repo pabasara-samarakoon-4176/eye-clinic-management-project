@@ -7,7 +7,7 @@ import {
   faCalendarCheck,
   faChartBar,
 } from '@fortawesome/free-regular-svg-icons';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useParams } from 'react-router-dom'; 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './home.css';
@@ -16,7 +16,8 @@ import myImage2 from './im1.jpeg';
 import myImage3 from './im4.jpeg';
 import myImage4 from './im5.jpeg';
 const Home = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate()
+  const {doctorId} = useParams()
 
   const sliderSettings = {
     dots: true,
@@ -63,17 +64,17 @@ const Home = () => {
       </div>
 
       <div className="bottom-buttons">
-        <button onClick={() => handleButtonClick('/patientDB')}>
+        <button onClick={() => handleButtonClick(`/${doctorId}/patientDB`)}>
           <FontAwesomeIcon icon={faIdCardRegular} style={{ fontSize: '1.5em' }} />
           <div className="button-name">Patient Details</div>
         </button>
 
-        <button onClick={() => handleButtonClick('/lensDB')}>
+        <button onClick={() => handleButtonClick(`/${doctorId}/lensDB`)}>
           <FontAwesomeIcon icon={faEye} style={{ fontSize: '1.5em' }} />
           <div className="button-name">Lens Stock Handling</div>
         </button>
 
-        <button onClick={() => handleButtonClick('/surgeryDB')}>
+        <button onClick={() => handleButtonClick(`/${doctorId}/surgeryDB`)}>
           <FontAwesomeIcon icon={faCalendarCheck} style={{ fontSize: '1.5em' }} />
           <div className="button-name">Appointment Handling</div>
         </button>

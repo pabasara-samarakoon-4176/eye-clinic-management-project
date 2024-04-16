@@ -8,31 +8,32 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "./lensDB.css";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 const LensDB = () => {
 
-  const navigate = useNavigate();
-  const [manufacturerOptions, setManufacturerOptions] = useState([]);
-  const [lensData, setLensData] = useState([]);
-  const [manufacturerMap, setManufacturerMap] = useState({});
-  const [searchLensId, setSearchLensId] = useState('');
-  const [searchLensData, setSearchLensData] = useState([]);
-  const [searchManufacturerId, setSearchManufacturerId] = useState('');
+  const {doctorId} = useParams()
+  const navigate = useNavigate()
+  const [manufacturerOptions, setManufacturerOptions] = useState([])
+  const [lensData, setLensData] = useState([])
+  const [manufacturerMap, setManufacturerMap] = useState({})
+  const [searchLensId, setSearchLensId] = useState('')
+  const [searchLensData, setSearchLensData] = useState([])
+  const [searchManufacturerId, setSearchManufacturerId] = useState('')
 
-  const [batchNo, setBatchNo] = useState('');
-  const [lensType, setLensType] = useState('');
-  const [surgeryType, setSurgeryType] = useState('');
-  const [manufacturer, setManufacturer] = useState('');
-  const [manufacturerId, setManufacturerId] = useState('');
-  const [model, setModel] = useState('');
-  const [power, setPower] = useState('');
-  const [remarks, setRemarks] = useState('');
-  const [placementLocation, setPlacementLocation] = useState('');
-  const [expiryDate, setExpiryDate] = useState(null);
-  const [manufactureDate, setManufactureDate] = useState(null);
+  const [batchNo, setBatchNo] = useState('')
+  const [lensType, setLensType] = useState('')
+  const [surgeryType, setSurgeryType] = useState('')
+  const [manufacturer, setManufacturer] = useState('')
+  const [manufacturerId, setManufacturerId] = useState('')
+  const [model, setModel] = useState('')
+  const [power, setPower] = useState('')
+  const [remarks, setRemarks] = useState('')
+  const [placementLocation, setPlacementLocation] = useState('')
+  const [expiryDate, setExpiryDate] = useState(null)
+  const [manufactureDate, setManufactureDate] = useState(null)
 
-  const [activeButton, setActiveButton] = useState("add");
+  const [activeButton, setActiveButton] = useState("add")
 
   useEffect(() => {
     const fetchManufacturers = async () => {
@@ -104,14 +105,14 @@ const LensDB = () => {
         })
         // console.log(response)
         alert("Successfully added")
-        navigate('/home')
+        navigate(`/${doctorId}/home`)
       } else {
         alert("Invalid batch number")
       }
     } catch (error) {
       console.log(error)
     }
-  };
+  }
   const handleAddClick = () => {
     setActiveButton("add");
   }

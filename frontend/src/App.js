@@ -19,12 +19,12 @@ function App() {
       <Routes>
        
         <Route index element={<Login/>}/>
-        <Route path="/home" element={<Home/>}/>
+        <Route path="/:doctorId/home" element={<Home/>}/>
         <Route path="/signUp" element={<SignUp/>}/>
         <Route path="/analyticsDB" element={<AnalyticsDB/>}/>
-        <Route path="/patientDB" element={<PatientDB/>}/>
-        <Route path="/surgeryDB" element={<SurgeryDB/>}/>
-        <Route path="/lensDB" element={<LensDB/>}/>
+        <Route path="/:doctorId/patientDB" element={<PatientDB/>}/>
+        <Route path="/:doctorId/surgeryDB" element={<SurgeryDB/>}/>
+        <Route path="/:doctorId/lensDB" element={<LensDB/>}/>
       </Routes>
     </BrowserRouter>
   );

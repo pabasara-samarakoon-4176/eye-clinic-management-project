@@ -11,8 +11,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./patient.css";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom"
 
-const PatientPersonalDetailsAdd = ({patientId, setPatientId}) => {
+const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
+
+    const navigate = useNavigate()
 
     const [patientFirstname, setPatientFirstname] = useState('');
     const [patientLastname, setPatientLastname] = useState('');
@@ -51,7 +54,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId}) => {
     const handleAddPatient = async (event) => {
         event.preventDefault();
 
-        const doctorId = 'MBBS.00000'
+        // const doctorId = 'MBBS.00000'
 
         try {
             const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
@@ -66,6 +69,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId}) => {
                 patientImagePath : patientImagePath
             })
             alert("Successfully added patient")
+            navigate(`/${doctorId}/home`)
         } catch (error) {
             console.log(error)
         }

@@ -1,4 +1,4 @@
-import React, { useState, useNavigate } from "react";
+import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,10 +17,12 @@ import PatientComplaintsView from "./MedicalDetails/View/PatientCompliants";
 import ExamDetailsView from "./MedicalDetails/View/ExamDetails";
 import CataratDetailsView from "./MedicalDetails/View/CataractDetails";
 import GlucomaDetailsView from "./MedicalDetails/View/GlucomaDetails";
+import { useParams, useNavigate } from "react-router-dom";
 
 const PatientDB = () => {
 
-  // const navigate = useNavigate();
+  const {doctorId} = useParams()
+  const navigate = useNavigate()
 
   const [patientId, setPatientId] = useState('')
   const [value, setValue] = useState('')
@@ -96,7 +98,7 @@ const PatientDB = () => {
                   
                   {/* Add personal details */}
                   {activeButton === "add" && (
-                    <PatientPersonalDetailsAdd patientId={patientId} setPatientId={setPatientId}/>
+                    <PatientPersonalDetailsAdd patientId={patientId} setPatientId={setPatientId} doctorId={doctorId}/>
                   )}
 
                   {/* View patient details */}
