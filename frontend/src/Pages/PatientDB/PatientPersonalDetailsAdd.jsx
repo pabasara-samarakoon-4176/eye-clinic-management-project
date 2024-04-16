@@ -54,8 +54,6 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
     const handleAddPatient = async (event) => {
         event.preventDefault();
 
-        // const doctorId = 'MBBS.00000'
-
         try {
             const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
                 patientFirstname : patientFirstname,
@@ -69,7 +67,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
                 patientImagePath : patientImagePath
             })
             alert("Successfully added patient")
-            navigate(`/${doctorId}/home`)
+            // navigate(`/${doctorId}/patientDB#clinic-data`)
         } catch (error) {
             console.log(error)
         }

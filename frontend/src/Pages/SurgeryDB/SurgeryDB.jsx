@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,6 +16,9 @@ import axios from 'axios'
 import "./surgeryDB.css"
 
 const LensDB = () => {
+
+  const {doctorId} = useParams()
+  const navigate = useNavigate()
 
   const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
   const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
@@ -112,7 +115,7 @@ const LensDB = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const doctorId = 'MBBS.00000'
+    // const doctorId = 'MBBS.00000'
     try {
       const response = await axios.post(`http://localhost:8080/addsurgery/${doctorId}`, {
         surgeryDate: surgeryDate,

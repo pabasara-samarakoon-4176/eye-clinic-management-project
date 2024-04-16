@@ -12,7 +12,7 @@ import {
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
 import axios from "axios";
 
-const ClinicDetails = ({patientId}) => {
+const ClinicDetails = ({patientId, doctorId}) => {
 
     const handleClinicHoursChange = (e) => setClinicHours(e.target.value);
     const handleClinicMinutesChange = (e) => setClinicMinutes(e.target.value);
@@ -51,7 +51,7 @@ const ClinicDetails = ({patientId}) => {
     const handleTestClick = async (event) => {
         event.preventDefault();
         
-        const doctorId = 'MBBS.00000'
+        // const doctorId = 'MBBS.00000'
         
         try {
             const response = await axios.post(`http://localhost:8080/addclinic/${doctorId}`, {

@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
 
-const ExamDetails = ({ patientId }) => {
+const ExamDetails = ({ patientId, doctorId }) => {
     const handleExamTimeHoursChange = (e) => setExamTimeHours(e.target.value);
     const handleExamTimeMinutesChange = (e) => setExamTimeMinutes(e.target.value);
     const handleExamTimeAMPMChange = (e) => setExamTimeAMPM(e.target.value);
@@ -50,7 +50,7 @@ const ExamDetails = ({ patientId }) => {
     const handleAddEyeExamDetails = async (event) => {
         event.preventDefault()
 
-        const doctorId = 'MBBS.00000'
+        // const doctorId = 'MBBS.00000'
 
         // date format modification
         const date = new Date(examDate);

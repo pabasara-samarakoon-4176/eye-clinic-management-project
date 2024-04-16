@@ -47,7 +47,7 @@ const PatientDB = () => {
   const handleSubmitClick = () => {
     try {
       alert("Successfully submitted patient information")
-      // navigate('/home')
+      navigate(`/${doctorId}/home`)
     } catch (error) {
       console.log(error)
     }
@@ -175,13 +175,13 @@ const PatientDB = () => {
                                   </p>
                                 </div>
                                 <div id="clinic-data">
-                                  <ClinicDetails patientId={patientId}/>
+                                  <ClinicDetails patientId={patientId} doctorId={doctorId}/>
                                 </div>
                                 <div id="patient-complaints">
-                                  <PatientComplaints patientId={patientId}/>
+                                  <PatientComplaints patientId={patientId} doctorId={doctorId}/>
                                 </div>
                                 <div id="exam-data">
-                                  <ExamDetails patientId={patientId}/>
+                                  <ExamDetails patientId={patientId} doctorId={doctorId}/>
                                 </div>
                                 <div id="catarat-details">
                                   <CataratDetails/>

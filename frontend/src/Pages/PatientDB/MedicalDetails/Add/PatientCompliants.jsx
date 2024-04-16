@@ -12,7 +12,7 @@ import {
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
 import axios from "axios";
 
-const PatientComplaints = ({ patientId }) => {
+const PatientComplaints = ({ patientId, doctorId }) => {
     // Patient Complaints
     // Right Eye
     const [rightPainBool, setRightPainBool] = useState(false)
@@ -82,7 +82,7 @@ const PatientComplaints = ({ patientId }) => {
         event.preventDefault()
 
         const test = '/Users/pabasarasamarakoon/Downloads/icons8-rain-50.png'
-        const doctorId = 'MBBS.00000'
+        // const doctorId = 'MBBS.00000'
         console.log(patientId)
 
         try {
