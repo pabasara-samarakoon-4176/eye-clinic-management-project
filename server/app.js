@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt'
 import cors from 'cors'
 import pdfkit from 'pdfkit'
 import fs from 'fs'
+import PDFTable from 'pdfkit-table'
 
 const app = express()
 const currentDirectory = process.cwd()
@@ -58,7 +59,10 @@ app.post("/login", async (req, res) => {
 
         if (doctorId === _doctorId) {
             if (await bcrypt.compare(password, _doctorPasswordHashed)) {
-                res.send({status: 'Success', doctorId: _doctorId})
+                res.send({
+                    status: 'Success',
+                    doctorId: _doctorId
+                })
             } else {
                 res.send("Fail")
             }
@@ -441,12 +445,28 @@ app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
             }
             res.send(appointmentDetails)
         } else {
-            res.status(404).send({ error: "Patient appointment details not found" });
+            res.status(404).send({
+                error: "Patient appointment details not found"
+            });
         }
     } catch (error) {
         console.log(error)
     }
 })
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // January is 0
+    const year = date.getFullYear();
+
+    // Pad day and month with leading zeros if necessary
+    const formattedDay = String(day).padStart(2, '0');
+    const formattedMonth = String(month).padStart(2, '0');
+
+    return `${formattedDay}/${formattedMonth}/${year}`;
+}
 
 app.get('/admin/generatereport/:patientId', async (req, res) => {
     const patientId = req.params.patientId
@@ -459,12 +479,12 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
             patientId: patientId,
             patientFirstname: patientRes[0][0].patientFirstname,
             patientLastname: patientRes[0][0].patientLastname,
-            patientDOB: patientRes[0][0].dateOfBirth,
+            patientDOB: formatDate(patientRes[0][0].dateOfBirth),
             patientGender: patientRes[0][0].gender,
             patientImage: patientRes[0][0].patient_image,
             patientContactNo: patientRes[0][0].phoneNumber,
             examId: examRes[0][0].examId,
-            examDate: examRes[0][0].examDate,
+            examDate: formatDate(examRes[0][0].examDate),
             examTime: examRes[0][0].examTime,
             rightLids: examRes[0][0].rightLids,
             rightConjuitive: examRes[0][0].rightConjuitive,
@@ -485,7 +505,7 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
             rightEyeImage: compRes[0][0].rightEyeImage,
             leftEyeImage: compRes[0][0].leftEyeImage,
             surgeryId: surgeryRes[0][0].surgeryId,
-            surgeryDate: surgeryRes[0][0].surgeryDate,
+            surgeryDate: formatDate(surgeryRes[0][0].surgeryDate),
             surgeryTime: surgeryRes[0][0].surgeryTime,
             surgeryDoctor: surgeryRes[0][0].doctorId,
             surgeryLens: surgeryRes[0][0].lensId,
@@ -494,7 +514,7 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
         // res.send(reportDetails)
 
         const margin = 28.35
-        const padding = 5
+        const padding = -5
 
         const contentX = margin + padding
         const contentY = margin + padding
@@ -503,7 +523,7 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
             info: {
                 Title: 'Medical Report'
             },
-            margin: margin, 
+            margin: margin,
             size: 'A4'
         })
 
@@ -511,8 +531,8 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
         const contentHeight = report.page.height - 2 * (margin + padding)
 
         report.rect(contentX, contentY, contentWidth, contentHeight)
-              .lineWidth(1) 
-              .stroke()
+            .lineWidth(1)
+            .stroke()
 
         report.restore()
 
@@ -520,41 +540,122 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
         report.fontSize(20);
         report.text('Medical Report', {
             align: 'center'
-        });
-        report.moveDown();
-        report.fontSize(14);
-        report.text('Patient Details', {})
-        report.moveDown();
-        report.fontSize(12).text(`Patient ID: ${reportDetails.patientId}`).moveDown()
-        report.fontSize(12).text(`Patient Name: ${reportDetails.patientFirstname} ${reportDetails.patientLastname}`).moveDown()
-        report.fontSize(12).text(`Date of Birth: ${reportDetails.patientDOB}`).moveDown()
-        report.fontSize(12).text(`Gender: ${reportDetails.patientGender}`).moveDown()
-        report.fontSize(12).text(`Phone Number: ${reportDetails.patientContactNo}`).moveDown()
+        }).moveDown()
+
+        const leftColumnX = 50
+        const rightColumnX = 300
+        const columnY = report.y
+
+        report.fontSize(14)
+        report.text('Patient Details', leftColumnX, columnY)
+        report.moveDown()
+
+        report.fontSize(12).text(`Patient ID: ${reportDetails.patientId}`, leftColumnX, columnY + 30).moveDown()
+        report.fontSize(12).text(`Patient Name: ${reportDetails.patientFirstname} ${reportDetails.patientLastname}`, leftColumnX, columnY + 50).moveDown()
+        report.fontSize(12).text(`Date of Birth: ${reportDetails.patientDOB}`, leftColumnX, columnY + 70).moveDown()
+        report.fontSize(12).text(`Gender: ${reportDetails.patientGender}`, leftColumnX, columnY + 90).moveDown()
+        report.fontSize(12).text(`Phone Number: ${reportDetails.patientContactNo}`, leftColumnX, columnY + 110).moveDown()
         // report.fontSize(12).text(`Patient Image: ${reportDetails.patient_image}`).moveDown()
 
-        report.fontSize(14);
-        report.text('Eye Exam Details', {})
-        report.moveDown();
-        report.fontSize(12).text(`Eye Exam ID: ${reportDetails.examId}`).moveDown()
-        report.fontSize(12).text(`Conducted Date: ${reportDetails.examDate} ${reportDetails.patientLastname}`).moveDown()
-        report.fontSize(12).text(`Conducted Time: ${reportDetails.examTime}`).moveDown()
-        report.fontSize(12).text(`Right Lids: ${reportDetails.rightLids}`).moveDown()
-        report.fontSize(12).text(`Right Conjuitive: ${reportDetails.rightConjuitive}`).moveDown()
-        report.fontSize(12).text(`Right AC: ${reportDetails.rightAC}`).moveDown()
-        report.fontSize(12).text(`Right Iris: ${reportDetails.rightIris}`).moveDown()
-        report.fontSize(12).text(`Right Vitereous: ${reportDetails.rightVitereous}`).moveDown()
-        report.fontSize(12).text(`Right Cornea: ${reportDetails.rightCornea}`).moveDown()
-        report.fontSize(12).text(`Right Retina: ${reportDetails.rightRetina}`).moveDown()
-        // report.fontSize(12).text(`Patient Image: ${reportDetails.rightEyeImage}`).moveDown()
+        const imageWidth = 100
+        const imageHeight = 100
+        const imageX = rightColumnX + (rightColumnX - imageWidth) / 2
+        report.image('patientImageSample.jpeg', imageX, columnY + 15, {
+            width: imageWidth,
+            height: imageHeight
+        })
 
-        report.fontSize(12).text(`Left Lids: ${reportDetails.leftLids}`).moveDown()
-        report.fontSize(12).text(`Left Conjuitive: ${reportDetails.leftConjuitive}`).moveDown()
-        report.fontSize(12).text(`Left AC: ${reportDetails.leftAC}`).moveDown()
-        report.fontSize(12).text(`Left Iris: ${reportDetails.leftIris}`).moveDown()
-        report.fontSize(12).text(`Left Vitereous: ${reportDetails.leftVitereous}`).moveDown()
-        report.fontSize(12).text(`Left Cornea: ${reportDetails.leftCornea}`).moveDown()
-        report.fontSize(12).text(`Left Retina: ${reportDetails.leftRetina}`).moveDown()
-        // report.fontSize(12).text(`Patient Image: ${reportDetails.leftEyeImage}`).moveDown()
+        report.fontSize(14)
+        report.text('Eye Exams Details', leftColumnX, columnY + 140)
+        report.moveDown()
+
+        report.font('Helvetica')
+
+        const table = new PDFTable(report, {
+            bottomMargin: 30
+        })
+
+        const tableData = [
+            [{
+                text: 'Name',
+                style: 'tableHeader'
+            }, {
+                text: 'Age',
+                style: 'tableHeader'
+            }],
+            ['John Doe', 30],
+            ['Jane Smith', 25]
+        ]
+
+        table.addPlugin(new(require('pdfkit-table/plugin/fitcolumn'))({
+            column: 'Age',
+        }))
+
+        table
+            .setColumnsDefaults({
+                headerBorder: ['T'],
+                align: 'right'
+            })
+            .addTable(tableData)
+
+        // report.table(table, {
+        //     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+        //     prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+        //         doc.font("Helvetica").fontSize(8)
+        //         indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15)
+        //     },
+        // })
+
+        // const rightEyeData = [
+        //     ['Right Lids:', reportDetails.rightLids],
+        //     ['Right Conjuitive:', reportDetails.rightConjuitive],
+        //     ['Right AC:', reportDetails.rightAC],
+        //     ['Right Iris:', reportDetails.rightIris],
+        //     ['Right Vitereous:', reportDetails.rightVitereous],
+        //     ['Right Cornea:', reportDetails.rightCornea],
+        //     ['Right Retina:', reportDetails.rightRetina]
+        // ]
+
+        // const leftEyeData = [
+        //     ['Left Lids:', reportDetails.leftLids],
+        //     ['Left Conjuitive:', reportDetails.leftConjuitive],
+        //     ['Left AC:', reportDetails.leftAC],
+        //     ['Left Iris:', reportDetails.leftIris],
+        //     ['Left Vitereous:', reportDetails.leftVitereous],
+        //     ['Left Cornea:', reportDetails.leftCornea],
+        //     ['Left Retina:', reportDetails.leftRetina]
+        // ]
+
+        // report.table(
+        //     [['Right Eye Diagnosis']],
+        //     rightEyeData,
+        //     {
+        //         prepareHeader: () => report.font('Helvetica-Bold').fontSize(12),
+        //         prepareRow: (row, i) => report.font('Helvetica').fontSize(12),
+        //         align: 'center'
+        //     }
+        // )
+
+        // report.fontSize(12).text(`Eye Exam ID: ${reportDetails.examId}`, leftColumnX, columnY + 170).moveDown()
+        // report.fontSize(12).text(`Conducted Date: ${reportDetails.examDate}`, leftColumnX, columnY + 190).moveDown()
+        // report.fontSize(12).text(`Conducted Time: ${reportDetails.examTime}`, rightColumnX, columnY + 190).moveDown()
+        // report.fontSize(12).text(`Right Lids: ${reportDetails.rightLids}`).moveDown()
+        // report.fontSize(12).text(`Right Conjuitive: ${reportDetails.rightConjuitive}`).moveDown()
+        // report.fontSize(12).text(`Right AC: ${reportDetails.rightAC}`).moveDown()
+        // report.fontSize(12).text(`Right Iris: ${reportDetails.rightIris}`).moveDown()
+        // report.fontSize(12).text(`Right Vitereous: ${reportDetails.rightVitereous}`).moveDown()
+        // report.fontSize(12).text(`Right Cornea: ${reportDetails.rightCornea}`).moveDown()
+        // report.fontSize(12).text(`Right Retina: ${reportDetails.rightRetina}`).moveDown()
+        // // report.fontSize(12).text(`Patient Image: ${reportDetails.rightEyeImage}`).moveDown()
+
+        // report.fontSize(12).text(`Left Lids: ${reportDetails.leftLids}`).moveDown()
+        // report.fontSize(12).text(`Left Conjuitive: ${reportDetails.leftConjuitive}`).moveDown()
+        // report.fontSize(12).text(`Left AC: ${reportDetails.leftAC}`).moveDown()
+        // report.fontSize(12).text(`Left Iris: ${reportDetails.leftIris}`).moveDown()
+        // report.fontSize(12).text(`Left Vitereous: ${reportDetails.leftVitereous}`).moveDown()
+        // report.fontSize(12).text(`Left Cornea: ${reportDetails.leftCornea}`).moveDown()
+        // report.fontSize(12).text(`Left Retina: ${reportDetails.leftRetina}`).moveDown()
+        // // report.fontSize(12).text(`Patient Image: ${reportDetails.leftEyeImage}`).moveDown()
 
         report.fontSize(12).text(`Allergies: ${reportDetails.allergies}`).moveDown()
         report.fontSize(12).text(`Medical History: ${reportDetails.medicalHistory}`).moveDown()
