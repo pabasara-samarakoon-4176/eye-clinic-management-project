@@ -493,9 +493,30 @@ app.get('/admin/generatereport/:patientId', async (req, res) => {
         }
         // res.send(reportDetails)
 
-        const report = new pdfkit()
-        report.info.Title = 'Medical Report'
+        const margin = 28.35
+        const padding = 5
 
+        const contentX = margin + padding
+        const contentY = margin + padding
+
+        const report = new pdfkit({
+            info: {
+                Title: 'Medical Report'
+            },
+            margin: margin, 
+            size: 'A4'
+        })
+
+        const contentWidth = report.page.width - 2 * (margin + padding)
+        const contentHeight = report.page.height - 2 * (margin + padding)
+
+        report.rect(contentX, contentY, contentWidth, contentHeight)
+              .lineWidth(1) 
+              .stroke()
+
+        report.restore()
+
+        report.moveDown()
         report.fontSize(20);
         report.text('Medical Report', {
             align: 'center'
