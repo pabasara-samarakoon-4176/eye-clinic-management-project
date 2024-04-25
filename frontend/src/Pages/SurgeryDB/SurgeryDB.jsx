@@ -94,7 +94,7 @@ const LensDB = () => {
   const handleDownload = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`http://localhost:8080/admin/generatereport/${searchPatientId}`, {
+      const response = await axios.get(`http://localhost:8080/create-report/${searchPatientId}`, {
         responseType: 'blob'
       })
       const blob = new Blob([response.data], { type: 'application/pdf' })
