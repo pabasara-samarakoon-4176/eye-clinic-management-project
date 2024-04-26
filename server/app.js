@@ -656,7 +656,7 @@ app.get("/viewpatients/:doctorId", async (req, res) => {
 
 app.get("/admin/viewlens", async (req, res) => {
     try {
-        const response = await db.query(`select * from lens`)
+        const response = await db.query(`select * from lens where reserved = false`)
         res.send(response[0])
     } catch (error) {
         console.log(`${error.message}`)
@@ -788,6 +788,8 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         `, [
             surgeryId, formattedDate, formattedTime, pending, patientId, examId[0][0].examId, compId[0][0].patientComplaintId, nurseId, lensId, doctorId, description, docReport
         ])
+
+        const decrement = await db.query(`update lens set reserved = 1 where lensId = ?`, [lensId])
 
         res.send("Successfully inserted the surgery record")
 
