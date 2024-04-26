@@ -87,7 +87,6 @@ const LensDB = () => {
     event.preventDefault();
     // setActiveButton(button);
     const nurseId = 'NR.00000'
-    const manuId = 'AB'
     try {
       if (isValidBatchNo(batchNo)) {
 
@@ -103,8 +102,7 @@ const LensDB = () => {
           batchNo: batchNo,
           remarks: remarks,
         })
-        // console.log(response)
-        alert("Successfully added")
+        alert(response.data.message)
         navigate(`/${doctorId}/home`)
       } else {
         alert("Invalid batch number")

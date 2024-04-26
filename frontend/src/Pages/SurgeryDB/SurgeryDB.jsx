@@ -143,7 +143,6 @@ const LensDB = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    // const doctorId = 'MBBS.00000'
     try {
       const response = await axios.post(`http://localhost:8080/addsurgery/${doctorId}`, {
         surgeryDate: surgeryDate,
@@ -155,7 +154,7 @@ const LensDB = () => {
         description: description,
         docReport: docReport
       })
-      alert("Successfully added the surgery record")
+      alert(response.data.message)
       navigate(`/${doctorId}/home`)
     } catch (error) {
       console.log(error)

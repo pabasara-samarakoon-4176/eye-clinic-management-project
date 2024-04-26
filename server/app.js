@@ -80,7 +80,6 @@ app.post("/login", async (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-    // console.log(req.body)
     const {
         doctorId,
         doctorFirstname,
@@ -99,12 +98,14 @@ app.post("/register", async (req, res) => {
         values (?, ?, ?, ?, ?)
         `, [doctorId, doctorFirstname, doctorLastname, hashedPassword, adminId])
         const [newDoctor] = await db.query("select * from doctor where doctorId = ?", [doctorId])
-        res.send(newDoctor)
+        res.status(200).json({ message: "Doctor added successfully" })
 
     } catch (error) {
-        console.error(error);
-
-        res.status(500).send('Internal Server Error');
+        if (error.code === 'ER_DUP_ENTRY') {
+            res.json({ message: "The doctor already exists" })
+        } else {
+            res.status(500).json({ message: "An error occurred while adding the doctor" })
+        }
     }
 })
 
@@ -324,14 +325,16 @@ app.post("/addlens/:nurseId", async (req, res) => {
             INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
-            console.log("Successfully added lens")
-            res.send("active")
+            res.status(200).json({message: "Successfully added lens"})
         } else {
-            res.send("not active")
+            res.json({message: "Unable to access to lens database"})
         }
     } catch (error) {
-        console.error(error)
-        res.send(error)
+        if (error.code === 'ER_DUP_ENTRY') {
+            res.json({ message: "The lens already exists" })
+        } else {
+            res.status(500).json({ message: "An error occurred while adding the lens" })
+        }
     }
 })
 
@@ -365,13 +368,15 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
 
-        res.send("Successfully inserted patient")
+        res.status(200).json({ message: "Patient added successfully" })
     } catch (error) {
-        console.log(`${error.message}`)
+        if (error.code === 'ER_DUP_ENTRY') {
+            res.json({ message: "The patient already exists" })
+        } else {
+            res.status(500).json({ message: "An error occurred while adding the patient" })
+        }
     }
 })
-
-
 
 app.post("/addclinic/:doctorId", async (req, res) => {
     const {
@@ -791,10 +796,14 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
 
         const decrement = await db.query(`update lens set reserved = 1 where lensId = ?`, [lensId])
 
-        res.send("Successfully inserted the surgery record")
+        res.status(200).json({message: "Successfully added the surgery"})
 
     } catch (error) {
-        console.error(error)
+        if (error.code === 'ER_DUP_ENTRY') {
+            res.json({ message: "The surgery already allocated" })
+        } else {
+            res.status(500).json({ message: "An error occurred while adding the surgery" })
+        }
     }
 
 })

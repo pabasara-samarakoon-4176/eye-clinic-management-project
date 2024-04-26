@@ -13,7 +13,7 @@ import "./patient.css";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom"
 
-const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
+const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
 
     const navigate = useNavigate()
 
@@ -22,7 +22,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
     const [gender, setGender] = useState('');
     const [birthDate, setExpiryDate] = useState(null);
     const [age, setAge] = useState(null);
-    
+
     const [contactNo, setContactNo] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
@@ -43,7 +43,17 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
         }
 
         return age;
-    };
+    }
+
+    function isValidId(str) {
+        const regex = /^\d{9}(v)?|\d{12}$/
+        return regex.test(str)
+    }
+
+    function isValidPhoneNumber(str) {
+        const regex = /^\d{1,10}$/
+        return regex.test(str)
+    }
 
     const handleImageChange = (e) => {
         const selectedImage = e.target.files[0]
@@ -55,21 +65,31 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
-                patientFirstname : patientFirstname,
-                patientLastname : patientLastname,
-                patientGender : gender,
-                patientDOB : birthDate,
-                patientIdNIC : patientId,
-                patientPhoneNumber : contactNo,
-                patientAddress : address,
-                patientDescription : description,
-                patientImagePath : patientImagePath
-            })
-            alert("Successfully added patient")
-            // navigate(`/${doctorId}/patientDB#clinic-data`)
+            if (isValidId(patientId) && isValidPhoneNumber(contactNo)) {
+                const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
+                    patientFirstname: patientFirstname,
+                    patientLastname: patientLastname,
+                    patientGender: gender,
+                    patientDOB: birthDate,
+                    patientIdNIC: patientId,
+                    patientPhoneNumber: contactNo,
+                    patientAddress: address,
+                    patientDescription: description,
+                    patientImagePath: patientImagePath
+                })
+                alert(response.data.message)
+            } else if (!isValidId(patientId) && isValidPhoneNumber(contactNo)) {
+                alert("Invalid Patient Id")
+            } else if (isValidId(patientId) && !isValidPhoneNumber(contactNo)) {
+                alert("Invalid Contact Number")
+            } else {
+                alert("Invalid Credentials")
+            }
         } catch (error) {
             console.log(error)
+            if (error.message.includes("The record already exists")) {
+                alert("The record already exists");
+            }
         }
 
     }
@@ -185,7 +205,7 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
                         id="patientId"
                         className="lInput"
                         placeholder="Enter NIC number"
-                        
+
                         onChange={(e) => setPatientId(e.target.value)}
                     />
                 </div>
@@ -263,12 +283,12 @@ const PatientPersonalDetailsAdd = ({patientId, setPatientId, doctorId}) => {
                     )}
                 </div>
                 <div className="form-group button-group">
-                <button type="submit" className="button"
-                    onClick={handleAddPatient}
+                    <button type="submit" className="button"
+                        onClick={handleAddPatient}
                     >
-                    Add Patient
-                </button>
-            </div>
+                        Add Patient
+                    </button>
+                </div>
 
             </form>
         </div>

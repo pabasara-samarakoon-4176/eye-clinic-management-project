@@ -38,7 +38,7 @@ const SignUp = () => {
           doctorLastname: lastname,
           doctorPassword: password
         })
-        alert("register success")
+        alert(response.data.message)
         navigate('/')
       } else if (password !== confirmPassword && isValidFormat(doctorId)) {
         alert('Confirm Password is not matching')
