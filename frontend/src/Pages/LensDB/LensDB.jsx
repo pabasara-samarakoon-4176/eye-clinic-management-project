@@ -29,7 +29,6 @@ const LensDB = () => {
   const [model, setModel] = useState('')
   const [power, setPower] = useState('')
   const [remarks, setRemarks] = useState('')
-  const [placementLocation, setPlacementLocation] = useState('')
   const [expiryDate, setExpiryDate] = useState(null)
   const [manufactureDate, setManufactureDate] = useState(null)
 
@@ -86,7 +85,7 @@ const LensDB = () => {
   const handleSubmitClick = async (event) => {
     event.preventDefault();
     // setActiveButton(button);
-    const nurseId = 'NR.00000'
+    const nurseId = 'NR.00001'
     try {
       if (isValidBatchNo(batchNo)) {
 
@@ -96,7 +95,6 @@ const LensDB = () => {
           surgeryType: surgeryType,
           model: model,
           lensPower: power,
-          placementLocation: placementLocation,
           expiryDate: expiryDate,
           manufactureDate: manufactureDate,
           batchNo: batchNo,
@@ -277,23 +275,6 @@ const LensDB = () => {
                     onChange={(e) => setRemarks(e.target.value)}
                   ></textarea>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="placementLocation" className="label">
-                    Placing Location:
-                  </label>
-                  <select id="placementLocation" className="lInput"
-                    value={placementLocation}
-                    onChange={(e) => setPlacementLocation(e.target.value)}>
-                    <option value="" disabled selected hidden>
-                      Select Placement Location
-                    </option>
-                    <option value="location1">Location 1</option>
-                    <option value="location2">Location 2</option>
-                    <option value="location3">Location 3</option>
-                  </select>
-                </div>
-
                 <div className="form-group">
                   <label htmlFor="expiryDate" className="label">
                     Expiry Date:
@@ -410,10 +391,6 @@ const LensDB = () => {
                   {searchLensData.length > 0 && (
                     <div className="column">
                       <div className="label-value-pair">
-                        <span className="label">Placing Location:</span>
-                        <span className="valueL">{searchLensData[0][0]?.placementLocation}</span>
-                      </div>
-                      <div className="label-value-pair">
                         <span className="label">Expiry Date:</span>
                         <span className="valueL">{searchLensData[0][0]?.expiryDate}</span>
                       </div>
@@ -449,7 +426,6 @@ const LensDB = () => {
                       <th>Model</th>
                       <th>Power</th>
                       <th>Remarks</th>
-                      <th>Placing Location</th>
 
                       <th>Expiry Date</th>
                       <th>Manufactured Date</th>
@@ -467,7 +443,6 @@ const LensDB = () => {
                         <td>{lens.model}</td>
                         <td>{lens.lensPower}</td>
                         <td>{lens.remarks}</td>
-                        <td>{lens.placementLocation}</td>
                         <td>{lens.expiryDate}</td>
                         <td>{lens.manufactureDate}</td>
                       </tr>

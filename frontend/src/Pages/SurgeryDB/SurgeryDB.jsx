@@ -401,7 +401,7 @@ const LensDB = () => {
                         </div>
                         <div className="label-value-pair-P">
                           <span className="labelP">Lens:</span>
-                          <span className="valueP"></span>
+                          <span className="valueP">{searchSurgeryDetails?.surgeryLens}</span>
                         </div>
                       </div>
                     </>

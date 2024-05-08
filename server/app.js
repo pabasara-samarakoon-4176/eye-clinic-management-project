@@ -25,7 +25,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'Dhoomiii@2000',
-    database: 'eye_clinic'
+    database: 'eye_clinic_database'
 }).promise()
 
 db.connect((err) => {
@@ -74,8 +74,16 @@ app.post("/login", async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        // Handle the error appropriately
         res.status(500).send('Internal Server Error');
+    }
+})
+
+app.get("/getadmin", async (req, res) => {
+    try {
+        const [admin] = await db.query(`select * from admin`)
+        res.send([admin])
+    } catch (error) {
+        console.log(error)
     }
 })
 
@@ -87,7 +95,7 @@ app.post("/register", async (req, res) => {
         doctorPassword
     } = req.body;
 
-    const adminId = 'MBBS.12345';
+    const adminId = 'MBBS.00000';
 
     try {
 
@@ -165,14 +173,10 @@ app.post("/admin/addmanufacturer", async (req, res) => {
     const {
         manuId,
         manuName,
-        address,
-        contactNo,
-        country,
-        adminApproval
     } = req.body
     try {
-        await db.query(`insert into manufacturer (manuId, manuName, address, contactNo, country, adminApproval)
-        values (?, ?, ?, ?, ?, ?)`, [manuId, manuName, address, contactNo, country, adminApproval])
+        await db.query(`insert into manufacturer (manuId, manuName)
+        values (?, ?)`, [manuId, manuName])
         res.send('Success')
     } catch (error) {
         res.send(error)
@@ -302,7 +306,6 @@ app.post("/addlens/:nurseId", async (req, res) => {
         surgeryType,
         model,
         lensPower,
-        placementLocation,
         manufactureDate,
         expiryDate,
         batchNo,
@@ -311,7 +314,7 @@ app.post("/addlens/:nurseId", async (req, res) => {
 
     try {
 
-        const adminId = 'MBBS.12345';
+        const adminId = 'MBBS.00000';
         const nurseId = req.params.nurseId;
         const [stkMgr] = await db.query("select * from nurse where nurseId = ?", [nurseId]);
         const formattedExpiryDate = dateConverter(expiryDate)
@@ -322,9 +325,9 @@ app.post("/addlens/:nurseId", async (req, res) => {
             const serialNo = (batchNo.split("-")[1]).toString()
             const lensId = `${manufacturerId}-${year}-${serialNo}`;
             const [newLens] = await db.query(`
-            INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, placementLocation, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [lensId, lensType, surgeryType, model, lensPower, placementLocation, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
+            INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [lensId, lensType, surgeryType, model, lensPower, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
             res.status(200).json({message: "Successfully added lens"})
         } else {
             res.json({message: "Unable to access to lens database"})
@@ -446,6 +449,7 @@ app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
                 patientImage: patientRes[0][0].patient_image,
                 surgeryDate: surgeryRes[0][0].surgeryDate,
                 surgeryTime: surgeryRes[0][0].surgeryTime,
+                surgeryLens: surgeryRes[0][0].lensId,
                 description: surgeryRes[0][0].description
             }
             res.send(appointmentDetails)
@@ -799,11 +803,12 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         res.status(200).json({message: "Successfully added the surgery"})
 
     } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-            res.json({ message: "The surgery already allocated" })
-        } else {
-            res.status(500).json({ message: "An error occurred while adding the surgery" })
-        }
+        // if (error.code === 'ER_DUP_ENTRY') {
+        //     res.json({ message: "The surgery already allocated" })
+        // } else {
+        //     res.status(500).json({ message: "An error occurred while adding the surgery" })
+        // }
+        console.log(error)
     }
 
 })
