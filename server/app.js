@@ -24,7 +24,7 @@ app.use(cors())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Dhoomiii@2000',
+    password: '',
     database: 'eye_clinic_database'
 }).promise()
 
