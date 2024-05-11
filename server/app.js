@@ -1,15 +1,16 @@
-import express from 'express'
-import path from 'path'
-import mysql from 'mysql2'
-import dotenv from 'dotenv'
-import cookieParser from 'cookie-parser'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import cors from 'cors'
-import pdfkit from 'pdfkit'
-import fs from 'fs'
-import PDFDocument from 'pdfkit-table'
+const express = require('express');
+const path = require('path');
+const mysql = require('mysql2');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const cors = require('cors');
+const pdfkit = require('pdfkit');
+const fs = require('fs');
 
+// Import PDFDocument separately due to differences in usage
+const PDFDocument = require('pdfkit/js/pdfkit.standalone');
 const app = express()
 const currentDirectory = process.cwd()
 
@@ -904,5 +905,3 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log(`Server is running on port 8080`)
 })
-
-export default app
