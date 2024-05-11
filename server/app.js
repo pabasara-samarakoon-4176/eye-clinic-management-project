@@ -53,7 +53,7 @@ app.post("/login", async (req, res) => {
 
     try {
         const [user] = await db.query("SELECT * FROM doctor WHERE doctorId = ?", [doctorId])
-        // const [doctorPassword] = await db.query("select doctorPassword from doctor where doctorId = ?", [doctorId])
+        const [doctorPassword] = await db.query("select doctorPassword from doctor where doctorId = ?", [doctorId])
         const _doctorPasswordHashed = user[0].doctorPassword
         const _doctorId = user[0].doctorId
 
@@ -71,10 +71,13 @@ app.post("/login", async (req, res) => {
         }
 
 
-
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+        if (error instanceof TypeError && error.message.includes("Cannot read properties of undefined (reading 'doctorPassword')")) {
+            res.status(404).send("User not found");
+        } else {
+            console.log(error);
+            res.status(500).send('Internal Server Error');
+        }
     }
 })
 
@@ -352,8 +355,6 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         patientAddress,
         patientDescription,
         patientImagePath
-
-
     } = req.body
 
     const date = new Date(patientDOB);
@@ -366,11 +367,18 @@ app.post("/addpatient/:doctorId", async (req, res) => {
     const admittedNurse = 'NR.00000'
 
     try {
+        // Fetch the image from the Blob URL
+        // const response = await fetch(patientImagePath);
+        // const patientImageBlob = await patientImagePath.blob();
+
+        // Convert the Blob object to Buffer
+        // const patientImagePath = Buffer.from(await patientImageBlob.arrayBuffer());
+
         const [newPatient] = await db.query(`
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
-
+        // console.log(patientImagePath)
         res.status(200).json({ message: "Patient added successfully" })
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
@@ -378,6 +386,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         } else {
             res.status(500).json({ message: "An error occurred while adding the patient" })
         }
+        // console.log(error)
     }
 })
 
@@ -895,3 +904,5 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log(`Server is running on port 8080`)
 })
+
+export default app

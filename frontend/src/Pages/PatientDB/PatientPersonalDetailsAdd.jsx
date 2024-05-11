@@ -77,6 +77,7 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
                     patientDescription: description,
                     patientImagePath: patientImagePath
                 })
+                console.log(patientImage)
                 alert(response.data.message)
             } else if (!isValidId(patientId) && isValidPhoneNumber(contactNo)) {
                 alert("Invalid Patient Id")

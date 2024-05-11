@@ -22,5 +22,9 @@
     "pdfkit": "^0.15.0",
     "pdfkit-table": "^0.1.99",
     "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }

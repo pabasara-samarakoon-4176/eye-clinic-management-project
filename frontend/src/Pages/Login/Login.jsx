@@ -38,10 +38,12 @@ const Login = () => {
 
         if (response.data.status === 'Success') {
           navigate(`/${response.data.doctorId}/home`);
-      } else if (response.data === 'Fail') {
+        } else if (response.data === 'Fail') {
           alert('login failed')
-      }
-        
+        } else if (response.data === "User not found") {
+          alert("User not found")
+        }
+
       } else {
         alert('login failed');
       }
