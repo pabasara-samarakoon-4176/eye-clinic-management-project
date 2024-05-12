@@ -118,8 +118,13 @@ const LensDB = () => {
   const handleSearchLensId = async (value) => {
     try {
       const response = await axios.get(`http://localhost:8080/searchlens/${value}`);
-
+      if (response.data === "Lens not available") {
+        alert("Lens not available")
+      } else {
+        setSearchLensData([response.data])
+      }
       setSearchLensData([response.data]);
+      console.log(response.data)
       console.log(manufacturerOptions[0])
 
     } catch (error) {

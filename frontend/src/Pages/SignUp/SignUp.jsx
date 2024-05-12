@@ -62,7 +62,6 @@ const SignUp = () => {
         <div className="subheader-text">
           <p>BASE HOSPITAL TANGALLE</p>
         </div>
-
         <div className="form-group">
           <div className="label">Firstname:</div>
           <div className="input">
@@ -75,6 +74,10 @@ const SignUp = () => {
               onChange={(e) => setFirstname(e.target.value)}
             />
           </div>
+          
+        </div>
+        <div className="form-group">
+          
           <div className="label">Lastname:</div>
           <div className="input">
             <input

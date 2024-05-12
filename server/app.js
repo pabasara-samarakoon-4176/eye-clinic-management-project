@@ -212,7 +212,11 @@ app.get("/searchlens/:lensId", async (req, res) => {
     const lensId = req.params.lensId
     try {
         const [response] = await db.query(`select * from lens where lensId = ?`, [lensId])
-        res.send(response)
+        if (response.length === 0) {
+            res.send("Lens not available");
+        } else {
+            res.send(response);
+        }
     } catch (error) {
         res.send(error)
     }
@@ -812,12 +816,12 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         res.status(200).json({message: "Successfully added the surgery"})
 
     } catch (error) {
-        // if (error.code === 'ER_DUP_ENTRY') {
-        //     res.json({ message: "The surgery already allocated" })
-        // } else {
-        //     res.status(500).json({ message: "An error occurred while adding the surgery" })
-        // }
-        console.log(error)
+        if (error.code === 'ER_DUP_ENTRY') {
+            res.json({ message: "The surgery already allocated" })
+        } else {
+            res.status(500).json({ message: "An error occurred while adding the surgery" })
+        }
+        // console.log(error)
     }
 
 })
