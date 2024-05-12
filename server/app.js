@@ -219,6 +219,7 @@ module.exports = function (db) {
         } catch (error) {
             console.log(`${error.message}`)
         }
+        
     })
 
     app.get("/searcheyeexamination/:patientId", async (req, res) => {
