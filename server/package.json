@@ -5,11 +5,15 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon app.js"
+    "dev": "npx nodemon server.js",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/preset-env": "^7.24.5",
+    "@jest/globals": "^29.7.0",
+    "babel-jest": "^29.7.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -21,6 +25,7 @@
     "nodemon": "^3.0.2",
     "pdfkit": "^0.15.0",
     "pdfkit-table": "^0.1.99",
+    "ts-jest": "^29.1.2",
     "util": "^0.12.5"
   },
   "devDependencies": {
