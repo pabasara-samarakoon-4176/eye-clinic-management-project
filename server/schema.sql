@@ -1,6 +1,8 @@
 create database eye_clinic_database;
 use eye_clinic_database;
 
+-- drop database eye_clinic_database;
+
 create table admin (
     id int primary key auto_increment,
     adminId varchar(20) not null unique check (adminId regexp '^MBBS\.[0-9]{5}$'),
@@ -153,35 +155,6 @@ create table manufacturer (
     manuName varchar(20) not null
 );
 
-create table surgery (
-	surgeryId varchar(25) primary key not null unique check (surgeryId regexp '^SG-[0-9]{5}-([0-9]{9}[v]|[0-9]{12})$'),
-    surgeryDate date not null,
-    surgeryTime time not null,
-    pending boolean not null default false,
-    created timestamp not null default current_timestamp,
-    description varchar(225),
-    docReport mediumblob,
-    patientId varchar(20) not null,
-    doctorId varchar(20) not null,
-    examId varchar(30) not null,
-    compId varchar(20) not null,
-
-    foreign key (patientId) references patient(patientId),
-    foreign key (doctorId) references doctor(doctorId),
-    foreign key (examId) references examination(examId),
-    foreign key (compId) references patientComplaint(patientComplaintId)
-
-);
-
-alter table surgery add column nurseId varchar(20) not null;
-alter table surgery add foreign key surgery (nurseId) references nurse(nurseId);
-
-alter table surgery add column lensId varchar(20) not null;
-alter table surgery add foreign key surgery (lensId) references lens(lensId);
-
--- SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'surgery' and CONSTRAINT_NAME IS NOT NULL;
--- alter table surgery drop foreign key surgery_ibfk_6;
-
 create table lens (
 	lensId varchar(20) primary key not null unique check (lensId regexp '^[A-Z]{2}-[0-9]{4}-[0-9]{4}$'),
     lensType varchar(20) not null,
@@ -194,12 +167,10 @@ create table lens (
     batchNo varchar(20) not null,
     remarks varchar(50),
     adminId varchar(20) not null,
-    surgeryId varchar(20) not null,
     stockMgrNurse varchar(20) not null,
     reserved boolean default false,
 
     foreign key (adminId) references admin(adminId),
-    foreign key (surgeryId) references surgery(surgeryId),
     foreign key (manufacturerId) references manufacturer(manuId),
     foreign key (stockMgrNurse) references nurse(nurseId),
     
@@ -207,9 +178,29 @@ create table lens (
     
 );
 
--- SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'lens' AND COLUMN_NAME = 'surgeryId' AND CONSTRAINT_NAME IS NOT NULL;
-alter table lens drop foreign key lens_ibfk_2;
-alter table lens drop column surgeryId;
+create table surgery (
+	surgeryId varchar(25) primary key not null unique check (surgeryId regexp '^SG-[0-9]{5}-([0-9]{9}[v]|[0-9]{12})$'),
+    surgeryDate date not null,
+    surgeryTime time not null,
+    pending boolean not null default false,
+    created timestamp not null default current_timestamp,
+    description varchar(225),
+    docReport mediumblob,
+    patientId varchar(20) not null,
+    doctorId varchar(20) not null,
+    examId varchar(30) not null,
+    compId varchar(20) not null,
+    lensId varchar(20) not null,
+    nurseId varchar(20) not null,
+
+    foreign key (patientId) references patient(patientId),
+    foreign key (doctorId) references doctor(doctorId),
+    foreign key (examId) references examination(examId),
+    foreign key (compId) references patientComplaint(patientComplaintId),
+    foreign key (lensId) references lens(lensId),
+    foreign key (nurseId) references nurse(nurseId)
+
+);
 
 create table clinic (
 	clinicId varchar(21) not null unique check (clinicId regexp '^CL-[0-9]{5}-([0-9]{9}[v]|[0-9]{12})$'),
