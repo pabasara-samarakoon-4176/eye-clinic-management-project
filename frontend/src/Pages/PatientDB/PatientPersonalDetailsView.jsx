@@ -1,17 +1,12 @@
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react"
+import "react-datepicker/dist/react-datepicker.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-    faCalendarAlt,
-    faCloudUploadAlt,
     faUser,
-    faSearch,
-    faEye,
-} from "@fortawesome/free-solid-svg-icons";
-import "./patient.css";
-import axios from "axios";
-
+    faSearch
+} from "@fortawesome/free-solid-svg-icons"
+import "./patient.css"
+import axios from "axios"
 
 const PatientPersonalDetailsView = () => {
 
@@ -24,15 +19,16 @@ const PatientPersonalDetailsView = () => {
         try {
             const response = await axios.get(`http://localhost:8080/searchpatient/${searchPatientId}`)
             setSearchPatient([response.data])
-            console.log(`patient blob: ${patientImage}`)
             const patientImage = searchPatient[0]?.[0]?.patient_image
+            // console.log(`patient blob: ${patientImage}`)
             if (patientImage) {
-                const reader = new FileReader();
-                reader.readAsDataURL(new Blob([Uint8Array.from(patientImage.data)]));
-                reader.onloadend = () => {
-                    setPatientImageUrl(reader.result);
-                };
+                const arrayBuffer = Uint8Array.from(patientImage.data).buffer
+                const blob = new Blob([arrayBuffer], {type: 'image/jpeg'})
+                const imageUrl = URL.createObjectURL(blob)
+                setPatientImageUrl(imageUrl)
             }
+            console.log(patientImageUrl)
+
 
         } catch (error) {
             console.log(`${error.message}`)
@@ -124,8 +120,8 @@ const PatientPersonalDetailsView = () => {
                             <span className="labelP">Contact No:</span>
                             <span className="valueP">{searchPatient[0]?.[0]?.phoneNumber}</span>
                         </div>
-                       
-                       
+
+
                     </div>
                 </>
 
