@@ -5,9 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCalendarAlt,
     faCloudUploadAlt,
-    faUser,
-    faSearch,
-    faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import "./patient.css";
 import axios from "axios";
@@ -28,6 +25,12 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
     const [description, setDescription] = useState('');
     const [patientImage, setPatientImage] = useState(null);
     const [patientImagePath, setPatientImagePath] = useState(null)
+    const [patientImageBlob, setPatientImageBlob] = useState(null)
+    const [selectedPatientImage, setSelectedPatientImage] = useState(null)
+
+    const handleFileChange = (event) => {
+        setSelectedPatientImage(event.target.files[0])
+    }
 
     const calculateAge = (birthDate) => {
         const today = new Date();
@@ -55,6 +58,19 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
         return regex.test(str)
     }
 
+    const handleImageBlob = (event) => {
+        const file = event.target.files[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = () => {
+                const blob = new Blob([reader.result], {type: file.type})
+                setPatientImageBlob(blob)
+            }
+            reader.readAsArrayBuffer(file)
+        }
+        console.log(patientImageBlob)
+    }
+
     const handleImageChange = (e) => {
         const selectedImage = e.target.files[0]
         setPatientImage(selectedImage)
@@ -75,7 +91,7 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
                     patientPhoneNumber: contactNo,
                     patientAddress: address,
                     patientDescription: description,
-                    patientImagePath: patientImagePath
+                    patientImagePath: patientImageBlob
                 })
                 console.log(patientImagePath)
                 alert(response.data.message)

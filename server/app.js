@@ -265,7 +265,13 @@ app.get("/searchpatient/:patientId", async (req, res) => {
     const patientId = req.params.patientId
     try {
         const response = await db.query(`select * from patient where patientId = ?`, [patientId])
+        const imageData = response[0][0].patient_image.toString('base64')
+        // const imageBuffer = Buffer.from(imageData, 'base64')
+        // const imageFile = fs.writeFileSync('image.png', imageBuffer)
+        // res.send(response[0][0].patient_image.toString('base64'))
+        // res.sendFile('image.png', { root: '.'})
         res.send(response[0])
+        // res.send(imageData)
     } catch (error) {
         console.log(`${error.message}`)
     }
@@ -371,18 +377,10 @@ app.post("/addpatient/:doctorId", async (req, res) => {
     const admittedNurse = 'NR.00000'
 
     try {
-        // Fetch the image from the Blob URL
-        // const response = await fetch(patientImagePath);
-        // const patientImageBlob = await patientImagePath.blob();
-
-        // Convert the Blob object to Buffer
-        // const patientImagePath = Buffer.from(await patientImageBlob.arrayBuffer());
-
         const [newPatient] = await db.query(`
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
-        // console.log(patientImagePath)
         res.status(200).json({ message: "Patient added successfully" })
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {

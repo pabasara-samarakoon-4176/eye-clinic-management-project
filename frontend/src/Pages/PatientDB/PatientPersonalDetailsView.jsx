@@ -7,12 +7,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import "./patient.css"
 import axios from "axios"
+// import fs from 'fs'
 
 const PatientPersonalDetailsView = () => {
 
     const [searchPatientId, setSearchPatientId] = useState('')
     const [searchPatient, setSearchPatient] = useState([])
     const [patientImageUrl, setPatientImageUrl] = useState(null)
+    const [patinetImage, setPatientImage] = useState('')
 
 
     const handleSearch = async (Value) => {
@@ -22,16 +24,22 @@ const PatientPersonalDetailsView = () => {
             const patientImage = searchPatient[0]?.[0]?.patient_image
             // console.log(`patient blob: ${patientImage}`)
             if (patientImage) {
+                const imageData = patientImage.toString('base64')
+                const base64String = btoa(String.fromCharCode(...new Uint8Array(imageData)))
+                // const imageBuffer = Buffer.from(imageData, 'base64')
+                setPatientImage(base64String)
+                console.log(base64String)
+                // const imageFile = fs.writeFileSync('image.png', imageBuffer)
                 const arrayBuffer = Uint8Array.from(patientImage.data).buffer
                 const blob = new Blob([arrayBuffer], {type: 'image/jpeg'})
                 const imageUrl = URL.createObjectURL(blob)
                 setPatientImageUrl(imageUrl)
             }
-            console.log(patientImageUrl)
+            // console.log(patientImage)
 
 
         } catch (error) {
-            console.log(`${error.message}`)
+            console.log(error)
         }
     }
 
@@ -72,11 +80,12 @@ const PatientPersonalDetailsView = () => {
                     <div className="column">
                         <div className="image-container">
                             {patientImageUrl ? (
-                                <img
-                                    src={patientImageUrl}
-                                    alt="Patient"
-                                    className="Patient-image"
-                                />
+                                // <img
+                                //     src={patientImageUrl}
+                                //     alt="Patient"
+                                //     className="Patient-image"
+                                // />
+                                <img src={`data:image/png;base64,${patinetImage}`} alt=""/>
                             ) : (
                                 <div
                                     className="patient-icon"
