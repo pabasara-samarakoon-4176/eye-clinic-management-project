@@ -63,7 +63,7 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
         if (file) {
             const reader = new FileReader()
             reader.onload = () => {
-                const blob = new Blob([reader.result], {type: file.type})
+                const blob = new Blob([reader.result], { type: file.type })
                 setPatientImageBlob(blob)
             }
             reader.readAsArrayBuffer(file)
@@ -82,16 +82,18 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
 
         try {
             if (isValidId(patientId) && isValidPhoneNumber(contactNo)) {
-                const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
-                    patientFirstname: patientFirstname,
-                    patientLastname: patientLastname,
-                    patientGender: gender,
-                    patientDOB: birthDate,
-                    patientIdNIC: patientId,
-                    patientPhoneNumber: contactNo,
-                    patientAddress: address,
-                    patientDescription: description,
-                    patientImagePath: patientImageBlob
+                const formData = new FormData()
+                formData.append('patientFirstname', patientFirstname)
+                formData.append('patientLastname', patientLastname)
+                formData.append('patientGender', gender)
+                formData.append('patientDOB', birthDate)
+                formData.append('patientIdNIC', patientId)
+                formData.append('patientPhoneNumber', contactNo)
+                formData.append('patientAddress', address)
+                formData.append('patientDescription', description)
+                formData.append('image', patientImageBlob)
+                const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 })
                 console.log(patientImagePath)
                 alert(response.data.message)
