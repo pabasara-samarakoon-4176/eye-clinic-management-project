@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faCalendarAlt,
-    faCloudUploadAlt,
-    faUser,
-    faSearch,
-    faEye,
+    faCloudUploadAlt
 } from "@fortawesome/free-solid-svg-icons";
 import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
 import axios from "axios";
@@ -22,7 +17,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
     const [rightRedeyeBool, setRightRedeyeBool] = useState(false)
     const [rightRedeye, setRightRedeye] = useState('')
     const [rightPoorVisionBool, setRightPoorVisionBool] = useState(false)
-    const [rightpoorVision, setRightpoorVision] = useState('')
+    const [rightPoorVision, setRightPoorVision] = useState('')
     const [rightDescription, setRightDescription] = useState('')
     const [rightEyeImage, setRightEyeImage] = useState(null)
     const [rightEyeImagePath, setRightEyeImagePath] = useState(null)
@@ -35,10 +30,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
     const [leftRedeyeBool, setLeftRedeyeBool] = useState(false)
     const [leftRedeye, setLeftRedeye] = useState('')
     const [leftPoorVisionBool, setLeftPoorVisionBool] = useState(false)
-    const [leftpoorVision, setLeftpoorVision] = useState('')
+    const [leftPoorVision, setLeftPoorVision] = useState('')
     const [leftDescription, setLeftDescription] = useState('')
     const [leftEyeImage, setLeftEyeImage] = useState(null)
     const [leftEyeImagePath, setLeftEyeImagePath] = useState(null)
+    const [rightEyeImageFile, setRightEyeImageFile] = useState(null)
+    const [leftEyeImageFile, setLeftEyeImageFile] = useState(null)
 
     const [allergies, setAllergies] = useState('')
     const [medicalHistory, setMedicalHistory] = useState('')
@@ -59,67 +56,75 @@ const PatientComplaints = ({ patientId, doctorId }) => {
         console.log("Left eye image path:", leftEyeImagePath);
     }, [leftEyeImagePath]);
 
-    const handleRightEyeImageChange = (e) => {
-        const selectedImage = e.target.files[0];
-        console.log("Selected image:", selectedImage);
-        setRightEyeImage(selectedImage);
-        console.log("Right eye image state:", rightEyeImage);
-        setRightEyeImagePath(URL.createObjectURL(selectedImage));
-        console.log("Right eye image path:", rightEyeImagePath);
+    // const handleRightEyeImageChange = (e) => {
+    //     const selectedImage = e.target.files[0];
+    //     console.log("Selected image:", selectedImage);
+    //     setRightEyeImage(selectedImage);
+    //     console.log("Right eye image state:", rightEyeImage);
+    //     setRightEyeImagePath(URL.createObjectURL(selectedImage));
+    //     console.log("Right eye image path:", rightEyeImagePath);
+    // }
+
+    // const handleLeftEyeImageChange = (e) => {
+    //     const selectedImage = e.target.files[0];
+    //     console.log("Selected image:", selectedImage);
+    //     setLeftEyeImage(selectedImage);
+    //     console.log("Left eye image state:", leftEyeImage);
+    //     setLeftEyeImagePath(URL.createObjectURL(selectedImage));
+    //     console.log("Left eye image path:", leftEyeImagePath);
+    // }
+
+    const handleRightEyeImageChange = (event) => {
+        setRightEyeImageFile(event.target.files[0])
     }
 
-    const handleLeftEyeImageChange = (e) => {
-        const selectedImage = e.target.files[0];
-        console.log("Selected image:", selectedImage);
-        setLeftEyeImage(selectedImage);
-        console.log("Left eye image state:", leftEyeImage);
-        setLeftEyeImagePath(URL.createObjectURL(selectedImage));
-        console.log("Left eye image path:", leftEyeImagePath);
+    const handleLeftEyeImageChange = (event) => {
+        setLeftEyeImageFile(event.target.files[0])
     }
 
 
     const handleAddPatientComplaintSubmit = async (event) => {
         event.preventDefault()
 
-        const test = '/Users/pabasarasamarakoon/Downloads/icons8-rain-50.png'
-        // const doctorId = 'MBBS.00000'
-        console.log(patientId)
-
         try {
 
-            const response = await axios.post(`http://localhost:8080/addpatientcomplaint/${doctorId}`, {
-                patientId: patientId,
-                // Right eye data
-                rightPainBool: rightPainBool,
-                rightPain: rightPain,
-                rightDoubleVisionBool: rightDoubleVisionBool,
-                rightDoubleVision: rightDoubleVision,
-                rightRedeyeBool: rightRedeyeBool,
-                rightRedeye: rightRedeye,
-                rightPoorVisionBool: rightPoorVisionBool,
-                rightPoorVision: rightpoorVision,
-                rightDescription: rightDescription,
-                rightEyeImagePath: test,
-                // Left eye data
-                leftPainBool: leftPainBool,
-                leftPain: leftPain,
-                leftDoubleVisionBool: leftDoubleVisionBool,
-                leftDoubleVision: leftDoubleVision,
-                leftRedeyeBool: leftRedeyeBool,
-                leftRedeye: leftRedeye,
-                leftPoorVisionBool: leftPoorVisionBool,
-                leftPoorVision: leftpoorVision,
-                leftDescription: leftDescription,
-                leftEyeImagePath: test,
+            const convertToInteger = (boolValue) => boolValue ? 1 : 0
 
-                allergies: allergies,
-                medicalHistory: medicalHistory
+            const formData = new FormData()
+            formData.append('patientId', patientId)
 
+            formData.append('rightPainBool', convertToInteger(rightPainBool))
+            formData.append('rightPain', rightPain)
+            formData.append('rightDoubleVisionBool', convertToInteger(rightDoubleVisionBool))
+            formData.append('rightDoubleVision', rightDoubleVision)
+            formData.append('rightRedeyeBool', convertToInteger(rightRedeyeBool))
+            formData.append('rightRedeye', rightRedeye)
+            formData.append('rightPoorVisionBool', convertToInteger(rightPoorVisionBool))
+            formData.append('rightPoorVision', rightPoorVision)
+            formData.append('rightDescription', rightDescription)
+            formData.append('eyeImages', rightEyeImageFile)
+
+            formData.append('leftPainBool', convertToInteger(leftPainBool))
+            formData.append('leftPain', leftPain)
+            formData.append('leftDoubleVisionBool', convertToInteger(leftDoubleVisionBool))
+            formData.append('leftDoubleVision', leftDoubleVision)
+            formData.append('leftRedeyeBool', convertToInteger(leftRedeyeBool))
+            formData.append('leftRedeye', leftRedeye)
+            formData.append('leftPoorVisionBool', convertToInteger(leftPoorVisionBool))
+            formData.append('leftPoorVision', leftPoorVision)
+            formData.append('leftDescription', leftDescription)
+            formData.append('eyeImages', leftEyeImageFile)
+
+            formData.append('allergies', allergies)
+            formData.append('medicalHistory', medicalHistory)
+
+            const response = await axios.post(`http://localhost:8080/addpatientcomplaint/${doctorId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
             alert("Sucessfully added the patient complaint")
-
         } catch (error) {
-
             console.log(error)
         }
     }
@@ -216,8 +221,8 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             type="text"
                             className="lInput"
                             placeholder="Enter Duration"
-                            value={rightpoorVision}
-                            onChange={(e) => setRightpoorVision(e.target.value)}
+                            value={rightPoorVision}
+                            onChange={(e) => setRightPoorVision(e.target.value)}
                         />
                     </div>
 
@@ -253,7 +258,6 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             type="file"
                             id="imageUpload"
                             style={{ display: "none" }}
-
                             onChange={handleRightEyeImageChange}
                         />
                         <button
@@ -268,10 +272,10 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             Upload Image
                         </button>
                     </div>
-                    {rightEyeImage && (
+                    {rightEyeImageFile && (
                         <div>
                             <h2>Right Eye Preview:</h2>
-                            <img src={URL.createObjectURL(rightEyeImage)} alt="RightEye" />
+                            <img src={URL.createObjectURL(rightEyeImageFile)} alt="RightEye" />
                         </div>
                     )}
                 </div>
@@ -359,8 +363,8 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             type="text"
                             className="lInput"
                             placeholder="Enter Duration"
-                            value={leftpoorVision}
-                            onChange={(e) => setLeftpoorVision(e.target.value)}
+                            value={leftPoorVision}
+                            onChange={(e) => setLeftPoorVision(e.target.value)}
                         />
                     </div>
 
@@ -410,10 +414,10 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             Upload Image
                         </button>
                     </div>
-                    {leftEyeImage && (
+                    {leftEyeImageFile && (
                         <div>
                             <h2>Left Eye Preview:</h2>
-                            <img src={URL.createObjectURL(leftEyeImage)} alt="LeftEyeImage" />
+                            <img src={URL.createObjectURL(leftEyeImageFile)} alt="LeftEyeImage" />
                         </div>
                     )}
                 </div>

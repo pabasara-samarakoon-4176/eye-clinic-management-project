@@ -7,43 +7,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import "./patient.css"
 import axios from "axios"
-// import fs from 'fs'
 
 const PatientPersonalDetailsView = () => {
 
-    const [searchPatientId, setSearchPatientId] = useState('')
+    const [searchPatientId, setSearchPatientId] = useState(null)
     const [searchPatient, setSearchPatient] = useState([])
-    const [patientImageUrl, setPatientImageUrl] = useState(null)
-    const [patinetImage, setPatientImage] = useState('')
-
+    const [patientImage, setPatientImage] = useState(null)
 
     const handleSearch = async (Value) => {
         try {
             const response = await axios.get(`http://localhost:8080/searchpatient/${searchPatientId}`)
-            setSearchPatient([response.data])
-            const patientImage = searchPatient[0]?.[0]?.patient_image
-            // console.log(`patient blob: ${patientImage}`)
-            if (patientImage) {
-                const imageData = patientImage.toString('base64')
-                const base64String = btoa(String.fromCharCode(...new Uint8Array(imageData)))
-                // const imageBuffer = Buffer.from(imageData, 'base64')
-                setPatientImage(base64String)
-                console.log(base64String)
-                // const imageFile = fs.writeFileSync('image.png', imageBuffer)
-                const arrayBuffer = Uint8Array.from(patientImage.data).buffer
-                const blob = new Blob([arrayBuffer], {type: 'image/jpeg'})
-                const imageUrl = URL.createObjectURL(blob)
-                setPatientImageUrl(imageUrl)
-            }
-            // console.log(patientImage)
-
-
+            setSearchPatient(response.data)
+            setPatientImage(searchPatient?.imageBase64)
         } catch (error) {
             console.log(error)
         }
     }
-
-    const imageUrl = null;
     return (
         <div>
             <div className="above-form-and-table">
@@ -79,13 +58,8 @@ const PatientPersonalDetailsView = () => {
                 <>
                     <div className="column">
                         <div className="image-container">
-                            {patientImageUrl ? (
-                                // <img
-                                //     src={patientImageUrl}
-                                //     alt="Patient"
-                                //     className="Patient-image"
-                                // />
-                                <img src={`data:image/png;base64,${patinetImage}`} alt=""/>
+                            {searchPatient ? (
+                                <img src={`data:image/png;base64,${patientImage}`} alt="Patient" />
                             ) : (
                                 <div
                                     className="patient-icon"
@@ -104,30 +78,30 @@ const PatientPersonalDetailsView = () => {
                     <div className="column second-column">
                         <div className="label-value-pair-P">
                             <span className="labelP">Firstname:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.patientFirstname}</span>
+                            <span className="valueP">{searchPatient?.patient?.patientFirstname}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                             <span className="labelP">Lastname:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.patientLastname}</span>
+                            <span className="valueP">{searchPatient?.patient?.patientLastname}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                             <span className="labelP">Date of Birth:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.dateOfBirth}</span>
+                            <span className="valueP">{searchPatient?.patient?.dateOfBirth}</span>
                         </div>
                         <div className="label-value-pair-P">
                             <span className="labelP">Gender:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.gender}</span>
+                            <span className="valueP">{searchPatient?.patient?.gender}</span>
                         </div>
 
                         <div className="label-value-pair-P">
                             <span className="labelP">Address:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.address}</span>
+                            <span className="valueP">{searchPatient?.patient?.address}</span>
                         </div>
                         <div className="label-value-pair-P">
                             <span className="labelP">Contact No:</span>
-                            <span className="valueP">{searchPatient[0]?.[0]?.phoneNumber}</span>
+                            <span className="valueP">{searchPatient?.patient?.phoneNumber}</span>
                         </div>
 
 
@@ -137,7 +111,7 @@ const PatientPersonalDetailsView = () => {
             </div>
             <div className="label-value-pair">
                 <span className="label">Description:</span>
-                <span className="value2">{searchPatient[0]?.[0]?.patientDescription}</span>
+                <span className="value2">{searchPatient?.patient?.patientDescription}</span>
             </div>
         </div>
     )

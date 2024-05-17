@@ -9,6 +9,7 @@ import cors from 'cors'
 import pdfkit from 'pdfkit'
 import fs from 'fs'
 import PDFDocument from 'pdfkit-table'
+import multer from 'multer'
 
 const app = express()
 const currentDirectory = process.cwd()
@@ -20,6 +21,10 @@ app.use(express.urlencoded({
 app.use(express.static("public"))
 app.use(cookieParser())
 app.use(cors())
+
+const upload = multer({
+    dest: 'uploads/'
+})
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -109,13 +114,19 @@ app.post("/register", async (req, res) => {
         values (?, ?, ?, ?, ?)
         `, [doctorId, doctorFirstname, doctorLastname, hashedPassword, adminId])
         const [newDoctor] = await db.query("select * from doctor where doctorId = ?", [doctorId])
-        res.status(200).json({ message: "Doctor added successfully" })
+        res.status(200).json({
+            message: "Doctor added successfully"
+        })
 
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
-            res.json({ message: "The doctor already exists" })
+            res.json({
+                message: "The doctor already exists"
+            })
         } else {
-            res.status(500).json({ message: "An error occurred while adding the doctor" })
+            res.status(500).json({
+                message: "An error occurred while adding the doctor"
+            })
         }
     }
 })
@@ -245,7 +256,19 @@ app.get("/searchpatientcomplaints/:patientId", async (req, res) => {
     const patientId = req.params.patientId
     try {
         const response = await db.query(`select * from patientComplaint where patientId = ?`, [patientId])
-        res.send(response[0])
+        const patientComplaintDetails = response[0][0]
+        const rightEyeImageData = response[0][0].rightEyeImage.toString('base64')
+        const rightEyeImageBuffer = Buffer.from(rightEyeImageData, 'base64')
+        const rightEyeImageFile = fs.writeFileSync('rightEyeImage.png', rightEyeImageBuffer)
+        const leftEyeImageData = response[0][0].leftEyeImage.toString('base64')
+        const leftEyeImageBuffer = Buffer.from(leftEyeImageData, 'base64')
+        const leftEyeImageFile = fs.writeFileSync('leftEyeImage.png', leftEyeImageBuffer)
+        const responseData = {
+            patientComplaintDetails : patientComplaintDetails,
+            rightImageBase64 : rightEyeImageData,
+            leftImageBase64 : leftEyeImageData
+        }
+        res.send(responseData)
     } catch (error) {
         console.log(`${error.message}`)
     }
@@ -265,13 +288,15 @@ app.get("/searchpatient/:patientId", async (req, res) => {
     const patientId = req.params.patientId
     try {
         const response = await db.query(`select * from patient where patientId = ?`, [patientId])
-        const imageData = response[0][0].patient_image.toString('base64')
-        // const imageBuffer = Buffer.from(imageData, 'base64')
-        // const imageFile = fs.writeFileSync('image.png', imageBuffer)
-        // res.send(response[0][0].patient_image.toString('base64'))
-        // res.sendFile('image.png', { root: '.'})
-        res.send(response[0])
-        // res.send(imageData)
+        const patientData = response[0][0]
+        const patientImageData = response[0][0].patient_image.toString('base64')
+        const patientImageBuffer = Buffer.from(patientImageData, 'base64')
+        const patientImageFile = fs.writeFileSync('patientImage.png', patientImageBuffer)
+        const responseData = {
+            patient : patientData,
+            imageBase64: patientImageData
+        }
+        res.send(responseData)
     } catch (error) {
         console.log(`${error.message}`)
     }
@@ -341,20 +366,28 @@ app.post("/addlens/:nurseId", async (req, res) => {
             INSERT INTO lens (lensId, lensType, surgeryType, model, lensPower, expiryDate, batchNo, remarks, adminId, stockMgrNurse, manufactureDate, manufacturerId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [lensId, lensType, surgeryType, model, lensPower, formattedExpiryDate, batchNo, remarks, adminId, nurseId, formattedManufactureDate, manufacturerId])
-            res.status(200).json({message: "Successfully added lens"})
+            res.status(200).json({
+                message: "Successfully added lens"
+            })
         } else {
-            res.json({message: "Unable to access to lens database"})
+            res.json({
+                message: "Unable to access to lens database"
+            })
         }
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
-            res.json({ message: "The lens already exists" })
+            res.json({
+                message: "The lens already exists"
+            })
         } else {
-            res.status(500).json({ message: "An error occurred while adding the lens" })
+            res.status(500).json({
+                message: "An error occurred while adding the lens"
+            })
         }
     }
 })
 
-app.post("/addpatient/:doctorId", async (req, res) => {
+app.post("/addpatient/:doctorId", upload.single('patientImageFile'), async (req, res) => {
     const {
         patientFirstname,
         patientLastname,
@@ -363,8 +396,7 @@ app.post("/addpatient/:doctorId", async (req, res) => {
         patientIdNIC,
         patientPhoneNumber,
         patientAddress,
-        patientDescription,
-        patientImagePath
+        patientDescription
     } = req.body
 
     const date = new Date(patientDOB);
@@ -377,16 +409,24 @@ app.post("/addpatient/:doctorId", async (req, res) => {
     const admittedNurse = 'NR.00000'
 
     try {
+        const patientImageBuffer = fs.readFileSync(req.file.path)
         const [newPatient] = await db.query(`
         insert into patient (patientId, patientFirstname, patientLastname, dateOfBirth, gender, address, phoneNumber, admittedNurse, patientDescription, doctorInChargeId, patient_image)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImagePath])
-        res.status(200).json({ message: "Patient added successfully" })
+        `, [patientIdNIC, patientFirstname, patientLastname, formattedDate, patientGender, patientAddress, patientPhoneNumber, admittedNurse, patientDescription, doctorInChargeId, patientImageBuffer])
+        fs.unlinkSync(req.file.path)
+        res.status(200).json({
+            message: "Patient added successfully"
+        })
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
-            res.json({ message: "The patient already exists" })
+            res.json({
+                message: "The patient already exists"
+            })
         } else {
-            res.status(500).json({ message: "An error occurred while adding the patient" })
+            res.status(500).json({
+                message: "An error occurred while adding the patient"
+            })
         }
         // console.log(error)
     }
@@ -643,9 +683,9 @@ app.get('/create-report/:patientId', async (req, res) => {
         doc.fontSize(10).text('Doctor In Charge', leftColumnX, columnY + 620)
         doc.fontSize(10).text(`Dr. ${doctorDetails.doctorFirstname} ${doctorDetails.doctorLastname}`, leftColumnX, columnY + 640)
 
-        const lineLength = 150 
-        const dotSize = 0.5 
-        const dotSpacing = 2 
+        const lineLength = 150
+        const dotSize = 0.5
+        const dotSpacing = 2
         const dotCount = Math.floor(lineLength / (dotSize + dotSpacing))
 
         for (let i = 0; i < dotCount; i++) {
@@ -811,20 +851,26 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
 
         const decrement = await db.query(`update lens set reserved = 1 where lensId = ?`, [lensId])
 
-        res.status(200).json({message: "Successfully added the surgery"})
+        res.status(200).json({
+            message: "Successfully added the surgery"
+        })
 
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
-            res.json({ message: "The surgery already allocated" })
+            res.json({
+                message: "The surgery already allocated"
+            })
         } else {
-            res.status(500).json({ message: "An error occurred while adding the surgery" })
+            res.status(500).json({
+                message: "An error occurred while adding the surgery"
+            })
         }
         // console.log(error)
     }
 
 })
 
-app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
+app.post("/addpatientcomplaint/:doctorId", upload.array("eyeImages", 2), async (req, res) => {
     const {
         patientId,
         // Right eye
@@ -837,7 +883,6 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         rightPoorVisionBool,
         rightPoorVision,
         rightDescription,
-        rightEyeImagePath,
         // Left eye
         leftPainBool,
         leftPain,
@@ -848,7 +893,6 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         leftPoorVisionBool,
         leftPoorVision,
         leftDescription,
-        leftEyeImagePath,
 
         allergies,
         medicalHistory
@@ -857,6 +901,9 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
     const patientComplaintId = `PC-${patientId}`
 
     try {
+        const eyeImageFiles = req.files
+        const rightEyeImageBuffer = fs.readFileSync(eyeImageFiles[0].path)
+        const leftEyeImageBuffer = fs.readFileSync(eyeImageFiles[0].path)
         const [newPatientComplaint] = await db.query(`
         INSERT INTO patientComplaint (
             patientComplaintId,
@@ -886,15 +933,14 @@ app.post("/addpatientcomplaint/:doctorId", async (req, res) => {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [patientComplaintId,
             rightPainBool, rightDoubleVisionBool, rightRedeyeBool, rightPoorVisionBool,
-            rightPain, rightDoubleVision, rightRedeye, rightPoorVision, rightDescription, rightEyeImagePath,
+            rightPain, rightDoubleVision, rightRedeye, rightPoorVision, rightDescription, rightEyeImageBuffer,
             leftPainBool, leftDoubleVisionBool, leftRedeyeBool, leftPoorVisionBool,
-            leftPain, leftDoubleVision, leftRedeye, leftPoorVision, leftDescription, leftEyeImagePath,
+            leftPain, leftDoubleVision, leftRedeye, leftPoorVision, leftDescription, leftEyeImageBuffer,
             allergies, medicalHistory, patientId
         ])
         res.send("Successfully created the patient comaplaint")
     } catch (error) {
-
-        console.log(`${error.message}`)
+        console.log(error)
     }
 })
 
