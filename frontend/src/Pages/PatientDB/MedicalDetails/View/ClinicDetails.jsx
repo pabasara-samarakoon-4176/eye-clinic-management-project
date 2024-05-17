@@ -27,6 +27,10 @@ const ClinicDetailsView = ({ patientId }) => {
         }
     }, [patientId])
 
+    const testFunction = (patientId) => {
+        console.log(patientId)
+    }
+
     const formatDate = (dateString) => {
         const dateParts = dateString.split("T")[0].split("-")
         return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`

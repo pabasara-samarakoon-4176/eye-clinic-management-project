@@ -26,23 +26,22 @@ const PatientDB = () => {
 
   const [patientId, setPatientId] = useState('')
   const [value, setValue] = useState('')
- 
 
-  const [activeTab, setActiveTab] = useState("PERSONAL DETAILS");
-  const [activeButton, setActiveButton] = useState("add");
+  const [activeTab, setActiveTab] = useState("PERSONAL DETAILS")
+  const [activeButton, setActiveButton] = useState("add")
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-  };
+  }
 
   const handleSearchPatientId = (value) => {
     setPatientId(value)
     console.log(value)
-  };
+  }
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
-  };
+  }
 
   const handleSubmitClick = () => {
     try {

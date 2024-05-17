@@ -6,46 +6,28 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const PatientComplaintsView = ({ patientId }) => {
-    const imageUrl = null;
 
     const [searchPatientComplaints, setSearchPatientComplaints] = useState([])
-
-    const [rightEyeImageUrl, setRightEyeImageUrl] = useState('')
-    const [leftEyeImageUrl, setLeftEyeImageUrl] = useState('')
+    const [rightEyeImage, setRightEyeImage] = useState(null)
+    const [leftEyeImage, setLeftEyeImage] = useState(null)
 
     useEffect(() => {
         const fetchPatientComplaintData = async (value) => {
             try {
                 const response = await axios.get(`http://localhost:8080/searchpatientcomplaints/${value}`)
 
-                setSearchPatientComplaints([response.data])
-                const rightEyeImage = searchPatientComplaints[0]?.[0]?.rightEyeImage
-                const leftEyeImage = searchPatientComplaints[0]?.[0]?.leftEyeImage
-
-                if (rightEyeImage) {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(new Blob([Uint8Array.from(rightEyeImage.data)]));
-                    reader.onloadend = () => {
-                        setRightEyeImageUrl(reader.result);
-                    };
-                }
-
-                if (leftEyeImage) {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(new Blob([Uint8Array.from(leftEyeImage.data)]));
-                    reader.onloadend = () => {
-                        setLeftEyeImageUrl(reader.result);
-                    };
-                }
-
-                console.log(`rightImage: ${rightEyeImageUrl}`)
-                console.log(`leftImage: ${leftEyeImageUrl}`)
+                setSearchPatientComplaints(response.data)
+                setRightEyeImage(searchPatientComplaints?.rightImageBase64)
+                setLeftEyeImage(searchPatientComplaints?.leftImageBase64)
+                console.log(searchPatientComplaints)
             } catch (error) {
                 console.error(`${error.message}`)
             }
         }
         if (patientId) {
             fetchPatientComplaintData(patientId);
+        } else {
+            console.log('No patient Id')
         }
     }, [patientId])
 
@@ -61,8 +43,8 @@ const PatientComplaintsView = ({ patientId }) => {
                     Right Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {rightEyeImageUrl ? (
-                        <img src={rightEyeImageUrl} alt="Right Eye" className="eye-image" />
+                    {rightEyeImage ? (
+                        <img src={rightEyeImage} alt="Right Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
@@ -75,8 +57,8 @@ const PatientComplaintsView = ({ patientId }) => {
                     Left Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {leftEyeImageUrl ? (
-                        <img src={leftEyeImageUrl} alt="Left Eye" className="eye-image" />
+                    {leftEyeImage ? (
+                        <img src={leftEyeImage} alt="Left Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
