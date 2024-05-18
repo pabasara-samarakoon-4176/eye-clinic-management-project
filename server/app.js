@@ -639,7 +639,6 @@ app.get('/create-report/:patientId', async (req, res) => {
         doc.fontSize(10).text(`Date of Birth     : ${reportDetails.patientDOB}`, leftColumnX, columnY + 70).moveDown()
         doc.fontSize(10).text(`Gender             :  ${reportDetails.patientGender}`, leftColumnX, columnY + 90).moveDown()
         doc.fontSize(10).text(`Phone Number : ${reportDetails.patientContactNo}`, leftColumnX, columnY + 110).moveDown()
-        // report.fontSize(12).text(`Patient Image: ${reportDetails.patient_image}`).moveDown()
 
         const imageWidth = 100
         const imageHeight = 100
