@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from "react"
+import "react-datepicker/dist/react-datepicker.css"
 
 import axios from "axios";
 
@@ -24,16 +20,16 @@ const ClinicDetailsView = ({ patientId }) => {
         }
         if (patientId) {
             fetchClinicData(patientId)
+        } else {
+            console.log('No patient Id')
         }
     }, [patientId])
 
-    const testFunction = (patientId) => {
-        console.log(patientId)
-    }
-
     const formatDate = (dateString) => {
-        const dateParts = dateString.split("T")[0].split("-")
-        return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+        if (dateString) {
+            const dateParts = dateString.split("T")[0].split("-")
+            return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+        }
     }
 
     return (
@@ -49,7 +45,7 @@ const ClinicDetailsView = ({ patientId }) => {
             </div>
             <div className="label-value-pair">
                 <span className="label">Date:</span>
-                <span className="value">{searchClinicDetails[0]?.clinicDate}</span>
+                <span className="value">{formatDate(searchClinicDetails[0]?.clinicDate)}</span>
 
             </div>
             <div className="label-value-pair">

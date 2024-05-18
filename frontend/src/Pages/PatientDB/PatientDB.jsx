@@ -36,7 +36,7 @@ const PatientDB = () => {
 
   const handleSearchPatientId = (value) => {
     setPatientId(value)
-    console.log(value)
+    // console.log(value)
   }
 
   const handleButtonClick = (button) => {

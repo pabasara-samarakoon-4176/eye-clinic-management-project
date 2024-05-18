@@ -15,19 +15,21 @@ const PatientComplaintsView = ({ patientId }) => {
         const fetchPatientComplaintData = async (value) => {
             try {
                 const response = await axios.get(`http://localhost:8080/searchpatientcomplaints/${value}`)
-
-                setSearchPatientComplaints(response.data)
-                setRightEyeImage(searchPatientComplaints?.rightImageBase64)
-                setLeftEyeImage(searchPatientComplaints?.leftImageBase64)
-                console.log(searchPatientComplaints)
+                const comData = [response.data]
+                setSearchPatientComplaints(comData)
+                setRightEyeImage(comData[0]?.rightImageBase64)
+                setLeftEyeImage(comData[0]?.leftImageBase64)
             } catch (error) {
                 console.error(`${error.message}`)
             }
         }
-        if (patientId) {
-            fetchPatientComplaintData(patientId);
-        } else {
+        if (patientId && rightEyeImage && leftEyeImage) {
+            fetchPatientComplaintData(patientId)
+        } else if (!patientId && rightEyeImage && leftEyeImage) {
             console.log('No patient Id')
+        } else if (patientId && !rightEyeImage && !leftEyeImage) {
+            fetchPatientComplaintData(patientId)
+            console.log('No Image')
         }
     }, [patientId])
 
@@ -44,7 +46,7 @@ const PatientComplaintsView = ({ patientId }) => {
                 </span>
                 <div className="eye-image-container">
                     {rightEyeImage ? (
-                        <img src={rightEyeImage} alt="Right Eye" className="eye-image" />
+                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Right Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
@@ -58,7 +60,7 @@ const PatientComplaintsView = ({ patientId }) => {
                 </span>
                 <div className="eye-image-container">
                     {leftEyeImage ? (
-                        <img src={leftEyeImage} alt="Left Eye" className="eye-image" />
+                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Left Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
@@ -70,23 +72,23 @@ const PatientComplaintsView = ({ patientId }) => {
                 <span className="label">
                     Right Eye Description:
                 </span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.rightDescription}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">
                     Left Eye Description:
                 </span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.leftDescription}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.leftDescription}</span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Alergies:</span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.allergies}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.allergies}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">Medical History:</span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.medicalHistory}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.medicalHistory}</span>
             </div>
         </div>
     )

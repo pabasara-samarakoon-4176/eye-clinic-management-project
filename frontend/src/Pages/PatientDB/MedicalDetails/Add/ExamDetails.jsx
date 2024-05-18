@@ -31,7 +31,7 @@ const ExamDetails = ({ patientId, doctorId }) => {
     // Exam Details
     // Right eye
     const [rightLids, setRightLids] = useState('')
-    const [rightConjuitives, setRightConjuitives] = useState('')
+    const [rightConjuitive, setRightConjuitive] = useState('')
     const [rightAC, setRightAC] = useState('')
     const [rightIris, setRightIris] = useState('')
     const [rightVitereous, setRightVitereous] = useState('')
@@ -40,7 +40,7 @@ const ExamDetails = ({ patientId, doctorId }) => {
 
     // Left eye
     const [leftLids, setLeftLids] = useState('')
-    const [leftConjuitives, setLeftConjuitives] = useState('')
+    const [leftConjuitive, setLeftConjuitive] = useState('')
     const [leftAC, setLeftAC] = useState('')
     const [leftIris, setLeftIris] = useState('')
     const [leftVitereous, setLeftVitereous] = useState('')
@@ -76,7 +76,7 @@ const ExamDetails = ({ patientId, doctorId }) => {
                 patientId: patientId,
                 // right eye
                 rightLids: rightLids,
-                rightConjuitives: rightConjuitives,
+                rightConjuitive: rightConjuitive,
                 rightAC: rightAC,
                 rightIris: rightIris,
                 rightVitereous: rightVitereous,
@@ -84,7 +84,7 @@ const ExamDetails = ({ patientId, doctorId }) => {
                 rightRetina: rightRetina,
                 // left eye
                 leftLids: leftLids,
-                leftConjuitives: leftConjuitives,
+                leftConjuitive: leftConjuitive,
                 leftAC: leftAC,
                 leftIris: leftIris,
                 leftVitereous: leftVitereous,
@@ -132,8 +132,8 @@ const ExamDetails = ({ patientId, doctorId }) => {
                             id="rightEyeParameter1"
                             className="lInput"
                             placeholder="Enter Details"
-                            value={rightConjuitives}
-                            onChange={(e) => setRightConjuitives(e.target.value)}
+                            value={rightConjuitive}
+                            onChange={(e) => setRightConjuitive(e.target.value)}
                         />
                     </div>
                     <div className="form-group">
@@ -229,8 +229,8 @@ const ExamDetails = ({ patientId, doctorId }) => {
                             id="rightEyeParameter1"
                             className="lInput"
                             placeholder="Enter Details"
-                            value={leftConjuitives}
-                            onChange={(e) => setLeftConjuitives(e.target.value)}
+                            value={leftConjuitive}
+                            onChange={(e) => setLeftConjuitive(e.target.value)}
                         />
                     </div>
                     <div className="form-group">

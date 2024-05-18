@@ -17,14 +17,14 @@ import "./surgeryDB.css"
 
 const LensDB = () => {
 
-  const {doctorId} = useParams()
+  const { doctorId } = useParams()
   const navigate = useNavigate()
 
   const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
   const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
   const handleSurgeryAMPMChange = (e) => setSurgeryAMPM(e.target.value);
 
-  
+
 
   const [surgeryDate, setSurgeryDate] = useState(null);
   const [surgeryHours, setSurgeryHours] = useState(null);
@@ -40,7 +40,7 @@ const LensDB = () => {
   const [lens, setLens] = useState('')
   const [lensId, setLensId] = useState('')
   const [lensOptions, setLensOptions] = useState([])
- 
+
   const [activeButton, setActiveButton] = useState("add")
 
   const [searchPatientId, setSearchPatientId] = useState('')
@@ -48,7 +48,9 @@ const LensDB = () => {
 
   const [loading, setLoading] = useState(false)
 
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null)
+
+  const [patientImage, setPatientImage] = useState(null)
 
   const [description, setDescription] = useState('')
   const [docReport, setDocReport] = useState('')
@@ -121,12 +123,7 @@ const LensDB = () => {
     try {
       const response = await axios.get(`http://localhost:8080/admin/viewappointmentdetails/${searchPatientId}`)
       setSearchSurgeryDetails(response.data)
-      console.log(searchSurgeryDetails?.patientImage)
-      const patientImage = searchSurgeryDetails?.patientImage
-      const imageDataUrl = `data:image/jpeg;base64,${btoa(String.fromCharCode.apply(null, patientImage.data))}`
-      setImageUrl(imageDataUrl)
-      console.log(imageDataUrl)
-
+      setPatientImage(response.data?.patientImage)
     } catch (error) {
       if (error.response && error.response.status === 404) {
         alert("Patient not found");
@@ -137,8 +134,10 @@ const LensDB = () => {
   }
 
   const formatDate = (dateString) => {
-    const dateParts = dateString.split("T")[0].split("-")
-    return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+    if (dateString) {
+      const dateParts = dateString.split("T")[0].split("-")
+      return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -298,11 +297,14 @@ const LensDB = () => {
                   <label htmlFor="description" className="label">
                     Description:
                   </label>
-                  <textarea
-                    id="description"
+                  <input
+                    type="text"
+                    id="name"
                     className="lInput"
-                    placeholder="Enter description"
-                  ></textarea>
+                    placeholder="Enter first name"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </div>
 
                 <div className="form-group button-group">
@@ -354,9 +356,9 @@ const LensDB = () => {
                     <>
                       <div className="column">
                         <div className="image-container">
-                          {imageUrl ? (
+                          {patientImage ? (
                             <img
-                              src={imageUrl}
+                              src={`data:image/png;base64,${patientImage}`}
                               alt="User"
                               className="user-image"
                             />
@@ -393,7 +395,7 @@ const LensDB = () => {
 
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Date:</span>
-                          <span className="valueP">{searchSurgeryDetails?.surgeryDate}</span>
+                          <span className="valueP">{formatDate(searchSurgeryDetails?.surgeryDate)}</span>
                         </div>
                         <div className="label-value-pair-P">
                           <span className="labelP">Surgery Time:</span>
@@ -429,11 +431,11 @@ const LensDB = () => {
                     disabled={loading}
                   >
                     {loading ? 'Downloading...' : 'Download Report'}
-                    </button>
+                  </button>
                   <p>If need to look on Medical Details and Personal Detils , Click below button </p>
                 </div>
 
-                
+
 
               </div>
             )}

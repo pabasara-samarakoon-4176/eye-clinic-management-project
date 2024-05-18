@@ -264,9 +264,9 @@ app.get("/searchpatientcomplaints/:patientId", async (req, res) => {
         const leftEyeImageBuffer = Buffer.from(leftEyeImageData, 'base64')
         const leftEyeImageFile = fs.writeFileSync('leftEyeImage.png', leftEyeImageBuffer)
         const responseData = {
-            patientComplaintDetails : patientComplaintDetails,
-            rightImageBase64 : rightEyeImageData,
-            leftImageBase64 : leftEyeImageData
+            patientComplaintDetails: patientComplaintDetails,
+            rightImageBase64: rightEyeImageData,
+            leftImageBase64: leftEyeImageData
         }
         res.send(responseData)
     } catch (error) {
@@ -293,7 +293,7 @@ app.get("/searchpatient/:patientId", async (req, res) => {
         const patientImageBuffer = Buffer.from(patientImageData, 'base64')
         const patientImageFile = fs.writeFileSync('patientImage.png', patientImageBuffer)
         const responseData = {
-            patient : patientData,
+            patient: patientData,
             imageBase64: patientImageData
         }
         res.send(responseData)
@@ -492,12 +492,15 @@ app.get("/admin/viewappointmentdetails/:patientId", async (req, res) => {
     try {
         const patientRes = await db.query(`select patientFirstName, patientLastName, phoneNumber, patient_image from patient where patientId = ?`, [patientId])
         const surgeryRes = await db.query(`select * from surgery where patientId = ?`, [patientId])
+        const patientImageData = patientRes[0][0].patient_image.toString('base64')
+        const patientImageBuffer = Buffer.from(patientImageData, 'base64')
+        const patientImageFile = fs.writeFileSync('patientImage.png', patientImageBuffer)
         if (patientRes[0][0] && surgeryRes[0][0]) {
             const appointmentDetails = {
                 patientFirstname: patientRes[0][0].patientFirstName,
                 patientLastname: patientRes[0][0].patientLastName,
                 patientContactNo: patientRes[0][0].phoneNumber,
-                patientImage: patientRes[0][0].patient_image,
+                patientImage: patientImageData,
                 surgeryDate: surgeryRes[0][0].surgeryDate,
                 surgeryTime: surgeryRes[0][0].surgeryTime,
                 surgeryLens: surgeryRes[0][0].lensId,
@@ -545,6 +548,9 @@ app.get('/create-report/:patientId', async (req, res) => {
         const examRes = await db.query(`select * from examination where patientId = ?`, [patientId])
         const compRes = await db.query(`select * from patientComplaint where patientId = ?`, [patientId])
         const surgeryRes = await db.query(`select * from surgery where patientId = ?`, [patientId])
+        const patientImageData = patientRes[0][0].patient_image.toString('base64')
+        const patientImageBuffer = Buffer.from(patientImageData, 'base64')
+        const patientImageFile = fs.writeFileSync('patientImage.png', patientImageBuffer)
         const reportDetails = {
             patientId: patientId,
             patientFirstname: patientRes[0][0].patientFirstname,
@@ -638,7 +644,7 @@ app.get('/create-report/:patientId', async (req, res) => {
         const imageWidth = 100
         const imageHeight = 100
         const imageX = rightColumnX + (rightColumnX - imageWidth) / 2
-        doc.image('patientImageSample.jpeg', imageX, columnY + 15, {
+        doc.image(`data:image/png;base64,${patientImageData}`, imageX, columnY + 15, {
             width: imageWidth,
             height: imageHeight
         })
@@ -753,17 +759,21 @@ app.post("/addexamdetails/:doctorId", async (req, res) => {
 
     try {
         const [newExamination] = await db.query(`
-        insert into examination (
-            examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
-            rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina ) values (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [examId, examDate, examTime, patientId, doctorId, leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina,
-                rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina
+        INSERT INTO examination (
+            examId, examDate, examTime, rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina,
+            leftLids, leftConjuitive, leftAC, leftIris, leftVitereous, leftCornea, leftRetina, patientId, doctorId
+        ) VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )`,
+            [examId, examDate, examTime, rightLids, rightConjuitive, rightAC, rightIris, rightVitereous, rightCornea, rightRetina, 
+                leftLids, leftConjuitive,
+                leftAC, leftIris, leftVitereous, leftCornea, leftRetina, patientId, doctorId
             ]
         )
         res.send("Successfully added eye examination details")
     } catch (error) {
-        console.log(`${error.message}`)
+        console.log(error)
     }
 })
 
@@ -862,7 +872,7 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
             })
         } else {
             res.status(500).json({
-                message: "An error occurred while adding the surgery"
+                message: "Invalid details"
             })
         }
         // console.log(error)

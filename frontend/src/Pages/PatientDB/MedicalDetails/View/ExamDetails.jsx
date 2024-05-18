@@ -1,7 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faEye,
-} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -14,13 +10,14 @@ const ExamDetailsView = ({patientId}) => {
             try {
                 const response = await axios.get(`http://localhost:8080/searcheyeexamination/${value}`)
                 setSearchExaminationData([response.data])
-                console.log(searchExaminationData)
             } catch (error) {
                 console.log(`${error.message}`)
             }
         }
         if(patientId) {
             fetchExaminationData(patientId)
+        } else {
+            console.log('No patient Id')
         }
     }, [patientId])
     
