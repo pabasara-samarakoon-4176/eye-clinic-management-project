@@ -821,7 +821,6 @@ app.post("/addsurgery/:doctorId", async (req, res) => {
         } else {
             res.status(500).json({ message: "An error occurred while adding the surgery" })
         }
-        // console.log(error)
     }
 
 })
