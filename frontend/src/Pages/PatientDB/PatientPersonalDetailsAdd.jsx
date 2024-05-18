@@ -5,13 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCalendarAlt,
     faCloudUploadAlt,
-    faUser,
-    faSearch,
-    faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import "./patient.css";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
 
@@ -26,8 +23,11 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
     const [contactNo, setContactNo] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
-    const [patientImage, setPatientImage] = useState(null);
-    const [patientImagePath, setPatientImagePath] = useState(null)
+    const [selectedPatientImage, setSelectedPatientImage] = useState(null)
+
+    const handleFileChange = (event) => {
+        setSelectedPatientImage(event.target.files[0])
+    }
 
     const calculateAge = (birthDate) => {
         const today = new Date();
@@ -55,29 +55,27 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
         return regex.test(str)
     }
 
-    const handleImageChange = (e) => {
-        const selectedImage = e.target.files[0]
-        setPatientImage(selectedImage)
-        setPatientImagePath(URL.createObjectURL(selectedImage))
-    }
-
     const handleAddPatient = async (event) => {
         event.preventDefault();
 
         try {
             if (isValidId(patientId) && isValidPhoneNumber(contactNo)) {
-                const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, {
-                    patientFirstname: patientFirstname,
-                    patientLastname: patientLastname,
-                    patientGender: gender,
-                    patientDOB: birthDate,
-                    patientIdNIC: patientId,
-                    patientPhoneNumber: contactNo,
-                    patientAddress: address,
-                    patientDescription: description,
-                    patientImagePath: patientImagePath
+                const formData = new FormData()
+                formData.append('patientFirstname', patientFirstname)
+                formData.append('patientLastname', patientLastname)
+                formData.append('patientGender', gender)
+                formData.append('patientDOB', birthDate)
+                formData.append('patientIdNIC', patientId)
+                formData.append('patientPhoneNumber', contactNo)
+                formData.append('patientAddress', address)
+                formData.append('patientDescription', description)
+                formData.append('patientImageFile', selectedPatientImage)
+
+                const response = await axios.post(`http://localhost:8080/addpatient/${doctorId}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 })
-                console.log(patientImage)
                 alert(response.data.message)
             } else if (!isValidId(patientId) && isValidPhoneNumber(contactNo)) {
                 alert("Invalid Patient Id")
@@ -265,7 +263,7 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
                         type="file"
                         id="imageUpload"
                         style={{ display: "none" }}
-                        onChange={handleImageChange}
+                        onChange={handleFileChange}
                     />
                     <button
                         type="button"
@@ -276,10 +274,10 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
                     >
                         Upload Image
                     </button>
-                    {patientImage && (
+                    {selectedPatientImage && (
                         <div>
                             <h2>Selected Image Preview:</h2>
-                            <img src={URL.createObjectURL(patientImage)} alt="Patient" />
+                            <img src={URL.createObjectURL(selectedPatientImage)} alt="Patient" />
                         </div>
                     )}
                 </div>

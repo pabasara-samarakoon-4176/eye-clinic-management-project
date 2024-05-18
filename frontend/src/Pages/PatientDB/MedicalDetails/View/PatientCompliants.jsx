@@ -6,46 +6,30 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const PatientComplaintsView = ({ patientId }) => {
-    const imageUrl = null;
 
     const [searchPatientComplaints, setSearchPatientComplaints] = useState([])
-
-    const [rightEyeImageUrl, setRightEyeImageUrl] = useState('')
-    const [leftEyeImageUrl, setLeftEyeImageUrl] = useState('')
+    const [rightEyeImage, setRightEyeImage] = useState(null)
+    const [leftEyeImage, setLeftEyeImage] = useState(null)
 
     useEffect(() => {
         const fetchPatientComplaintData = async (value) => {
             try {
                 const response = await axios.get(`http://localhost:8080/searchpatientcomplaints/${value}`)
-
-                setSearchPatientComplaints([response.data])
-                const rightEyeImage = searchPatientComplaints[0]?.[0]?.rightEyeImage
-                const leftEyeImage = searchPatientComplaints[0]?.[0]?.leftEyeImage
-
-                if (rightEyeImage) {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(new Blob([Uint8Array.from(rightEyeImage.data)]));
-                    reader.onloadend = () => {
-                        setRightEyeImageUrl(reader.result);
-                    };
-                }
-
-                if (leftEyeImage) {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(new Blob([Uint8Array.from(leftEyeImage.data)]));
-                    reader.onloadend = () => {
-                        setLeftEyeImageUrl(reader.result);
-                    };
-                }
-
-                console.log(`rightImage: ${rightEyeImageUrl}`)
-                console.log(`leftImage: ${leftEyeImageUrl}`)
+                const comData = [response.data]
+                setSearchPatientComplaints(comData)
+                setRightEyeImage(comData[0]?.rightImageBase64)
+                setLeftEyeImage(comData[0]?.leftImageBase64)
             } catch (error) {
                 console.error(`${error.message}`)
             }
         }
-        if (patientId) {
-            fetchPatientComplaintData(patientId);
+        if (patientId && rightEyeImage && leftEyeImage) {
+            fetchPatientComplaintData(patientId)
+        } else if (!patientId && rightEyeImage && leftEyeImage) {
+            console.log('No patient Id')
+        } else if (patientId && !rightEyeImage && !leftEyeImage) {
+            fetchPatientComplaintData(patientId)
+            console.log('No Image')
         }
     }, [patientId])
 
@@ -61,8 +45,8 @@ const PatientComplaintsView = ({ patientId }) => {
                     Right Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {rightEyeImageUrl ? (
-                        <img src={rightEyeImageUrl} alt="Right Eye" className="eye-image" />
+                    {rightEyeImage ? (
+                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Right Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
@@ -75,8 +59,8 @@ const PatientComplaintsView = ({ patientId }) => {
                     Left Eye Image:
                 </span>
                 <div className="eye-image-container">
-                    {leftEyeImageUrl ? (
-                        <img src={leftEyeImageUrl} alt="Left Eye" className="eye-image" />
+                    {leftEyeImage ? (
+                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Left Eye" className="eye-image" />
                     ) : (
                         <div className="eye-icon">
                             <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
@@ -88,23 +72,23 @@ const PatientComplaintsView = ({ patientId }) => {
                 <span className="label">
                     Right Eye Description:
                 </span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.rightDescription}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">
                     Left Eye Description:
                 </span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.leftDescription}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.leftDescription}</span>
             </div>
             <div className="label-value-pair">
                 <span className="label">Alergies:</span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.allergies}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.allergies}</span>
             </div>
 
             <div className="label-value-pair">
                 <span className="label">Medical History:</span>
-                <span className="value">{searchPatientComplaints[0]?.[0]?.medicalHistory}</span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.medicalHistory}</span>
             </div>
         </div>
     )
