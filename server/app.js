@@ -14,6 +14,8 @@ import multer from 'multer'
 const app = express()
 const currentDirectory = process.cwd()
 
+dotenv.config()
+
 app.use(express.json())
 app.use(express.urlencoded({
     extended: false
@@ -27,7 +29,7 @@ const upload = multer({
 })
 
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: process.env.HOST,
     user: 'root',
     password: 'Dhoomiii@2000',
     database: 'eye_clinic_database'
