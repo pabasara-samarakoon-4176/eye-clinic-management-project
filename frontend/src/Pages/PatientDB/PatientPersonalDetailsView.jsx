@@ -67,7 +67,7 @@ const PatientPersonalDetailsView = () => {
                 <>
                     <div className="column">
                         <div className="image-container">
-                            {searchPatient ? (
+                            {patientImage ? (
                                 <img src={`data:image/png;base64,${patientImage}`} alt="Patient" />
                             ) : (
                                 <div
