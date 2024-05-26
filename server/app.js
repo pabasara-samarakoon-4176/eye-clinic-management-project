@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import cors from 'cors'
-import pdfkit from 'pdfkit'
 import fs from 'fs'
 import PDFDocument from 'pdfkit-table'
 import multer from 'multer'
@@ -22,7 +21,13 @@ app.use(express.urlencoded({
 }))
 app.use(express.static("public"))
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}))
+
+const secretKey = 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMTc0OTk3MywiaWF0IjoxNzAxNzQ5OTczfQ.4udbW775eD-j9WqJBNzlmAeMx0C0QQEOaAeRgSyjc50'
 
 const upload = multer({
     dest: 'uploads/'
@@ -43,12 +48,31 @@ db.connect((err) => {
     console.log('Database connected successfully')
 })
 
-const secretKey = 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMTc0OTk3MywiaWF0IjoxNzAxNzQ5OTczfQ.4udbW775eD-j9WqJBNzlmAeMx0C0QQEOaAeRgSyjc50'
+const verifyUser = (req, res, next) => {
+    const token = req.cookies.token
+    if (!token) {
+        return res.json({Error: "Not Authorized"})
+    } else {
+        jwt.verify(token, secretKey, (error, decoded) => {
+            if (error) {
+                return res.json({Error: "Not Authorized"})
+            } else {
+                req.doctorId = decoded.doctorId
+                next()
+            }
+        })
+    }
+}
 
-app.get('/check', async (req, res) => {
-    const doctorId = 'DOC00000'
-    const [result] = await db.query("select * from doctor where doctorId = ?", [doctorId])
-    res.send(result)
+app.get('/home/:doctorId', verifyUser, (req, res) => {
+    try {
+        if (req.params.doctorId !== req.doctorId) {
+            return res.status(403).json({ Error: "Forbidden" })
+        }
+        return res.json({Status: "Success", doctorId: req.doctorId})
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 app.post("/login", async (req, res) => {
@@ -66,6 +90,8 @@ app.post("/login", async (req, res) => {
 
         if (doctorId === _doctorId) {
             if (await bcrypt.compare(password, _doctorPasswordHashed)) {
+                const token = jwt.sign({doctorId}, secretKey, {expiresIn: 60 * 60})
+                res.cookie('token', token)
                 res.send({
                     status: 'Success',
                     doctorId: _doctorId
