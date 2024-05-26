@@ -14,13 +14,6 @@ const PatientPersonalDetailsView = () => {
     const [searchPatient, setSearchPatient] = useState([])
     const [patientImage, setPatientImage] = useState(null)
 
-    const formatDate = (dateString) => {
-        if (dateString) {
-            const dateParts = dateString.split("T")[0].split("-")
-            return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
-        }
-    }
-
     const handleSearch = async (Value) => {
         try {
             const response = await axios.get(`http://localhost:8080/searchpatient/${searchPatientId}`)
@@ -50,9 +43,7 @@ const PatientPersonalDetailsView = () => {
                     <button
                         type="button"
                         className="search-icon"
-                        onClick={() => {
-                            handleSearch(searchPatientId)
-                        }}
+                        onClick={() => handleSearch(searchPatientId)}
                     >
                         <FontAwesomeIcon
                             icon={faSearch}
@@ -68,7 +59,7 @@ const PatientPersonalDetailsView = () => {
                     <div className="column">
                         <div className="image-container">
                             {patientImage ? (
-                                <img src={`data:image/png;base64,${patientImage}`} alt="Patient" />
+                                <img src={`data:image/png;base64,${patientImage}`} alt="No Patient Image"   className="fixed-size-img" />
                             ) : (
                                 <div
                                     className="patient-icon"
@@ -97,7 +88,7 @@ const PatientPersonalDetailsView = () => {
 
                         <div className="label-value-pair-P">
                             <span className="labelP">Date of Birth:</span>
-                            <span className="valueP">{formatDate(searchPatient?.patient?.dateOfBirth)}</span>
+                            <span className="valueP">{searchPatient?.patient?.dateOfBirth}</span>
                         </div>
                         <div className="label-value-pair-P">
                             <span className="labelP">Gender:</span>

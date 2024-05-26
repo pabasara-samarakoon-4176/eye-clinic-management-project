@@ -274,13 +274,14 @@ const PatientPersonalDetailsAdd = ({ patientId, setPatientId, doctorId }) => {
                     >
                         Upload Image
                     </button>
-                    {selectedPatientImage && (
-                        <div>
-                            <h2>Selected Image Preview:</h2>
-                            <img src={URL.createObjectURL(selectedPatientImage)} alt="Patient" />
+                   
+                </div>
+                {selectedPatientImage && (
+                         <div className="center-content">
+                            <h3>Selected Image Preview:</h3>
+                            <img src={URL.createObjectURL(selectedPatientImage)} alt="Patient"  className="fixed-size-img" />
                         </div>
                     )}
-                </div>
                 <div className="form-group button-group">
                     <button type="submit" className="button"
                         onClick={handleAddPatient}

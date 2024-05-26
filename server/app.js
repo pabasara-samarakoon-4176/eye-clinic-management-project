@@ -1,5 +1,4 @@
 import express from 'express'
-import path from 'path'
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
@@ -36,8 +35,8 @@ const upload = multer({
 const db = mysql.createConnection({
     host: process.env.HOST,
     user: 'root',
-    password: 'Dhoomiii@2000',
-    database: 'eye_clinic_database'
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 }).promise()
 
 db.connect((err) => {
@@ -75,6 +74,17 @@ app.get('/home/:doctorId', verifyUser, (req, res) => {
     }
 })
 
+app.post('/logout', (req, res) => { 
+    try {
+        res.clearCookie('token')
+        return res.json({ Status: "Success" })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ Status: "Error", Error: error.message })
+    }
+})
+
+
 app.post("/login", async (req, res) => {
 
     const {
@@ -96,6 +106,7 @@ app.post("/login", async (req, res) => {
                     status: 'Success',
                     doctorId: _doctorId
                 })
+                // console.log(process.env.DATABASE)
             } else {
                 res.send("Fail")
             }
