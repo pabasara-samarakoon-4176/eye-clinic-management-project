@@ -951,7 +951,7 @@ app.post("/addpatientcomplaint/:doctorId", upload.array("eyeImages", 2), async (
     try {
         const eyeImageFiles = req.files
         const rightEyeImageBuffer = fs.readFileSync(eyeImageFiles[0].path)
-        const leftEyeImageBuffer = fs.readFileSync(eyeImageFiles[0].path)
+        const leftEyeImageBuffer = fs.readFileSync(eyeImageFiles[1].path)
         const [newPatientComplaint] = await db.query(`
         INSERT INTO patientComplaint (
             patientComplaintId,
