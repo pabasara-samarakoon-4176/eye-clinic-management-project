@@ -6,6 +6,7 @@ import {
   faEye,
   faCalendarCheck
 } from '@fortawesome/free-regular-svg-icons';
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useParams } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -65,7 +66,6 @@ const Home = () => {
     <div>
       <header className="header">
         <h1>INFORMATION MANAGEMENT SYSTEM</h1>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </header>
 
       <div className="main-content">
@@ -105,6 +105,15 @@ const Home = () => {
           <FontAwesomeIcon icon={faCalendarCheck} style={{ fontSize: '1.5em' }} />
           <div className="button-name">Appointment Handling</div>
         </button>
+      </div>
+
+      <div className="bottom-buttons-logout">
+        <button onClick={handleLogout}>
+          <FontAwesomeIcon icon={faPowerOff} style={{ fontSize: '1.5em' }} />
+          <div className="button-name">Logout</div>
+        </button>
+
+
       </div>
 
       <footer className="footer">
