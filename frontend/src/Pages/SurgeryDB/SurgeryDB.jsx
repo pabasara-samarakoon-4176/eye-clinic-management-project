@@ -4,11 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCloudUploadAlt,
   faUser,
   faSearch,
-  faEye,
-  faCloudDownloadAlt,
+  faCloudDownloadAlt
 } from "@fortawesome/free-solid-svg-icons"
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons"
 import axios from 'axios'
@@ -23,8 +21,6 @@ const LensDB = () => {
   const handleSurgeryHoursChange = (e) => setSurgeryHours(e.target.value);
   const handleSurgeryMinutesChange = (e) => setSurgeryMinutes(e.target.value);
   const handleSurgeryAMPMChange = (e) => setSurgeryAMPM(e.target.value);
-
-
 
   const [surgeryDate, setSurgeryDate] = useState(null);
   const [surgeryHours, setSurgeryHours] = useState(null);
@@ -64,6 +60,26 @@ const LensDB = () => {
   const minutesOptions = Array.from({ length: 60 }, (_, index) =>
     index.toString().padStart(2, "0"),
   )
+
+  axios.defaults.withCredentials = true
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/home/${doctorId}`)
+        if (res.data.Status !== "Success") {
+          navigate('/')
+        } else {
+          console.log('working')
+        }
+      } catch (error) {
+        console.log(error)
+        navigate('/')
+      }
+    }
+
+    verifyUser();
+  }, [doctorId, navigate])
 
   useEffect(() => {
     const fetchPatients = async (value) => {

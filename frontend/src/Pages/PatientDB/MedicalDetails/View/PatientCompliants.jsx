@@ -4,7 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import "../../patient.css";
 const PatientComplaintsView = ({ patientId }) => {
 
     const [searchPatientComplaints, setSearchPatientComplaints] = useState([])
@@ -40,6 +40,11 @@ const PatientComplaintsView = ({ patientId }) => {
                     <b>PATIENT COMPLAINTS</b>
                 </p>
             </div>
+            <div className="complaints-columns">
+                <div className="complaints-column">
+                    <p>
+                        <b>Right Eye</b>
+                    </p>
             <div className="label-value-pair eye-image-section">
                 <span className="label">
                     Right Eye Image:
@@ -54,6 +59,18 @@ const PatientComplaintsView = ({ patientId }) => {
                     )}
                 </div>
             </div>
+            <div className="label-value-pair">
+                <span className="label">
+                    Right Eye Description:
+                </span>
+                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
+            </div>
+            </div>
+            
+                <div className="complaints-column">
+                    <p>
+                        <b>Left Eye</b>
+                    </p>
             <div className="label-value-pair eye-image-section">
                 <span className="label">
                     Left Eye Image:
@@ -70,17 +87,19 @@ const PatientComplaintsView = ({ patientId }) => {
             </div>
             <div className="label-value-pair">
                 <span className="label">
-                    Right Eye Description:
-                </span>
-                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
-            </div>
-
-            <div className="label-value-pair">
-                <span className="label">
                     Left Eye Description:
                 </span>
                 <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.leftDescription}</span>
             </div>
+            </div>
+            </div>
+
+
+
+
+            
+
+           
             <div className="label-value-pair">
                 <span className="label">Alergies:</span>
                 <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.allergies}</span>

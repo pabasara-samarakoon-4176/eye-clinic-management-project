@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCloudUploadAlt
 } from "@fortawesome/free-solid-svg-icons";
-import "/Users/pabasarasamarakoon/eyeProject/frontend/src/Pages/PatientDB/patient.css";
+import "../../patient.css";
 import axios from "axios";
 
 const PatientComplaints = ({ patientId, doctorId }) => {
@@ -19,8 +19,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
     const [rightPoorVisionBool, setRightPoorVisionBool] = useState(false)
     const [rightPoorVision, setRightPoorVision] = useState('')
     const [rightDescription, setRightDescription] = useState('')
-    const [rightEyeImage, setRightEyeImage] = useState(null)
-    const [rightEyeImagePath, setRightEyeImagePath] = useState(null)
+    const [rightEyeImageFile, setRightEyeImageFile] = useState(null)
 
     // Left Eye
     const [leftPainBool, setLeftPainBool] = useState(false)
@@ -32,62 +31,23 @@ const PatientComplaints = ({ patientId, doctorId }) => {
     const [leftPoorVisionBool, setLeftPoorVisionBool] = useState(false)
     const [leftPoorVision, setLeftPoorVision] = useState('')
     const [leftDescription, setLeftDescription] = useState('')
-    const [leftEyeImage, setLeftEyeImage] = useState(null)
-    const [leftEyeImagePath, setLeftEyeImagePath] = useState(null)
-    const [rightEyeImageFile, setRightEyeImageFile] = useState(null)
     const [leftEyeImageFile, setLeftEyeImageFile] = useState(null)
 
     const [allergies, setAllergies] = useState('')
     const [medicalHistory, setMedicalHistory] = useState('')
 
-    useEffect(() => {
-        console.log("Right eye image state:", rightEyeImage);
-    }, [rightEyeImage]);
-
-    useEffect(() => {
-        console.log("Right eye image path:", rightEyeImagePath);
-    }, [rightEyeImagePath]);
-
-    useEffect(() => {
-        console.log("Left eye image state:", leftEyeImage);
-    }, [leftEyeImage]);
-
-    useEffect(() => {
-        console.log("Left eye image path:", leftEyeImagePath);
-    }, [leftEyeImagePath]);
-
-    // const handleRightEyeImageChange = (e) => {
-    //     const selectedImage = e.target.files[0];
-    //     console.log("Selected image:", selectedImage);
-    //     setRightEyeImage(selectedImage);
-    //     console.log("Right eye image state:", rightEyeImage);
-    //     setRightEyeImagePath(URL.createObjectURL(selectedImage));
-    //     console.log("Right eye image path:", rightEyeImagePath);
-    // }
-
-    // const handleLeftEyeImageChange = (e) => {
-    //     const selectedImage = e.target.files[0];
-    //     console.log("Selected image:", selectedImage);
-    //     setLeftEyeImage(selectedImage);
-    //     console.log("Left eye image state:", leftEyeImage);
-    //     setLeftEyeImagePath(URL.createObjectURL(selectedImage));
-    //     console.log("Left eye image path:", leftEyeImagePath);
-    // }
-
     const handleRightEyeImageChange = (event) => {
-        setRightEyeImageFile(event.target.files[0])
+        setRightEyeImageFile(event.target.files[0]);
     }
 
     const handleLeftEyeImageChange = (event) => {
-        setLeftEyeImageFile(event.target.files[0])
+        setLeftEyeImageFile(event.target.files[0]);
     }
-
 
     const handleAddPatientComplaintSubmit = async (event) => {
         event.preventDefault()
 
         try {
-
             const convertToInteger = (boolValue) => boolValue ? 1 : 0
 
             const formData = new FormData()
@@ -123,7 +83,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            alert("Sucessfully added the patient complaint")
+            alert("Successfully added the patient complaint")
         } catch (error) {
             console.log(error)
         }
@@ -142,7 +102,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         <b>Right Eye</b>
                     </p>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="rightEyePain">
                             Pain:
                         </label>
                         <input
@@ -163,12 +123,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="rightEyeDoubleVision">
                             Double Vision:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="rightEyeDoubleVision"
                             className="checkbox-input"
                             checked={rightDoubleVisionBool}
                             onChange={() => {
@@ -184,12 +144,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="rightEyeRedeye">
                             Red Eye:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="rightEyeRedeye"
                             className="checkbox-input"
                             checked={rightRedeyeBool}
                             onChange={() => {
@@ -205,12 +165,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="rightEyePoorVision">
                             Poor Vision:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="rightEyePoorVision"
                             className="checkbox-input"
                             checked={rightPoorVisionBool}
                             onChange={() => {
@@ -225,14 +185,13 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             onChange={(e) => setRightPoorVision(e.target.value)}
                         />
                     </div>
-
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter2">
+                        <label htmlFor="rightEyeDescription">
                             Description:
                         </label>
                         <input
                             type="text"
-                            id="rightEyeParameter2"
+                            id="rightEyeDescription"
                             className="lInput"
                             placeholder="Enter More Details"
                             value={rightDescription}
@@ -241,10 +200,10 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                     </div>
                     <div className="form-group button-group">
                         <label
-                            htmlFor="imageUpload"
+                            htmlFor="rightEyeImageUpload"
                             className="insert-image-text"
                         >
-                            Upload Right Eye Image
+                            Right Eye Image
                             <FontAwesomeIcon
                                 icon={faCloudUploadAlt}
                                 style={{
@@ -256,7 +215,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         </label>
                         <input
                             type="file"
-                            id="imageUpload"
+                            id="rightEyeImageUpload"
                             style={{ display: "none" }}
                             onChange={handleRightEyeImageChange}
                         />
@@ -265,7 +224,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             className="button-img"
                             onClick={() =>
                                 document
-                                    .getElementById("imageUpload")
+                                    .getElementById("rightEyeImageUpload")
                                     .click()
                             }
                         >
@@ -273,9 +232,9 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         </button>
                     </div>
                     {rightEyeImageFile && (
-                        <div>
-                            <h2>Right Eye Preview:</h2>
-                            <img src={URL.createObjectURL(rightEyeImageFile)} alt="RightEye" />
+                        <div className="center-content">
+                            <h3>Right Eye Preview:</h3>
+                            <img src={URL.createObjectURL(rightEyeImageFile)} alt="RightEye" className="fixed-size-img" />
                         </div>
                     )}
                 </div>
@@ -284,12 +243,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         <b>Left Eye</b>
                     </p>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="leftEyePain">
                             Pain:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="leftEyePain"
                             className="checkbox-input"
                             checked={leftPainBool}
                             onChange={() => {
@@ -305,12 +264,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="leftEyeDoubleVision">
                             Double Vision:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="leftEyeDoubleVision"
                             className="checkbox-input"
                             checked={leftDoubleVisionBool}
                             onChange={() => {
@@ -326,12 +285,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="leftEyeRedeye">
                             Red Eye:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="leftEyeRedeye"
                             className="checkbox-input"
                             checked={leftRedeyeBool}
                             onChange={() => {
@@ -347,12 +306,12 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter1">
+                        <label htmlFor="leftEyePoorVision">
                             Poor Vision:
                         </label>
                         <input
                             type="checkbox"
-                            id="rightEyePain"
+                            id="leftEyePoorVision"
                             className="checkbox-input"
                             checked={leftPoorVisionBool}
                             onChange={() => {
@@ -367,14 +326,13 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             onChange={(e) => setLeftPoorVision(e.target.value)}
                         />
                     </div>
-
                     <div className="form-group">
-                        <label htmlFor="rightEyeParameter2">
+                        <label htmlFor="leftEyeDescription">
                             Description:
                         </label>
                         <input
                             type="text"
-                            id="rightEyeParameter2"
+                            id="leftEyeDescription"
                             className="lInput"
                             placeholder="Enter More Details"
                             value={leftDescription}
@@ -383,10 +341,10 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                     </div>
                     <div className="form-group button-group">
                         <label
-                            htmlFor="imageUpload"
+                            htmlFor="leftEyeImageUpload"
                             className="insert-image-text"
                         >
-                            Upload Left Eye Image
+                             Left Eye Image
                             <FontAwesomeIcon
                                 icon={faCloudUploadAlt}
                                 style={{
@@ -398,7 +356,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         </label>
                         <input
                             type="file"
-                            id="imageUpload"
+                            id="leftEyeImageUpload"
                             style={{ display: "none" }}
                             onChange={handleLeftEyeImageChange}
                         />
@@ -407,7 +365,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                             className="button-img"
                             onClick={() =>
                                 document
-                                    .getElementById("imageUpload")
+                                    .getElementById("leftEyeImageUpload")
                                     .click()
                             }
                         >
@@ -415,31 +373,31 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                         </button>
                     </div>
                     {leftEyeImageFile && (
-                        <div>
-                            <h2>Left Eye Preview:</h2>
-                            <img src={URL.createObjectURL(leftEyeImageFile)} alt="LeftEyeImage" />
+                        <div className="center-content">
+                            <h3>Left Eye Preview:</h3>
+                            <img src={URL.createObjectURL(leftEyeImageFile)} alt="LeftEye" className="fixed-size-img" />
                         </div>
                     )}
                 </div>
             </div>
-            <label htmlFor="alergy">
-                Alergies Details:
+            <label htmlFor="allergy">
+                Allergies Details:
             </label>
             <input
                 type="text"
-                id="alergy"
+                id="allergy"
                 className="lInput"
-                placeholder="Enter Alegies"
+                placeholder="Enter Allergies"
                 value={allergies}
                 onChange={(e) => setAllergies(e.target.value)}
             />
             <div>
-                <label htmlFor="medipast">
+                <label htmlFor="medicalHistory">
                     Medical History:
                 </label>
                 <input
                     type="text"
-                    id="medipast"
+                    id="medicalHistory"
                     className="lInput"
                     placeholder="Enter Past Medical History"
                     value={medicalHistory}
@@ -447,8 +405,7 @@ const PatientComplaints = ({ patientId, doctorId }) => {
                 />
             </div>
             <div className="form-group button-group">
-                <button type="submit" className="button" onClick={handleAddPatientComplaintSubmit}
-                >
+                <button type="submit" className="button" onClick={handleAddPatientComplaintSubmit}>
                     Add Patient Complaint
                 </button>
             </div>
@@ -456,4 +413,4 @@ const PatientComplaints = ({ patientId, doctorId }) => {
     )
 }
 
-export default PatientComplaints
+export default PatientComplaints;

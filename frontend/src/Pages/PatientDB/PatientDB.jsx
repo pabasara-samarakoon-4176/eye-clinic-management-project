@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,11 +18,32 @@ import ExamDetailsView from "./MedicalDetails/View/ExamDetails";
 import CataratDetailsView from "./MedicalDetails/View/CataractDetails";
 import GlucomaDetailsView from "./MedicalDetails/View/GlucomaDetails";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PatientDB = () => {
 
-  const {doctorId} = useParams()
+  const { doctorId } = useParams()
   const navigate = useNavigate()
+
+  axios.defaults.withCredentials = true
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/home/${doctorId}`)
+        if (res.data.Status !== "Success") {
+          navigate('/')
+        } else {
+          console.log('working')
+        }
+      } catch (error) {
+        console.log(error)
+        navigate('/')
+      }
+    }
+
+    verifyUser();
+  }, [doctorId, navigate])
 
   const [patientId, setPatientId] = useState('')
   const [value, setValue] = useState('')
@@ -36,7 +57,6 @@ const PatientDB = () => {
 
   const handleSearchPatientId = (value) => {
     setPatientId(value)
-    // console.log(value)
   }
 
   const handleButtonClick = (button) => {
@@ -94,15 +114,15 @@ const PatientDB = () => {
                 </div>
 
                 <div className="right-panel">
-                  
+
                   {/* Add personal details */}
                   {activeButton === "add" && (
-                    <PatientPersonalDetailsAdd patientId={patientId} setPatientId={setPatientId} doctorId={doctorId}/>
+                    <PatientPersonalDetailsAdd patientId={patientId} setPatientId={setPatientId} doctorId={doctorId} />
                   )}
 
                   {/* View patient details */}
                   {activeButton === "view" && (
-                    <PatientPersonalDetailsView/>
+                    <PatientPersonalDetailsView />
                   )}
                 </div>
               </div>
@@ -174,20 +194,20 @@ const PatientDB = () => {
                                   </p>
                                 </div>
                                 <div id="clinic-data">
-                                  <ClinicDetails patientId={patientId} doctorId={doctorId}/>
+                                  <ClinicDetails patientId={patientId} doctorId={doctorId} />
                                 </div>
                                 <div id="patient-complaints">
-                                  <PatientComplaints patientId={patientId} doctorId={doctorId}/>
+                                  <PatientComplaints patientId={patientId} doctorId={doctorId} />
                                 </div>
                                 <div id="exam-data">
-                                  <ExamDetails patientId={patientId} doctorId={doctorId}/>
+                                  <ExamDetails patientId={patientId} doctorId={doctorId} />
                                 </div>
                                 <div id="catarat-details">
-                                  <CataratDetails/>
+                                  <CataratDetails />
                                 </div>
 
                                 <div id="glucoma-details">
-                                  <GlucomaDetails/>
+                                  <GlucomaDetails />
                                 </div>
                                 <div className="form-group button-group">
                                   <button type="submit" className="button"
@@ -239,20 +259,20 @@ const PatientDB = () => {
                             </div>
                           </div>
                           <div id="clinic-data">
-                            <ClinicDetailsView patientId={patientId}/>
+                            <ClinicDetailsView patientId={patientId} />
                           </div>
                           <div id="patient-complaints">
-                            <PatientComplaintsView patientId={patientId}/>
+                            <PatientComplaintsView patientId={patientId} />
                           </div>
                           <div id="exam-data">
-                            <ExamDetailsView patientId={patientId}/>
+                            <ExamDetailsView patientId={patientId} />
                           </div>
                           <div id="catarat-details">
-                            <CataratDetailsView/>
+                            <CataratDetailsView />
                           </div>
 
                           <div id="glucoma-details">
-                            <GlucomaDetailsView/>
+                            <GlucomaDetailsView />
                           </div>
                         </div>
                       )}
@@ -266,7 +286,7 @@ const PatientDB = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PatientDB;
+export default PatientDB

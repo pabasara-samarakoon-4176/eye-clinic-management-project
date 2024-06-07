@@ -8,11 +8,11 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "./lensDB.css";
 import axios from "axios";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const LensDB = () => {
 
-  const {doctorId} = useParams()
+  const { doctorId } = useParams()
   const navigate = useNavigate()
   const [manufacturerOptions, setManufacturerOptions] = useState([])
   const [lensData, setLensData] = useState([])
@@ -33,6 +33,26 @@ const LensDB = () => {
   const [manufactureDate, setManufactureDate] = useState(null)
 
   const [activeButton, setActiveButton] = useState("add")
+
+  axios.defaults.withCredentials = true
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/home/${doctorId}`)
+        if (res.data.Status !== "Success") {
+          navigate('/')
+        } else {
+          console.log('working')
+        }
+      } catch (error) {
+        console.log(error)
+        navigate('/')
+      }
+    }
+
+    verifyUser();
+  }, [doctorId, navigate])
 
   useEffect(() => {
     const fetchManufacturers = async () => {

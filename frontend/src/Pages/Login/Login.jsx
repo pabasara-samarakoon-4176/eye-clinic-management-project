@@ -1,4 +1,3 @@
-
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +10,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  axios.defaults.withCredentials = true
 
   const leftSectionStyle = {
     backgroundImage: `url(${myImage1})`,
