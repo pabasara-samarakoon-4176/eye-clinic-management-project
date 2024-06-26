@@ -222,27 +222,29 @@ const LensDB = () => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="date" className="label">
-                    Surgery Date:
-                  </label>
-                  <div className="date-input">
-                    <DatePicker
-                      selected={surgeryDate}
-                      onChange={(date) => setSurgeryDate(date)}
-                      placeholderText="Select Date"
-                      className="lInput"
-                      dateFormat="yyyy/MM/dd"
-                    />
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
-                      style={{
-                        fontSize: "1.5em",
-                        color: "#6FA1EE",
-                        marginLeft: "8px",
-                      }}
-                    />
-                  </div>
-                </div>
+  <label htmlFor="date" className="label">
+    Surgery Date:
+  </label>
+  <div className="date-input">
+    <DatePicker
+      selected={surgeryDate}
+      onChange={(date) => setSurgeryDate(date)}
+      placeholderText="Select Date"
+      className="lInput"
+      dateFormat="yyyy/MM/dd"
+      popperClassName="calendar-popper" // Add this line to apply a custom class to the calendar popper
+    />
+    <FontAwesomeIcon
+      icon={faCalendarAlt}
+      style={{
+        fontSize: "1.5em",
+        color: "#6FA1EE",
+        marginLeft: "8px",
+      }}
+    />
+  </div>
+</div>
+
                 <div className="form-group">
                   <label htmlFor="time" className="label">
                     Surgery Time:
@@ -317,7 +319,7 @@ const LensDB = () => {
                     type="text"
                     id="name"
                     className="lInput"
-                    placeholder="Enter first name"
+                    placeholder="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />

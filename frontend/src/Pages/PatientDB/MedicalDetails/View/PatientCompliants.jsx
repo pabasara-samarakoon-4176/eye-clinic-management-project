@@ -45,61 +45,61 @@ const PatientComplaintsView = ({ patientId }) => {
                     <p>
                         <b>Right Eye</b>
                     </p>
-            <div className="label-value-pair eye-image-section">
-                <span className="label">
-                    Right Eye Image:
-                </span>
-                <div className="eye-image-container">
-                    {rightEyeImage ? (
-                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Right Eye" className="eye-image" />
-                    ) : (
-                        <div className="eye-icon">
-                            <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
+                    <div className="label-value-pair eye-image-section">
+                        <span className="label">
+                            Right Eye Image:
+                        </span>
+                        <div className="eye-image-container">
+                            {rightEyeImage ? (
+                                <img src={`data:image/png;base64,${rightEyeImage}`} alt="Right Eye" className="eye-image" />
+                            ) : (
+                                <div className="eye-icon">
+                                    <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
+                    <div className="label-value-pair">
+                        <span className="label">
+                            Right Eye Description:
+                        </span>
+                        <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
+                    </div>
                 </div>
-            </div>
-            <div className="label-value-pair">
-                <span className="label">
-                    Right Eye Description:
-                </span>
-                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.rightDescription}</span>
-            </div>
-            </div>
-            
+
                 <div className="complaints-column">
                     <p>
                         <b>Left Eye</b>
                     </p>
-            <div className="label-value-pair eye-image-section">
-                <span className="label">
-                    Left Eye Image:
-                </span>
-                <div className="eye-image-container">
-                    {leftEyeImage ? (
-                        <img src={`data:image/png;base64,${rightEyeImage}`} alt="Left Eye" className="eye-image" />
-                    ) : (
-                        <div className="eye-icon">
-                            <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
+                    <div className="label-value-pair eye-image-section">
+                        <span className="label">
+                            Left Eye Image:
+                        </span>
+                        <div className="eye-image-container">
+                            {leftEyeImage ? (
+                                <img src={`data:image/png;base64,${rightEyeImage}`} alt="Left Eye" className="eye-image" />
+                            ) : (
+                                <div className="eye-icon">
+                                    <FontAwesomeIcon icon={faEye} size="4x" color="#6FA1EE" />
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
+                    <div className="label-value-pair">
+                        <span className="label">
+                            Left Eye Description:
+                        </span>
+                        <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.leftDescription}</span>
+                    </div>
                 </div>
             </div>
-            <div className="label-value-pair">
-                <span className="label">
-                    Left Eye Description:
-                </span>
-                <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.leftDescription}</span>
-            </div>
-            </div>
-            </div>
 
 
 
 
-            
 
-           
+
+
             <div className="label-value-pair">
                 <span className="label">Alergies:</span>
                 <span className="value">{searchPatientComplaints[0]?.patientComplaintDetails?.allergies}</span>

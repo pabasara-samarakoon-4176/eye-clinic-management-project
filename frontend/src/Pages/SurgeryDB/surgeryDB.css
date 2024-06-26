@@ -52,6 +52,20 @@ form {
     margin-right: 30px;
 }
 
+.calendar-popper {
+    z-index: 9999 !important; /* High z-index value to ensure it appears on top */
+  }
+  
+  .date-input .react-datepicker {
+    z-index: 9999 !important; /* Ensure DatePicker container has high z-index */
+  }
+  
+  .form-group input,
+  .form-group .lInput {
+    position: relative; /* Ensure inputs are positioned */
+    z-index: 1; /* Ensure lower z-index compared to calendar */
+  }
+  
 .lInput {
     padding: 15px;
     margin-bottom: 5px;
@@ -60,6 +74,7 @@ form {
     width: 60%;
     cursor: pointer;
     font-size: 14px;
+    
 }
 
 .sex-options {
