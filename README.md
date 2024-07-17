@@ -47,7 +47,7 @@ The Tangalle Eye Clinic Management System is a comprehensive application develop
   - Rupasinghe A.A.H.S
 
 - **UX/UI Designer:**
-  - Dodangoda D.M.R.R
+  - Dodangoda M.D.R.R
 
 - **Backend Developer:**
   - Samarakoon P.G.C
